@@ -1,4 +1,4 @@
-# 24SolChl-B
+# 24 Solution Challenge - "Will Be"
 
 ## Summary
 Project for leveraging efficiency in the field of special education.
