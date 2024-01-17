@@ -4,6 +4,7 @@
 Project for leveraging efficiency in the field of special education.
 
 ## Participants
+> Member of GDSC Daejeon University
 - **양기택** (KeeTaek Yang)
 - **한수빈** (SuBeen Han)
 - **이남경** (NamKyung Lee)
