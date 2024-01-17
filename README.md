@@ -7,4 +7,4 @@ Project for leveraging efficiency in the field of special education.
 - **양기택** (KeeTaek Yang)
 - **한수빈** (SuBean Han)
 - **이남경** (NamKyung Lee)
-- **조기홍** (KiHong Jo)
+- **조기홍** (GiHong Jo)
