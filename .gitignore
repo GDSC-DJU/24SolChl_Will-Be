@@ -171,4 +171,4 @@ app.*.symbols
 !.vscode/settings.json
 
 ###--- for API Key security ---###
-/solutionChallenge/solution/lib/api_keys.dart
+**/api_keys.dart
