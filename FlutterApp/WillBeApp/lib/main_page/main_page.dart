@@ -14,6 +14,16 @@ class _Main_PageState extends State<Main_Page> {
 
   ///User instance for loged in user
   User? user;
+  Future signOut() async {
+    try {
+      print('sign out complete');
+      return await _authentication.signOut();
+    } catch (e) {
+      print('sign out failed');
+      print(e.toString());
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +37,6 @@ class _Main_PageState extends State<Main_Page> {
           Center(
             child: OutlinedButton(
               onPressed: () {
-                user!.delete();
                 Navigator.pop(context);
               },
               child: const Text("log out"),
