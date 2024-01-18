@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "747477081915",
+    "project_id": "solution-challenge-autism",
+    "storage_bucket": "solution-challenge-autism.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747477081915:android:70e69c17cb775e7513211e",
+        "android_client_info": {
+          "package_name": "com.example.solution"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqav2y39NPYKQM0plcl4XzOiDKMeo9itY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
