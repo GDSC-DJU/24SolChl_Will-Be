@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/main_page/main_page.dart';
@@ -13,10 +14,12 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
   ///Instance for firebase auth
   final _authentication = FirebaseAuth.instance;
 
+  ///파이어스토어 레퍼런스 받아오기
   ///User instance for loged in user
   User? user;
 
-  ///Function for Google login service
+  ///구글로그인을 담당하는 메서드.
+  ///또한 firestore에 로그인한 사용자의 계정이 있는지 확인하고 계정이 있다면 MainPage로 이동
   void _handleGoogleSignIn() async {
     try {
       GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
@@ -25,31 +28,29 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
       user = _authentication.currentUser;
 
       if (user != null) {
-        print(user!.email.toString());
+        print(
+          user!.email.toString(),
+        );
+
+        //회원가입을 건너뛰고 메인 페이지로 이동한다.
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Main_Page(),
+          ),
+        );
       }
     } on FirebaseAuthException catch (e) {
       print(e.code);
     }
   }
 
-  ///Auto Login: checking if there is a current user. to Main_Page if we have current user. if we don't, guide user to login with google
-  void checkAuthStatus() async {
-    User? user = _authentication.currentUser;
-
-    if (user != null) {
-      // 이미 로그인한 사용자가 있으면 메인 화면으로 이동
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const Main_Page()));
-    } else {
-      // 로그인한 사용자가 없으면 로그인 화면을 보여줌
-    }
-  }
+  ///Auto Login Function: checking if there is a current user. Navigate to Main_Page if we have current user.
+  ///if we don't, guide user to login with google
 
   @override
   void initState() {
     // TODO: implement initState
-
-    checkAuthStatus();
   }
 
   @override

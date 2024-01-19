@@ -25,6 +25,36 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _authentication = FirebaseAuth.instance;
+  User? user;
+  bool currentUserExist = false;
+
+  ///자동로그인 기능
+  Future<void> checkAuthStatus() async {
+    User? user = _authentication.currentUser;
+    currentUserExist = false;
+    if (user != null) {
+      // 이미 로그인한 사용자가 있으면 메인 화면으로 이동
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Main_Page(),
+        ),
+      );
+    } else {
+      // 로그인한 사용자가 없으면 로그인 화면을 보여줌
+      print('자동로그인 실패');
+    }
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkAuthStatus();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
