@@ -34,15 +34,11 @@ class _MyAppState extends State<MyApp> {
     currentUserExist = false;
     if (user != null) {
       // 이미 로그인한 사용자가 있으면 메인 화면으로 이동
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Main_Page(),
-        ),
-      );
+      currentUserExist = true;
     } else {
       // 로그인한 사용자가 없으면 로그인 화면을 보여줌
       print('자동로그인 실패');
+      currentUserExist = false;
     }
     setState(() {});
   }
@@ -66,7 +62,10 @@ class _MyAppState extends State<MyApp> {
             background: Colors.black),
         useMaterial3: true,
       ),
-      home: const Scaffold(body: PrimaryLoginScreen()),
+      home: Scaffold(
+          body: currentUserExist
+              ? const Main_Page()
+              : const PrimaryLoginScreen()),
     );
   }
 }
