@@ -30,8 +30,9 @@ class _MyAppState extends State<MyApp> {
 
   ///자동로그인 기능
   Future<void> checkAuthStatus() async {
-    User? user = _authentication.currentUser;
+    user = _authentication.currentUser;
     currentUserExist = false;
+
     if (user != null) {
       // 이미 로그인한 사용자가 있으면 메인 화면으로 이동
       currentUserExist = true;

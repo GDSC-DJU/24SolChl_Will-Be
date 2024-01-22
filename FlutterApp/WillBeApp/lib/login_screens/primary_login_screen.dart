@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:solution/login_screens/role_selection_screen.dart';
 import 'package:solution/main_page/main_page.dart';
 
 class PrimaryLoginScreen extends StatefulWidget {
@@ -14,34 +15,58 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
   ///Instance for firebase auth
   final _authentication = FirebaseAuth.instance;
 
-  ///파이어스토어 레퍼런스 받아오기
+  ///파이어스토어 인스턴스 받아오기
   ///User instance for loged in user
   User? user;
 
   ///구글로그인을 담당하는 메서드.
   ///또한 firestore에 로그인한 사용자의 계정이 있는지 확인하고 계정이 있다면 MainPage로 이동
   void _handleGoogleSignIn() async {
-    try {
+    {
       GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
       await _authentication.signInWithProvider(googleAuthProvider);
 
       user = _authentication.currentUser;
 
       if (user != null) {
-        print(
-          user!.email.toString(),
-        );
+        print(user!.email.toString());
 
-        //회원가입을 건너뛰고 메인 페이지로 이동한다.
+        ///사용자의 UID
+        String uid = user!.uid;
+
+        // 'uid'라는 이름의 Field에 사용자의 UID가 있는지 확인합니다.
+        if (user != null) {
+          print('사용자의 UID가 존재해 메인 페이지로 이동합니다.');
+          // 사용자의 UID가 존재하면 메인 페이지로 이동합니다.
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const Main_Page(),
+            ),
+          );
+        } else {
+          // 사용자의 UID가 존재하지 않으면 회원가입 페이지로 이동합니다.
+          print('사용자의 UID가 존재하지 않아 회원가입 페이지로 이동합니다.');
+          print('사용자의 UID : $uid');
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RoleSelectionScreen(),
+            ),
+          );
+        }
+      } else {
+        // Document가 존재하지 않으면 회원가입 페이지로 이동합니다.
+        print('사용자의 도큐먼트가 존재하지 않아 회원가입 페이지로 이동합니다.');
+
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const Main_Page(),
+            builder: (context) => const RoleSelectionScreen(),
           ),
         );
       }
-    } on FirebaseAuthException catch (e) {
-      print(e.code);
     }
   }
 
