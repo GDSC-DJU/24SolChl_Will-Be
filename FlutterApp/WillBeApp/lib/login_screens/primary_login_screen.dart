@@ -17,39 +17,41 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
 
   ///파이어스토어 인스턴스 받아오기
   ///User instance for loged in user
-  User? user;
+  User? _user;
 
   ///구글로그인을 담당하는 메서드.
   ///또한 firestore에 로그인한 사용자의 계정이 있는지 확인하고 계정이 있다면 MainPage로 이동
   void _handleGoogleSignIn() async {
     {
+      //로그인에 관련된 Auth관련 인스턴스들.
       GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
       await _authentication.signInWithProvider(googleAuthProvider);
 
-      user = _authentication.currentUser;
+      //firestore에 관련된 인스턴스들
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      bool signedUpUser = false;
+      _user = _authentication.currentUser;
+      String uid = _user!.uid;
 
-      if (user != null) {
-        print(user!.email.toString());
-
-        ///사용자의 UID
-        String uid = user!.uid;
-
-        // 'uid'라는 이름의 Field에 사용자의 UID가 있는지 확인합니다.
-        if (user != null) {
-          print('사용자의 UID가 존재해 메인 페이지로 이동합니다.');
-          // 사용자의 UID가 존재하면 메인 페이지로 이동합니다.
-          Navigator.push(
+      // currentUser가 있는지 확인
+      if (_user != null) {
+        final docSnapshot = await firestore
+            .collection('Users')
+            .doc('Educator')
+            .collection(_user!.uid)
+            .get();
+        //파이어베이스에 등록이 되어있는지 확인
+        if (docSnapshot.docs.isNotEmpty) {
+          print("최근유저 확인, 파이어스토어 확인 완료.");
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => const Main_Page(),
             ),
           );
         } else {
-          // 사용자의 UID가 존재하지 않으면 회원가입 페이지로 이동합니다.
-          print('사용자의 UID가 존재하지 않아 회원가입 페이지로 이동합니다.');
-          print('사용자의 UID : $uid');
-
-          Navigator.push(
+          print("최근유저 확인, 파이어스토어 확인 실패");
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => const RoleSelectionScreen(),
@@ -57,9 +59,9 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
           );
         }
       } else {
-        // Document가 존재하지 않으면 회원가입 페이지로 이동합니다.
-        print('사용자의 도큐먼트가 존재하지 않아 회원가입 페이지로 이동합니다.');
-
+        // 사용자의 UID가 존재하지 않으면 회원가입 페이지로 이동합니다.
+        print('사용자의 UID가 존재하지 않아 회원가입 페이지로 이동합니다.');
+        print('사용자의 UID : $uid');
         Navigator.push(
           context,
           MaterialPageRoute(

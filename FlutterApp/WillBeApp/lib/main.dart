@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
@@ -24,22 +25,40 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  ///파이어베이스 로그인을 위한 Auth 인스턴스
   final _authentication = FirebaseAuth.instance;
   User? user;
-  bool currentUserExist = false;
+
+  ///자동로그인의 실행 여부를 판별하는 변수. user.currentuser의 유무와 firestore에 user.uid 문서가 존재하는지 판별.
+  ///둘 다 존재한다면 자동로그인 완료
+  bool _currentUserExist = false;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   ///자동로그인 기능
   Future<void> checkAuthStatus() async {
     user = _authentication.currentUser;
-    currentUserExist = false;
+    _currentUserExist = false;
 
     if (user != null) {
       // 이미 로그인한 사용자가 있으면 메인 화면으로 이동
-      currentUserExist = true;
+
+      final docSnapshot = await _firestore
+          .collection('Users')
+          .doc('Educator')
+          .collection(user!.uid)
+          .get();
+
+      if (docSnapshot.docs.isNotEmpty) {
+        _currentUserExist = true;
+        print('자동로그인 완료!');
+      } else {
+        print('_currentUserExost = false');
+      }
     } else {
       // 로그인한 사용자가 없으면 로그인 화면을 보여줌
       print('자동로그인 실패');
-      currentUserExist = false;
+      _currentUserExist = false;
     }
     setState(() {});
   }
@@ -50,6 +69,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkAuthStatus();
+      print("object");
     });
   }
 
@@ -64,7 +84,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       home: Scaffold(
-          body: currentUserExist
+          body: _currentUserExist
               ? const Main_Page()
               : const PrimaryLoginScreen()),
     );

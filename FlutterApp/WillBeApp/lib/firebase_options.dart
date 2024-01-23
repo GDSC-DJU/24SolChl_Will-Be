@@ -3,7 +3,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
-import 'package:solution/api_keys.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -51,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: API_Firebase.androidAPI,
-    appId: '1:747477081915:android:70e69c17cb775e7513211e',
-    messagingSenderId: '747477081915',
-    projectId: 'solution-challenge-autism',
-    storageBucket: 'solution-challenge-autism.appspot.com',
+    apiKey: 'AIzaSyBUXvpXceC6D9ruG_uDlDVEcftLFV0VT4Y',
+    appId: '1:718483010585:android:a60efb0b143be37892a688',
+    messagingSenderId: '718483010585',
+    projectId: 'willbe-23f15',
+    storageBucket: 'willbe-23f15.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: API_Firebase.iosAPI,
-    appId: '1:747477081915:ios:7d0f8ffc8014145213211e',
-    messagingSenderId: '747477081915',
-    projectId: 'solution-challenge-autism',
-    storageBucket: 'solution-challenge-autism.appspot.com',
+    apiKey: 'AIzaSyBkhU_pPh2r3Ph5k5UI62Fm03lasmGY0lU',
+    appId: '1:718483010585:ios:702d6d78be1f84df92a688',
+    messagingSenderId: '718483010585',
+    projectId: 'willbe-23f15',
+    storageBucket: 'willbe-23f15.appspot.com',
+    iosClientId: '718483010585-obh0sf8eo85h3pfvog96f6alflhpmabf.apps.googleusercontent.com',
     iosBundleId: 'com.example.solution',
   );
 }
