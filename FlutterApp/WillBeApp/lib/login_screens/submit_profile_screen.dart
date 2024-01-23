@@ -23,7 +23,10 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
   void signUp({required String role}) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await FirebaseFirestore.instance.collection('Users').doc(user.uid).set({
+      await FirebaseFirestore.instance
+          .collection('Educator')
+          .doc(user.uid)
+          .set({
         'role': role,
       });
     }

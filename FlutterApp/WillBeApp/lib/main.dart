@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
       // 이미 로그인한 사용자가 있으면 메인 화면으로 이동
 
       final docSnapshot =
-          await _firestore.collection('Users').doc(user!.uid).get();
+          await _firestore.collection('Educator').doc(user!.uid).get();
 
       if (docSnapshot.exists) {
         _currentUserExist = true;
@@ -66,7 +66,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkAuthStatus();
-      print("object");
     });
   }
 
