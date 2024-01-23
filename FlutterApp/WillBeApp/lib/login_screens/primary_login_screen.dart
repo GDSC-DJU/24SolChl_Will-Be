@@ -35,13 +35,10 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
 
       // currentUser가 있는지 확인
       if (_user != null) {
-        final docSnapshot = await firestore
-            .collection('Users')
-            .doc('Educator')
-            .collection(_user!.uid)
-            .get();
+        final docSnapshot =
+            await firestore.collection('Users').doc(_user!.uid).get();
         //파이어베이스에 등록이 되어있는지 확인
-        if (docSnapshot.docs.isNotEmpty) {
+        if (docSnapshot.exists) {
           print("최근유저 확인, 파이어스토어 확인 완료.");
           Navigator.pushReplacement(
             context,

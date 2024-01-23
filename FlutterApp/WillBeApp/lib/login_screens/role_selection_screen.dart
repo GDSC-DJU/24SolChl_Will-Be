@@ -32,7 +32,7 @@ class RoleSelectionScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 child: const Text(
-                  "추후 추가",
+                  "교사",
                   style: TextStyle(fontSize: 20),
                 ),
                 onPressed: () {

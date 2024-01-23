@@ -43,21 +43,18 @@ class _MyAppState extends State<MyApp> {
     if (user != null) {
       // 이미 로그인한 사용자가 있으면 메인 화면으로 이동
 
-      final docSnapshot = await _firestore
-          .collection('Users')
-          .doc('Educator')
-          .collection(user!.uid)
-          .get();
+      final docSnapshot =
+          await _firestore.collection('Users').doc(user!.uid).get();
 
-      if (docSnapshot.docs.isNotEmpty) {
+      if (docSnapshot.exists) {
         _currentUserExist = true;
         print('자동로그인 완료!');
       } else {
         print('_currentUserExost = false');
       }
     } else {
-      // 로그인한 사용자가 없으면 로그인 화면을 보여줌
-      print('자동로그인 실패');
+      print('자동로그인 실패'); // 로그인한 사용자가 없으면 로그인 화면을 보여줌
+
       _currentUserExist = false;
     }
     setState(() {});

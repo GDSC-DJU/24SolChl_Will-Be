@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Submit_Profile_Screen extends StatefulWidget {
@@ -10,18 +12,21 @@ class Submit_Profile_Screen extends StatefulWidget {
 }
 
 class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
-  String role = "Error";
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setState(() {});
   }
 
   ///회원가입 메서드.
-  void signUp({required role}) {
-    ///현재는 role만..
-    String role;
+  void signUp({required String role}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('Users').doc(user.uid).set({
+        'role': role,
+      });
+    }
   }
 
   @override
@@ -32,12 +37,12 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
           child: Column(
             children: [
               Text(
-                role,
+                widget.role,
                 style: const TextStyle(color: Colors.amber),
               ),
               ElevatedButton(
                 onPressed: () {
-                  signUp(role: role);
+                  signUp(role: widget.role);
                 },
                 child: const Text("Sign Up"),
               ),
