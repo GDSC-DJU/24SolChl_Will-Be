@@ -37,11 +37,13 @@ class RoleSelectionScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Submit_Profile_Screen(
-                                role: "non",
-                              )));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Submit_Profile_Screen(
+                        role: "non",
+                      ),
+                    ),
+                  );
                 },
               ),
             ],

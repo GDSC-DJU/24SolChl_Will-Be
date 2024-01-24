@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:solution/main_page/main_page.dart';
 
 class Submit_Profile_Screen extends StatefulWidget {
   const Submit_Profile_Screen({super.key, required this.role});
@@ -29,6 +30,13 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
           .set({
         'role': role,
       });
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Main_Page(),
+        ),
+      );
     }
   }
 
