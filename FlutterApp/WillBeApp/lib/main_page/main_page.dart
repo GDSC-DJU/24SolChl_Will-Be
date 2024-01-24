@@ -41,7 +41,10 @@ class _Main_PageState extends State<Main_Page> {
           Expanded(
             child: Column(
               children: [
-                const Text("Main_Page"),
+                const Text(
+                  "Main_Page",
+                  style: TextStyle(fontSize: 20),
+                ),
                 Center(
                   child: OutlinedButton(
                     onPressed: () async {

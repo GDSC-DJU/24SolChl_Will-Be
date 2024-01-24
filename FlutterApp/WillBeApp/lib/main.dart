@@ -35,7 +35,8 @@ class _MyAppState extends State<MyApp> {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  ///자동로그인 기능
+  ///자동로그인 기능, 파이어스토어의 Educator컬렉션에 사용자의 UID로 네이밍된 문서가 있다면
+  ///_currentUserExist = true로
   Future<void> checkAuthStatus() async {
     user = _authentication.currentUser;
     _currentUserExist = false;
@@ -73,12 +74,15 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
+      //Will-Be App의 테마 정보들.
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 255, 255, 255),
-            background: Colors.black),
-        useMaterial3: true,
-      ),
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 255, 255, 255),
+              background: Colors.black),
+          useMaterial3: true,
+          textTheme: const TextTheme(
+              bodyMedium: TextStyle(fontSize: 20, color: Colors.white))),
       home: Scaffold(
           body: _currentUserExist
               ? const Main_Page()

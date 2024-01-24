@@ -9,46 +9,42 @@ class RoleSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Expanded(
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                child: const Text(
-                  "유저의 이메일",
-                  style: TextStyle(fontSize: 20),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Submit_Profile_Screen(
-                        role: "Teacher",
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  child: const Text(
+                    "교사",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Submit_Profile_Screen(
+                          role:
+                              "Educator", //교사 선택 시 필드에 Educator로 저장하기 위해 회원가입 신청 페이지로 넘겨줌.
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              ElevatedButton(
-                child: const Text(
-                  "교사",
-                  style: TextStyle(fontSize: 20),
+                    );
+                  },
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Submit_Profile_Screen(
-                        role: "non",
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                ElevatedButton(
+                  child: const Text(
+                    "추후 추가",
+                    style: TextStyle(fontSize: 20, color: Colors.grey),
+                  ),
+                  onPressed: () {
+                    ///추후 추가될 버튼의 기능이 들어갈 곳
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

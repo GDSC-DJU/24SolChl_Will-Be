@@ -1,12 +1,59 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:solution/login_screens/auto_complete.dart';
 import 'package:solution/main_page/main_page.dart';
 
 class Submit_Profile_Screen extends StatefulWidget {
-  const Submit_Profile_Screen({super.key, required this.role});
+  Submit_Profile_Screen({super.key, required this.role});
 
   final String role;
+  final List<String> schoolList = [
+    //서울지역 시작
+    '광성하늘빛학교',
+    '교남학교',
+    '누리학교',
+    '다니엘학교',
+    '동진학교',
+    '밀알학교',
+    '새롬학교',
+    '서울경운학교',
+    '서울광진학교',
+    '서울나래학교',
+    '서울농학교',
+    '서울다원학교',
+    '서울도솔학교',
+    '서울동천학교',
+    '서울맹학교',
+    '서울삼성학교',
+    '서울서진학교',
+    '서울애화학교',
+    '서울정문학교',
+    '서울정민학교',
+    '서울정애학교',
+    '서울정인학교',
+    '서울정진학교',
+    '서울효정학교',
+    '성 베드로 학교',
+    '수도사랑의학교',
+    '연세대학교재활학교',
+    '은평대영학교',
+    '주몽학교',
+    '한국구화학교',
+    '한국우진학교',
+    '한국육영학교',
+    '한빛맹학교',
+    // 서울지역 끝
+
+    '대전가원학교', //대전 시작
+    '대전맹학교',
+    '대전성세재활학교',
+    '대전원명학교',
+    '대전해든학교',
+    '대전혜광학교', //대전 끝
+  ];
+
+  List<String> grades = ['1', '2', '3', '4', '5', '6'];
 
   @override
   State<Submit_Profile_Screen> createState() => _Submit_Profile_ScreenState();
@@ -42,23 +89,60 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Expanded(
-        child: Center(
-          child: Column(
-            children: [
-              Text(
-                widget.role,
-                style: const TextStyle(color: Colors.amber),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: ListView(
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height / 10,
+                  ),
+                  Text(
+                    widget.role,
+                    style: const TextStyle(color: Colors.amber, fontSize: 40),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height / 10,
+                  ),
+                  const Text(
+                    "이름",
+                  ),
+                  Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: const TextField()),
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height / 10,
+                  ),
+                  const Text(
+                    "학교 이름",
+                  ),
+                  Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: buildAutocomplete(
+                          widget.schoolList)), //학교 입력창. 자동완성 기능
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height / 10,
+                  ),
+                  DropdownButton(
+                    items: widget.grades,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height / 10,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        signUp(role: widget.role);
+                      },
+                      child: const Text("Sign Up")),
+                ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  signUp(role: widget.role);
-                },
-                child: const Text("Sign Up"),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
