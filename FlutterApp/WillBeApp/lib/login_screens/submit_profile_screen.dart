@@ -8,6 +8,7 @@ class Submit_Profile_Screen extends StatefulWidget {
   Submit_Profile_Screen({super.key, required this.role});
 
   final String role;
+  var name = "";
   final List<String> schoolList = [
     //서울지역 시작
     '광성하늘빛학교',
@@ -54,7 +55,7 @@ class Submit_Profile_Screen extends StatefulWidget {
   ];
 
   List<String> grades = ['1', '2', '3', '4', '5', '6'];
-
+  String? grade;
   @override
   State<Submit_Profile_Screen> createState() => _Submit_Profile_ScreenState();
 }
@@ -68,7 +69,7 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
   }
 
   ///회원가입 메서드.
-  void signUp({required String role}) async {
+  void signUp({required String role, required String name}) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await FirebaseFirestore.instance
@@ -76,6 +77,7 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
           .doc(user.uid)
           .set({
         'role': role,
+        'name': name,
       });
 
       Navigator.pushReplacement(
@@ -114,7 +116,13 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                   ),
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: const TextField()),
+                      child: TextField(
+                        onChanged: (text) {
+                          widget.name = text;
+                        },
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 255, 255, 255)),
+                      )),
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
@@ -128,15 +136,37 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
+                  const Text(
+                    "학급",
+                  ),
                   DropdownButton(
-                    items: widget.grades,
+                    value: widget.grade == null
+                        ? widget.grades.first
+                        : widget.grade,
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                    onChanged: (String? value) {
+                      // This is called when the user selects an item.
+                      setState(() {
+                        widget.grade = value!;
+                      });
+                    },
+                    items: widget.grades.map((value) {
+                      return (DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      ));
+                    }).toList(),
                   ),
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        signUp(role: widget.role);
+                        signUp(
+                          role: widget.role,
+                          name: widget.name,
+                        );
                       },
                       child: const Text("Sign Up")),
                 ],
