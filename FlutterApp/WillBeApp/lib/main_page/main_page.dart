@@ -37,30 +37,25 @@ class _Main_PageState extends State<Main_Page> {
 
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Expanded(
-            child: Column(
-              children: [
-                const Text(
-                  "Main_Page",
-                  style: TextStyle(fontSize: 20),
-                ),
-                Center(
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      await signOut();
+          const Text(
+            "Main_Page",
+            style: TextStyle(fontSize: 20),
+          ),
+          Center(
+            child: OutlinedButton(
+              onPressed: () async {
+                await signOut();
 
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PrimaryLoginScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text("log out"),
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PrimaryLoginScreen(),
                   ),
-                ),
-              ],
+                );
+              },
+              child: const Text("log out"),
             ),
           ),
         ],

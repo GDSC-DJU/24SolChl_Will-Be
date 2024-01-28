@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:solution/login_screens/auto_complete.dart';
 import 'package:solution/main_page/main_page.dart';
 
@@ -120,7 +121,7 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                         onChanged: (text) {
                           widget.name = text;
                         },
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 255, 255, 255)),
                       )),
                   SizedBox(
@@ -140,9 +141,7 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                     "학급",
                   ),
                   DropdownButton(
-                    value: widget.grade == null
-                        ? widget.grades.first
-                        : widget.grade,
+                    value: widget.grade ?? widget.grades.first,
                     style: const TextStyle(
                         color: Color.fromARGB(255, 255, 255, 255)),
                     onChanged: (String? value) {

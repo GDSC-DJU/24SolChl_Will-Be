@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 
 /// 이 파일은 자동완성 기능이 있는 검색창을 지원함.
 /// schoolList에 List형이 들어오면 그 List를 자동완성에 포함시킴.
-///
 
-Widget buildAutocomplete(List<String> schoolList) {
+Widget buildAutocomplete(List<String> listObject) {
   return Autocomplete<String>(
     optionsBuilder: (TextEditingValue textEditingValue) {
       if (textEditingValue.text == '') {
         return const Iterable.empty();
       }
-      return schoolList.where((String option) {
+      return listObject.where((String option) {
         return option.contains(textEditingValue.text);
       });
     },
