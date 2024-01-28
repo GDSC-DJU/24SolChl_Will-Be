@@ -35,36 +35,34 @@ class _Main_PageState extends State<Main_Page> {
     final authentication = FirebaseAuth.instance;
     user = authentication.currentUser;
 
-    return Center(
-      child: Column(
-        children: [
-          Expanded(
-            child: Column(
-              children: [
-                const Text(
-                  "Main_Page",
-                  style: TextStyle(fontSize: 20),
-                ),
-                Center(
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      await signOut();
+    return Column(
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              const Text(
+                "Main_Page",
+                style: TextStyle(fontSize: 20),
+              ),
+              Center(
+                child: OutlinedButton(
+                  onPressed: () async {
+                    await signOut();
 
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PrimaryLoginScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text("log out"),
-                  ),
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PrimaryLoginScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text("log out"),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

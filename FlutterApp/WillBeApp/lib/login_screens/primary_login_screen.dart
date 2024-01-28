@@ -48,7 +48,7 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
           );
         } else {
           print("최근유저 확인, 파이어스토어 확인 실패");
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const RoleSelectionScreen(),

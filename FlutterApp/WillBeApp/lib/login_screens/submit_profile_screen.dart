@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:solution/login_screens/auto_complete.dart';
 import 'package:solution/main_page/main_page.dart';
 
@@ -113,8 +114,11 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                     "이름",
                   ),
                   Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: const TextField()),
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: TextField(
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
@@ -128,9 +132,8 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
-                  DropdownButton(
-                    items: widget.grades,
-                  ),
+                  //DropdownButton(items: , onChanged: (){})
+                  //),
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
