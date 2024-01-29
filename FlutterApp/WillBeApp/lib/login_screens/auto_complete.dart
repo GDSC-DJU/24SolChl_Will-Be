@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 /// 이 파일은 자동완성 기능이 있는 검색창을 지원함.
 /// schoolList에 List형이 들어오면 그 List를 자동완성에 포함시킴.
 
-Widget buildAutocomplete(List<String> listObject) {
+Widget buildAutocomplete(
+    List<String> listObject, Function(String) getSelection) {
+  String selectedValue = "";
   return Autocomplete<String>(
     optionsBuilder: (TextEditingValue textEditingValue) {
       if (textEditingValue.text == '') {
@@ -57,6 +59,8 @@ Widget buildAutocomplete(List<String> listObject) {
     },
     onSelected: (String selection) {
       print('You selected $selection');
+      selectedValue = selection;
+      getSelection(selectedValue);
     },
   );
 }

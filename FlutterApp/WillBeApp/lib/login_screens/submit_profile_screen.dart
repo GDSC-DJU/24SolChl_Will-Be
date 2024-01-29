@@ -10,6 +10,12 @@ class Submit_Profile_Screen extends StatefulWidget {
 
   final String role;
   var name = "";
+  String school = "";
+  void getSelection(String val) {
+    school = val;
+    print('Hello = $val');
+  }
+
   final List<String> schoolList = [
     //서울지역 시작
     '광성하늘빛학교',
@@ -56,7 +62,9 @@ class Submit_Profile_Screen extends StatefulWidget {
   ];
 
   List<String> grades = ['1', '2', '3', '4', '5', '6'];
-  String? grade;
+  List<String> classNums = ['1', '2', '3', '4', '5', '6', '7'];
+  String? grade = "1";
+  String? classNum = "1";
   @override
   State<Submit_Profile_Screen> createState() => _Submit_Profile_ScreenState();
 }
@@ -70,7 +78,12 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
   }
 
   ///회원가입 메서드.
-  void signUp({required String role, required String name}) async {
+  void signUp(
+      {required String role,
+      required String name,
+      required String school,
+      required String? grade,
+      required String? classNum}) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await FirebaseFirestore.instance
@@ -79,6 +92,8 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
           .set({
         'role': role,
         'name': name,
+        'school': school,
+        'class': '$grade-$classNum',
       });
 
       Navigator.pushReplacement(
@@ -132,13 +147,16 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                   ),
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: buildAutocomplete(
-                          widget.schoolList)), //학교 입력창. 자동완성 기능
+                      child: buildAutocomplete(widget.schoolList,
+                          (String selectedValue) {
+                        widget.school = selectedValue;
+                      })), //학교 입력창. 자동완성 기능
+
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
                   const Text(
-                    "학급",
+                    "학년",
                   ),
                   DropdownButton(
                     value: widget.grade ?? widget.grades.first,
@@ -160,11 +178,37 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
+                  const Text(
+                    "학급",
+                  ),
+                  DropdownButton(
+                    value: widget.classNum ?? widget.classNums.first,
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                    onChanged: (String? value) {
+                      // This is called when the user selects an item.
+                      setState(() {
+                        widget.classNum = value!;
+                      });
+                    },
+                    items: widget.classNums.map((value) {
+                      return (DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      ));
+                    }).toList(),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height / 10,
+                  ),
                   ElevatedButton(
                       onPressed: () {
                         signUp(
                           role: widget.role,
                           name: widget.name,
+                          school: widget.school,
+                          grade: widget.grade,
+                          classNum: widget.classNum,
                         );
                       },
                       child: const Text("Sign Up")),
