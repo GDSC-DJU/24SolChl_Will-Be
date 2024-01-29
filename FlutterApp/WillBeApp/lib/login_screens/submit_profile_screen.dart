@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:solution/login_screens/auto_complete.dart';
-import 'package:solution/main_page/main_page.dart';
+import 'package:solution/main_feat_screens/main_page.dart';
 
 class Submit_Profile_Screen extends StatefulWidget {
   Submit_Profile_Screen({super.key, required this.role});

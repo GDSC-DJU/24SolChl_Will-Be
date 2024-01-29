@@ -5,7 +5,7 @@ import "package:firebase_core/firebase_core.dart";
 import 'package:solution/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
-import 'package:solution/main_page/main_page.dart';
+import 'package:solution/main_feat_screens/main_page.dart';
 
 void main() async {
   //플러터에서 파이어베이스를 사용하기 위해 매인메소드 안에서 비동기방식을 사용하기 위해 사용하는 함수
@@ -83,10 +83,8 @@ class _MyAppState extends State<MyApp> {
           useMaterial3: true,
           textTheme: const TextTheme(
               bodyMedium: TextStyle(fontSize: 20, color: Colors.white))),
-      home: Scaffold(
-          body: _currentUserExist
-              ? const Main_Page()
-              : const PrimaryLoginScreen()),
+      home:
+          (_currentUserExist ? const Main_Page() : const PrimaryLoginScreen()),
     );
   }
 }
