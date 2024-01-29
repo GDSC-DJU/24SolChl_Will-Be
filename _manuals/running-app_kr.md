@@ -8,37 +8,37 @@ https://firebase.google.com/docs/cli?hl=ko#install-cli-mac-linux
 
 과정
 1. 터미널에 아래의 명령어 입력
-```
+	```bash
 	sudo npm install -g firebase-tools
-```
+	```
 
 2. 터미널에 입력해 파이어베이스 로그인, **Will-be계정으로 로그인 해야함.**
-```
+	```bash
 	firebase login
-```
+	```
 
 3. 터미널에 입력해 파이어베이스에 Will-be 프로젝트가 존재하는지 확인 (이미 생성되어있기에 존재해야함)
-```
+	```bash
 	firebase projects:list
-```
+	```
 
 4. Flutter 앱의 디렉터리 내(24SolChl_Will-Be/FlutterApp/WillBeApp)에서 아래의 명령어로 FlutterFire 설치
-```
+	```bash
 	dart pub global activate flutterfire_cli
-```
+	```
 
 5. 아래의 명령어로 app을 firebase에 연결. -> 선택할 때 android, ios 빼고 선택 풀기
-```
+	```bash
 	flutterfire configure
-```
+	```
 
 
 ### 2. Firebase SHA키 설정
 
 1. 터미널에 아래의 명령어 입력
-```
- keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
-```
+	```bash
+	 keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
+	```
 
 2. SHA-1 또는 SHA-256 키를 복사.
 3. 파이어베이스 웹사이트에 접속해 Will-be 계정으로 로그인한다.
