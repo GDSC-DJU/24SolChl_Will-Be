@@ -5,7 +5,7 @@ import "package:firebase_core/firebase_core.dart";
 import 'package:solution/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
-import 'package:solution/main_feat_screens/main_page.dart';
+import 'package:solution/main_feat.dart/main_page.dart';
 
 void main() async {
   //플러터에서 파이어베이스를 사용하기 위해 매인메소드 안에서 비동기방식을 사용하기 위해 사용하는 함수

@@ -5,7 +5,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
-import 'package:solution/main_feat_screens/behavior_record_screen.dart';
+import 'package:solution/main_feat.dart/behavior_record_screen.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});
