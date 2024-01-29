@@ -9,7 +9,7 @@ https://firebase.google.com/docs/cli?hl=ko#install-cli-mac-linux
 과정
 1. 터미널에 아래의 명령어 입력
 ```
-	npm install -g firebase-tools
+	sudo npm install -g firebase-tools
 ```
 
 2. 터미널에 입력해 파이어베이스 로그인, **Will-be계정으로 로그인 해야함.**
