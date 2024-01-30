@@ -3,8 +3,7 @@
 
 ### 1. Firebase 설치 및 연동
 
-[파이어베이스 공식문서](https://firebase.google.com/docs/cli?hl=ko#install-cli-mac-linux)
-위의 과정을 풀어씀.
+[파이어베이스 공식문서](https://firebase.google.com/docs/cli?hl=ko#install-cli-mac-linux)의 과정을 풀어씀.
 
 과정
 1. 터미널에 아래의 명령어 입력
