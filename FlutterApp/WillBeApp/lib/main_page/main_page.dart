@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
+import 'package:solution/sudent_profile_page/student_profile.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});
@@ -190,6 +191,12 @@ class _Main_PageState extends State<Main_Page> {
         setState(() {
           tappedCardOpacityValue[name] = 1.0;
         });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StudentProfile(data: studentData),
+          ),
+        );
       },
       child: Card(
         color: Colors.blue.withOpacity(tappedCardOpacityValue[name] ?? 1.0),
