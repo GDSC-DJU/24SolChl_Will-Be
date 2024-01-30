@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
+import 'package:solution/sudent_profile_page/student_profile.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});
@@ -147,7 +148,7 @@ class _Main_PageState extends State<Main_Page> {
         rowIndex == (studentDataList.length / 2).floor()) {
       // 마지막 Card를 왼쪽 정렬
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0), 
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -160,8 +161,7 @@ class _Main_PageState extends State<Main_Page> {
     } else {
       // 짝수 개의 아이템인 경우나 홀수 개의 아이템인데 마지막 행이 아닌 경우
       return Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 20.0, vertical: 5.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: rowData.map((item) {
@@ -188,9 +188,18 @@ class _Main_PageState extends State<Main_Page> {
       onTapUp: (_) {
         // 탭이 해제되었을 때 해당 Card의 투명도를 초기값으로 복원
         print('onTapUp: $name');
+
         setState(() {
           tappedCardOpacityValue[name] = 1.0;
         });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StudentProfile(
+              data: studentData,
+            ),
+          ),
+        );
       },
       child: Card(
         color: Colors.blue.withOpacity(tappedCardOpacityValue[name] ?? 1.0),
