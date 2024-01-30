@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
-import 'package:solution/sudent_profile_page/student_profile.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});
@@ -67,7 +66,7 @@ class _Main_PageState extends State<Main_Page> {
     );
   }
 
-  bool isLoading = true;
+  bool isLoading = true; // 새로운 변수 추가
 
   Future<void> getStudentData(List studentList) async {
     if (!isLoading) {
@@ -188,18 +187,9 @@ class _Main_PageState extends State<Main_Page> {
       onTapUp: (_) {
         // 탭이 해제되었을 때 해당 Card의 투명도를 초기값으로 복원
         print('onTapUp: $name');
-
         setState(() {
           tappedCardOpacityValue[name] = 1.0;
         });
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => StudentProfile(
-              data: studentData,
-            ),
-          ),
-        );
       },
       child: Card(
         color: Colors.blue.withOpacity(tappedCardOpacityValue[name] ?? 1.0),
