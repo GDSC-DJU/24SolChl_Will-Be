@@ -149,7 +149,7 @@ class _Main_PageState extends State<Main_Page> {
         rowIndex == (studentDataList.length / 2).floor()) {
       // 마지막 Card를 왼쪽 정렬
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0), 
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -162,8 +162,7 @@ class _Main_PageState extends State<Main_Page> {
     } else {
       // 짝수 개의 아이템인 경우나 홀수 개의 아이템인데 마지막 행이 아닌 경우
       return Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 20.0, vertical: 5.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: rowData.map((item) {
@@ -193,6 +192,14 @@ class _Main_PageState extends State<Main_Page> {
         setState(() {
           tappedCardOpacityValue[name] = 1.0;
         });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StudentProfile(
+              data: studentData,
+            ),
+          ),
+        );
       },
       child: Card(
         color: Colors.blue.withOpacity(tappedCardOpacityValue[name] ?? 1.0),
