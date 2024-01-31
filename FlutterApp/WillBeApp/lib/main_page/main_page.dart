@@ -2,6 +2,7 @@
 ///로그아웃 버튼을 클릭 시 자동로그인이 풀리며 사용자의 계정 정보는 앱에서 지워지게 됩니다.
 ///따라서 다시 로그인을 해야합니다.
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
@@ -67,7 +68,7 @@ class _Main_PageState extends State<Main_Page> {
     );
   }
 
-  bool isLoading = true; // 새로운 변수 추가
+  bool isLoading = true;
 
   Future<void> getStudentData(List studentList) async {
     if (!isLoading) {
@@ -148,7 +149,7 @@ class _Main_PageState extends State<Main_Page> {
         rowIndex == (studentDataList.length / 2).floor()) {
       // 마지막 Card를 왼쪽 정렬
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0), 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -161,7 +162,8 @@ class _Main_PageState extends State<Main_Page> {
     } else {
       // 짝수 개의 아이템인 경우나 홀수 개의 아이템인데 마지막 행이 아닌 경우
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+        padding: const EdgeInsets.symmetric(
+            horizontal: 20.0, vertical: 5.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: rowData.map((item) {
@@ -191,12 +193,6 @@ class _Main_PageState extends State<Main_Page> {
         setState(() {
           tappedCardOpacityValue[name] = 1.0;
         });
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => StudentProfile(data: studentData),
-          ),
-        );
       },
       child: Card(
         color: Colors.blue.withOpacity(tappedCardOpacityValue[name] ?? 1.0),
