@@ -38,15 +38,21 @@ class _Main_PageState extends State<Main_Page> {
       print('sign out failed');
       print(e.toString());
     }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PrimaryLoginScreen(),
+      ),
+    );
   }
 
   // Function : 로그인 성공 시 현재 접속중인 교사 data 가져오기
   Future<void> getEducator(String? userUid) async {
     // 현재 접속 UID 문서로 갖는 객체를 Educator collection에서 가져오기
-    DocumentReference _educatorCollectionRef =
-        await FirebaseFirestore.instance.collection('Educator').doc(uid);
+    DocumentReference educatorCollectionRef =
+        FirebaseFirestore.instance.collection('Educator').doc(uid);
     // 찾은 객체의 데이터 get
-    DocumentSnapshot documentSnapshot = await _educatorCollectionRef.get();
+    DocumentSnapshot documentSnapshot = await educatorCollectionRef.get();
     // 변수에 할당
     userData = documentSnapshot.data();
     // 디버깅 print
@@ -106,12 +112,6 @@ class _Main_PageState extends State<Main_Page> {
             child: OutlinedButton(
               onPressed: () async {
                 await signOut();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PrimaryLoginScreen(),
-                  ),
-                );
               },
               child: const Text("log out"),
             ),
@@ -123,7 +123,7 @@ class _Main_PageState extends State<Main_Page> {
 
   Widget buildCardListView() {
     if (studentDataList.isEmpty) {
-      return CircularProgressIndicator();
+      return const CircularProgressIndicator();
     }
 
     return Expanded(
@@ -212,8 +212,8 @@ class _Main_PageState extends State<Main_Page> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '$name',
-                  style: TextStyle(color: Colors.white),
+                  name,
+                  style: const TextStyle(color: Colors.white),
                 ),
               ],
             ),

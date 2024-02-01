@@ -136,14 +136,14 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                         onChanged: (text) {
                           widget.name = text;
                         },
-                        style: const TextStyle(
-                            color: Color.fromARGB(255, 255, 255, 255)),
+                        style: Theme.of(context).textTheme.bodyMedium,
                       )),
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
-                  const Text(
+                  Text(
                     "학교 이름",
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -155,13 +155,13 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
-                  const Text(
+                  Text(
                     "학년",
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   DropdownButton(
                     value: widget.grade ?? widget.grades.first,
-                    style: const TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255)),
+                    style: Theme.of(context).textTheme.bodyMedium,
                     onChanged: (String? value) {
                       // This is called when the user selects an item.
                       setState(() {
@@ -171,20 +171,23 @@ class _Submit_Profile_ScreenState extends State<Submit_Profile_Screen> {
                     items: widget.grades.map((value) {
                       return (DropdownMenuItem(
                         value: value,
-                        child: Text(value),
+                        child: Text(
+                          value,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ));
                     }).toList(),
                   ),
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height / 10,
                   ),
-                  const Text(
+                  Text(
                     "학급",
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   DropdownButton(
                     value: widget.classNum ?? widget.classNums.first,
-                    style: const TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255)),
+                    style: Theme.of(context).textTheme.bodyMedium,
                     onChanged: (String? value) {
                       // This is called when the user selects an item.
                       setState(() {

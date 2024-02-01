@@ -77,16 +77,20 @@ class _MyAppState extends State<MyApp> {
       //Will-Be App의 테마 정보들.
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 255, 255, 255),
-            background: const Color.fromARGB(255, 255, 255, 255),
-            primary: const Color.fromARGB(255, 102, 108, 255)),
+          seedColor: const Color.fromARGB(255, 255, 255, 255),
+          background: const Color.fromARGB(255, 255, 255, 255),
+          primary: const Color.fromARGB(255, 102, 108, 255),
+        ),
         useMaterial3: true,
         textTheme: const TextTheme(
-          bodyMedium: TextStyle(
-            fontSize: 20,
-            color: Color.fromARGB(255, 0, 0, 0),
-          ),
-        ),
+            bodyMedium: TextStyle(
+              fontSize: 20,
+              color: Color.fromARGB(255, 0, 0, 0),
+            ),
+            headlineLarge: TextStyle(
+                fontSize: 70,
+                color: Color.fromARGB(255, 0, 0, 0),
+                fontWeight: FontWeight.bold)),
       ),
       home:
           (_currentUserExist ? const Main_Page() : const PrimaryLoginScreen()),

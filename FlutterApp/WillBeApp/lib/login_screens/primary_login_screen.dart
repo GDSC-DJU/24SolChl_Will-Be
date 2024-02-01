@@ -86,40 +86,64 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
       ),
       child: Column(
         children: [
-          Text(
-            "GDSC Daejeon Univ\nSolution Challenge!",
-            style: Theme.of(context).textTheme.bodyMedium,
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/icons/willbe.png',
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Text("Will Be",
+                    style: Theme.of(context).textTheme.headlineLarge)
+              ],
+            ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height / 30,
+            height: MediaQuery.of(context).size.height / 20,
           ),
           Center(
               child: SizedBox(
-            height: 40,
-            width: MediaQuery.of(context).size.width / 2,
-            child: Row(
-              children: [
-                OutlinedButton.icon(
-                  onPressed: _handleGoogleSignIn,
-                  icon: Image.asset(
-                    'assets/icons/google.png',
-                    fit: BoxFit.contain,
-                  ),
-                  label: const Text(
-                    "Log in with Google",
-                    style: TextStyle(color: Colors.white, fontSize: 10),
-                  ),
-                  style: OutlinedButton.styleFrom(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width / 1.4,
+                  child: OutlinedButton(
+                    onPressed: _handleGoogleSignIn,
+                    style: OutlinedButton.styleFrom(
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(7),
                         ),
                       ),
-                      backgroundColor: Theme.of(context).colorScheme.primary),
-                ),
-              ],
-            ),
-          ))
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: Image.asset(
+                            'assets/icons/google.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Container(
+                          child: const Text(
+                            "Log in with Google",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )))
         ],
       ),
     );
