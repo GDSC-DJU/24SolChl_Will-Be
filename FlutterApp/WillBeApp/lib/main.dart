@@ -74,15 +74,20 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       //Will-Be App의 테마 정보들.
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 255, 255, 255),
-              background: Colors.black),
-          useMaterial3: true,
-          textTheme: const TextTheme(
-              bodyMedium: TextStyle(fontSize: 20, color: Colors.white))),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 255, 255, 255),
+            background: const Color.fromARGB(255, 255, 255, 255),
+            primary: const Color.fromARGB(255, 102, 108, 255)),
+        useMaterial3: true,
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(
+            fontSize: 20,
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+        ),
+      ),
       home:
           (_currentUserExist ? const Main_Page() : const PrimaryLoginScreen()),
     );

@@ -80,25 +80,46 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(
-        top: MediaQuery.sizeOf(context).height / 10,
+      color: Theme.of(context).colorScheme.background,
+      padding: EdgeInsets.only(
+        top: MediaQuery.sizeOf(context).height / 3,
       ),
       child: Column(
         children: [
-          const Text(
+          Text(
             "GDSC Daejeon Univ\nSolution Challenge!",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 30,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
-          Expanded(
-            child: Center(
-              child: OutlinedButton(
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 30,
+          ),
+          Center(
+              child: SizedBox(
+            height: 40,
+            width: MediaQuery.of(context).size.width / 2,
+            child: Row(
+              children: [
+                OutlinedButton.icon(
                   onPressed: _handleGoogleSignIn,
-                  child: const Text("Sign in with google")),
+                  icon: Image.asset(
+                    'assets/icons/google.png',
+                    fit: BoxFit.contain,
+                  ),
+                  label: const Text(
+                    "Log in with Google",
+                    style: TextStyle(color: Colors.white, fontSize: 10),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(7),
+                        ),
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.primary),
+                ),
+              ],
             ),
-          )
+          ))
         ],
       ),
     );
