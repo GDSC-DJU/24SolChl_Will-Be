@@ -6,6 +6,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
+import 'package:solution/main_feat_screens/behavior_manage.dart';
+import 'package:solution/main_feat_screens/behavior_record_screen.dart';
+import 'package:solution/main_feat_screens/dashboard.dart';
+import 'package:solution/main_feat_screens/home_screen.dart';
 import 'package:solution/sudent_profile_page/student_profile.dart';
 
 class Main_Page extends StatefulWidget {
@@ -19,6 +23,36 @@ class _Main_PageState extends State<Main_Page> {
   ///Instance for firebase auth
   final _authentication = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
+
+  ///하단 네비게이션 바를 위한 인데스
+  int _selected_screen = 0;
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selected_screen = index;
+    });
+  }
+
+  static const bottomBarItems = <BottomNavigationBarItem>[
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      label: '홈',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.question_mark),
+      label: '행동기록',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.edit_document),
+      label: '행동관리',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.pie_chart),
+      label: '대시보드',
+    ),
+  ];
 
   ///User instance for logged in user
   User? user;
@@ -98,133 +132,35 @@ class _Main_PageState extends State<Main_Page> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> widgetOptions = <Widget>[
+      HomeScreen(studentDataList: studentDataList),
+      const BehaviorRecordScreen(),
+      const BehavirManageScreen(),
+      const DashBoardScreen(),
+    ];
+
     final authentication = FirebaseAuth.instance;
     user = authentication.currentUser;
     uid = user?.uid; //현재 접속한 유저의 UID 할당
     getEducator(uid);
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          buildCardListView(),
-          Center(
-            child: OutlinedButton(
-              onPressed: () async {
-                await signOut();
-              },
-              child: const Text("log out"),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildCardListView() {
-    if (studentDataList.isEmpty) {
-      return const CircularProgressIndicator();
-    }
-
-    return Expanded(
-      child: ListView.builder(
-        itemCount: (studentDataList.length / 2).ceil(),
-        itemBuilder: (BuildContext context, int index) {
-          return buildRowOfCards(index);
-        },
-      ),
-    );
-  }
-
-  Widget buildRowOfCards(int rowIndex) {
-    int startIndex = rowIndex * 2;
-    int endIndex = (rowIndex + 1) * 2;
-    endIndex =
-        endIndex > studentDataList.length ? studentDataList.length : endIndex;
-
-    List<dynamic> rowData = studentDataList.sublist(startIndex, endIndex);
-
-    // 데이터 수가 홀수이고 현재 행이 마지막 행인 경우
-    if (rowData.length % 2 == 1 &&
-        rowIndex == (studentDataList.length / 2).floor()) {
-      // 마지막 Card를 왼쪽 정렬
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            buildCard(rowData[0]),
-            // 두 번째 아이템은 없으므로 비워둠
-            Container(),
+            widgetOptions.elementAt(_selected_screen),
           ],
         ),
-      );
-    } else {
-      // 짝수 개의 아이템인 경우나 홀수 개의 아이템인데 마지막 행이 아닌 경우
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: rowData.map((item) {
-            return buildCard(item);
-          }).toList(),
-        ),
-      );
-    }
-  }
-
-  @override
-  Widget buildCard(Object data) {
-    // Object에서 필요한 필드(이름) 추출
-    Map<String, dynamic> studentData = (data as Map<String, dynamic>);
-    String name = studentData['name'];
-    return GestureDetector(
-      onTapDown: (_) {
-        // 탭이 발생했을 때 해당 Card의 투명도를 낮추기
-        print('onTapDown: $name');
-        setState(() {
-          tappedCardOpacityValue[name] = 0.3;
-        });
-      },
-      onTapUp: (_) {
-        // 탭이 해제되었을 때 해당 Card의 투명도를 초기값으로 복원
-        print('onTapUp: $name');
-        setState(() {
-          tappedCardOpacityValue[name] = 1.0;
-        });
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => StudentProfile(
-              data: studentData,
-            ),
-          ),
-        );
-      },
-      child: Card(
-        color: Colors.blue.withOpacity(tappedCardOpacityValue[name] ?? 1.0),
-        child: SizedBox(
-          width: 150.0,
-          height: 150.0,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: bottomBarItems,
+        currentIndex: _selected_screen,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        onTap: _onItemTapped,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
       ),
     );
   }
-
-  // Map을 사용하여 각 Card에 대한 투명도 값을 저장
-  Map<String, double> tappedCardOpacityValue = {};
-
-  double opacityValue = 1.0; // 초기 투명도 값
 }

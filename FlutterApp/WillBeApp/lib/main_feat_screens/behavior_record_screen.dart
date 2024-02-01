@@ -10,6 +10,6 @@ class BehaviorRecordScreen extends StatefulWidget {
 class _BehaviorRecordScreenState extends State<BehaviorRecordScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Expanded(child: Container(color: Colors.blue));
   }
 }
