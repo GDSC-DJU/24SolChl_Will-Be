@@ -41,7 +41,7 @@ class _Main_PageState extends State<Main_Page> {
       label: '홈',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.question_mark),
+      icon: Icon(Icons.edit),
       label: '행동기록',
     ),
     BottomNavigationBarItem(
@@ -135,7 +135,9 @@ class _Main_PageState extends State<Main_Page> {
     List<Widget> widgetOptions = <Widget>[
       HomeScreen(studentDataList: studentDataList),
       const BehaviorRecordScreen(),
-      const BehavirManageScreen(),
+      BehavirManageScreen(
+        studentDataList: studentDataList,
+      ),
       const DashBoardScreen(),
     ];
 

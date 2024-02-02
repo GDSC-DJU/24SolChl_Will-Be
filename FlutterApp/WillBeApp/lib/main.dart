@@ -90,7 +90,11 @@ class _MyAppState extends State<MyApp> {
             headlineLarge: TextStyle(
                 fontSize: 70,
                 color: Color.fromARGB(255, 0, 0, 0),
-                fontWeight: FontWeight.bold)),
+                fontWeight: FontWeight.bold),
+            headlineMedium: TextStyle(
+                fontSize: 30,
+                color: Color.fromARGB(255, 0, 0, 0),
+                fontWeight: FontWeight.w600)),
       ),
       home:
           (_currentUserExist ? const Main_Page() : const PrimaryLoginScreen()),
