@@ -103,11 +103,16 @@ class _BehavirManageScreenState extends State<BehavirManageScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: Text(
-                      behavior,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                  SizedBox(
+                    width:
+                        MediaQuery.of(context).size.width - buttonsSize - 230,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        behavior,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                   Text(
