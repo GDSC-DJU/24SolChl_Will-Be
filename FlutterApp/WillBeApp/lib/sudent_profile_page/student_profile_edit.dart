@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:solution/sudent_profile_page/student_profile_tab_proivder.dart';
 import 'package:provider/provider.dart';
-import 'package:solution/sudent_profile_page/student_profile_edit.dart';
 
-class StudentProfile extends StatelessWidget {
-  const StudentProfile({super.key, required this.data});
-  final Object data;
-
+class StudentProfileEdit extends StatelessWidget {
+  const StudentProfileEdit({super.key, required this.data});
+  final dynamic data;
+  
   @override
   Widget build(BuildContext context) {
     dynamic temp = data;
@@ -22,14 +21,8 @@ class StudentProfile extends StatelessWidget {
                 icon: const Icon(Icons.edit),
                 tooltip: '아이 프로필 편집',
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => StudentProfileEdit(
-                        data: temp,
-                      ),
-                    ),
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('아이 프로필 편집 이동버튼')));
                 },
               ),
             ]),

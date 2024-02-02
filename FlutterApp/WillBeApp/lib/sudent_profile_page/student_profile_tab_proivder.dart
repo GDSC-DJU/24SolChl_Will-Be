@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TabViewPageViewProvider extends ChangeNotifier {
+  //pageView 
   PageController pageController = PageController(initialPage: 0);
   double _sizeWidth = 0.0;
   int tabIndex = 0;
