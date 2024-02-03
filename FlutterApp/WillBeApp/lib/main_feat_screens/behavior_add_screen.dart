@@ -11,6 +11,14 @@ class BehaviorAddScreen extends StatefulWidget {
 class _BehaviorAddScreenState extends State<BehaviorAddScreen> {
   List<String> studentsName = [];
   String nameForDropdown = "";
+
+  String? behaviorName;
+  String? behaviorType;
+  String? behavior;
+  String? measurementUnit;
+  String? estimationFunction;
+  String? particulars;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -27,9 +35,12 @@ class _BehaviorAddScreenState extends State<BehaviorAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Expanded(
-        child: SingleChildScrollView(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.all(30),
             width: MediaQuery.of(context).size.width - 20,
@@ -43,7 +54,7 @@ class _BehaviorAddScreenState extends State<BehaviorAddScreen> {
                     ),
                     Text(
                       '행동 추가',
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ],
                 ),
@@ -69,7 +80,79 @@ class _BehaviorAddScreenState extends State<BehaviorAddScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                const Text("data")
+                Text(
+                  "행동명",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                TextFormField(
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  onChanged: (value) {
+                    behaviorName = value;
+                  },
+                ),
+                Text(
+                  "행동유형",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                TextFormField(
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  onChanged: (value) {
+                    behaviorType = value;
+                  },
+                ),
+                Text(
+                  "측정단위",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                TextFormField(
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  onChanged: (value) {
+                    measurementUnit = value;
+                  },
+                ),
+                Text(
+                  "추정기능",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                TextFormField(
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  onChanged: (value) {
+                    estimationFunction = value;
+                  },
+                ),
+                Text(
+                  "특이사항",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                TextFormField(
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  onChanged: (value) {
+                    particulars = value;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                        onPressed: () {
+                          print("행동 추가 버튼 동작 시작");
+                          print(nameForDropdown);
+
+                          print(behaviorName);
+                          print(behaviorType);
+                          print(measurementUnit);
+                          print(estimationFunction);
+                          print(particulars);
+                        },
+                        child: Text(
+                          "행동 추가",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        )),
+                  ],
+                )
               ],
             ),
           ),
