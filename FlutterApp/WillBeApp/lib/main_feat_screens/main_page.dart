@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
 import 'package:solution/main_feat_screens/behavior_manage.dart';
 import 'package:solution/main_feat_screens/behavior_record_screen.dart';
@@ -23,6 +24,7 @@ class _Main_PageState extends State<Main_Page> {
   ///Instance for firebase auth
   final _authentication = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
+  //내부 저장소 사용을 위한 SharedPreferences 객체
 
   ///하단 네비게이션 바를 위한 인데스
   int _selected_screen = 0;
@@ -128,6 +130,12 @@ class _Main_PageState extends State<Main_Page> {
 
     isLoading = false; // 데이터 로딩이 완료되었음을 표시
     setState(() {}); // 화면을 다시 그리도록 강제 업데이트
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override

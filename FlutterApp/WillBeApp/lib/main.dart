@@ -83,10 +83,14 @@ class _MyAppState extends State<MyApp> {
         ),
         useMaterial3: true,
         textTheme: const TextTheme(
+            bodyLarge: TextStyle(
+                fontSize: 30,
+                color: Color.fromARGB(255, 0, 0, 0),
+                fontWeight: FontWeight.w600),
             bodyMedium: TextStyle(
-              fontSize: 20,
-              color: Color.fromARGB(255, 0, 0, 0),
-            ),
+                fontSize: 20,
+                color: Color.fromARGB(255, 0, 0, 0),
+                fontWeight: FontWeight.w600),
             bodySmall: TextStyle(
               fontSize: 15,
               color: Color.fromARGB(255, 0, 0, 0),
