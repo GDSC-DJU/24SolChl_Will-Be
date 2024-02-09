@@ -10,7 +10,7 @@ import 'package:solution/main_feat_screens/behavior_manage.dart';
 import 'package:solution/main_feat_screens/behavior_record_screen.dart';
 import 'package:solution/main_feat_screens/dashboard.dart';
 import 'package:solution/main_feat_screens/home_screen.dart';
-import 'package:solution/sudent_profile_page/student_profile.dart';
+import 'package:solution/student_profile_page/student_profile.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});

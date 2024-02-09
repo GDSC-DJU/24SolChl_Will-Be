@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:solution/sudent_profile_page/student_profile_tab_proivder.dart';
+import 'package:solution/student_profile_page/student_profile_tab_proivder.dart';
 import 'package:provider/provider.dart';
 
 class StudentProfileEdit extends StatefulWidget {

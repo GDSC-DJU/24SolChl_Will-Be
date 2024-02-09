@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:solution/sudent_profile_page/student_profile.dart';
+import 'package:solution/student_profile_page/student_profile.dart';
 
 class HomeScreen extends StatefulWidget {
   List<dynamic> studentDataList;
