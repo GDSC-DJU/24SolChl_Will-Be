@@ -55,11 +55,11 @@ class _BehavirManageScreenState extends State<BehavirManageScreen> {
         // 각 행동에 대해 Text 위젯을 생성하여 behaviorWidgetList에 추가
         for (var behavior in behaviors) {
           behaviorWidgetList.add(buildBehaviorCard(
-              key: Key("$name:$behavior"),
+              //여기서 키값을 index처럼 0~n 번까지의 숫자로 넘겨줘야 하나?
               name: name,
               behavior: behavior.toString(),
               type: "횟수")); //현재 행동 유형은 횟수로 통일 됨 추후 개선 요망
-          print("여기서 키값을 프린트 하겟음.");
+          print("여기서 키값을 프린트 함.");
           print('name: $name, behavior: $behavior, key: $name$behavior');
         }
       }
@@ -114,7 +114,7 @@ class _BehavirManageScreenState extends State<BehavirManageScreen> {
 
   ///학생의 이름, 행동, 행동유형을 기반으로 행동 카드를 생성해주는 기능
   Widget buildBehaviorCard(
-      {required Key key,
+      {Key? key,
       required String name,
       required String behavior,
       required String type}) {
