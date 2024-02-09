@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
 import 'package:solution/main_feat_screens/behavior_manage.dart';
 import 'package:solution/main_feat_screens/behavior_record_screen.dart';
@@ -23,6 +24,7 @@ class _Main_PageState extends State<Main_Page> {
   ///Instance for firebase auth
   final _authentication = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
+  //내부 저장소 사용을 위한 SharedPreferences 객체
 
   ///하단 네비게이션 바를 위한 인데스
   int _selected_screen = 0;
@@ -41,7 +43,7 @@ class _Main_PageState extends State<Main_Page> {
       label: '홈',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.question_mark),
+      icon: Icon(Icons.edit),
       label: '행동기록',
     ),
     BottomNavigationBarItem(
@@ -131,11 +133,19 @@ class _Main_PageState extends State<Main_Page> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<Widget> widgetOptions = <Widget>[
       HomeScreen(studentDataList: studentDataList),
       const BehaviorRecordScreen(),
-      const BehavirManageScreen(),
+      BehavirManageScreen(
+        studentDataList: studentDataList,
+      ),
       const DashBoardScreen(),
     ];
 

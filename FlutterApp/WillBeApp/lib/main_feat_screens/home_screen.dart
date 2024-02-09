@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (widget.studentDataList.isEmpty) {
-      return const CircularProgressIndicator();
+      return const Center(child: CircularProgressIndicator());
     }
 
     return Expanded(
