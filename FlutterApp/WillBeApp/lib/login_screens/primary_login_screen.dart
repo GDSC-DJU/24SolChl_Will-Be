@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/login_screens/role_selection_screen.dart';
 import 'package:solution/main_feat_screens/main_page.dart';
+import 'package:solution/tutorial/tutorial_student_create.dart';
 
 class PrimaryLoginScreen extends StatefulWidget {
   const PrimaryLoginScreen({super.key});
@@ -107,43 +108,83 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
             height: MediaQuery.of(context).size.height / 20,
           ),
           Center(
-              child: SizedBox(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width / 1.4,
-                  child: OutlinedButton(
-                    onPressed: _handleGoogleSignIn,
-                    style: OutlinedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(7),
+            child: SizedBox(
+              height: 50,
+              width: MediaQuery.of(context).size.width / 1.4,
+              child: OutlinedButton(
+                onPressed: _handleGoogleSignIn,
+                style: OutlinedButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(7),
+                    ),
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Image.asset(
+                        'assets/icons/google.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    Container(
+                      child: const Text(
+                        "Log in with Google",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 20,
                         ),
                       ),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          child: Image.asset(
-                            'assets/icons/google.png',
-                            fit: BoxFit.contain,
-                          ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Spacer(),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 40,
+              ),
+              child: TextButton(
+                child: DefaultTextStyle(
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.black,
+                          width: 1.0, // Underline thickness
                         ),
-                        Container(
-                          child: const Text(
-                            "Log in with Google",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  )))
+                    child: const Text(
+                      '로그인 건너뛰기',
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Tutorial_Student_Create(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );

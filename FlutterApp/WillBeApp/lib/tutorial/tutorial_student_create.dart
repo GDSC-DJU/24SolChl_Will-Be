@@ -5,9 +5,9 @@ import 'package:solution/tutorial/tutorial_behavior_select.dart';
 class Tutorial_Student_Create extends StatefulWidget {
   Tutorial_Student_Create({Key? key});
 
-  var name = "";
+  String? name = "";
   String school = "";
-  int? schoolValue; // Nullable로 변경
+  int? schoolValue;
 
   @override
   State<Tutorial_Student_Create> createState() =>
@@ -19,12 +19,31 @@ class _Tutorial_Student_Create_State extends State<Tutorial_Student_Create> {
   Map<String, TextEditingController> textControllers = {
     "name": TextEditingController(),
   };
+  List schoolList = ["유치원", "초등학교", "중학교", "고등학교"];
+
+  void _submitData() {
+    if (widget.name == "" || widget.schoolValue == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('모든 항목을 입력해주세요!')));
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Tutorial_Behavior_Select(
+          name: widget.name,
+          schoolValue: widget.schoolValue,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    widget.name = textControllers["name"]?.text;
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
         appBar: AppBar(),
@@ -155,12 +174,8 @@ class _Tutorial_Student_Create_State extends State<Tutorial_Student_Create> {
               Spacer(),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Tutorial_Behavior_Select(),
-                    ),
-                  );
+                  print([widget.name, widget.schoolValue]);
+                  _submitData();
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
