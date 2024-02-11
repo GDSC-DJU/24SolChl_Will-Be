@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solution/main_feat_screens/behavior_add_screen.dart';
 import 'package:solution/main_feat_screens/behavior_edit_screen.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
+import 'package:intl/intl.dart';
 
 class BehavirRecordScreen extends StatefulWidget {
   BehavirRecordScreen({super.key, required this.studentDataList});
@@ -71,6 +72,11 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
     return valuesList;
   }
 
+  String getCurrentDate() {
+    DateTime now = DateTime.now();
+    return DateFormat('yyyy년 MM월 dd일').format(now);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -99,38 +105,42 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
     }
     print(behaviorWidgetList.toString());
     return Expanded(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            height: MediaQuery.of(context).size.height / 6,
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '행동 기록',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height / 4,
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: behaviorWidgetList,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    '행동 기록',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                ],
               ),
             ),
-          )
-        ],
+            Row(
+              children: [
+                Text(
+                  getCurrentDate(),
+                ),
+                IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.expand_more_sharp))
+              ],
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: behaviorWidgetList,
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -146,10 +156,8 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
       return Container();
     }
     return Container(
-      padding: const EdgeInsets.all(14),
-      margin: const EdgeInsets.only(top: 10),
       height: 130, //카드들의 높이는 하드코딩으로 정해주는 것이 가로/세로에 이득이다.
-      width: MediaQuery.of(context).size.width - 10,
+      width: MediaQuery.of(context).size.width - 100,
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(
             Radius.circular(20),
@@ -178,7 +186,7 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - buttonsSize - 230,
+                  width: 100,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.topLeft,
@@ -207,21 +215,6 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                 )
               ],
             ),
-          ],
-        ),
-        Row(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.edit,
-                size: buttonsSize,
-              ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.menu, size: buttonsSize),
-            )
           ],
         ),
       ]),
