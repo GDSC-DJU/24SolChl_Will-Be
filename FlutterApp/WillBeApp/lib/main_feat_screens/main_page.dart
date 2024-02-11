@@ -48,7 +48,7 @@ class _Main_PageState extends State<Main_Page> {
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.edit_document),
-      label: '행동관리',
+      label: '행동기록',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.pie_chart),
