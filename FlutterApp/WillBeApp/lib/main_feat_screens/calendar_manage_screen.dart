@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class BehaviorRecordScreen extends StatefulWidget {
-  const BehaviorRecordScreen({super.key});
+class CalendarManageScreen extends StatefulWidget {
+  const CalendarManageScreen({super.key});
 
   @override
-  State<BehaviorRecordScreen> createState() => _BehaviorRecordScreenState();
+  State<CalendarManageScreen> createState() => _CalendarManageScreenState();
 }
 
-class _BehaviorRecordScreenState extends State<BehaviorRecordScreen> {
+class _CalendarManageScreenState extends State<CalendarManageScreen> {
   @override
   Widget build(BuildContext context) {
     return Expanded(

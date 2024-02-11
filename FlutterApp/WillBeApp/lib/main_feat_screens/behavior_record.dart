@@ -6,17 +6,17 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solution/main_feat_screens/behavior_add_screen.dart';
 import 'package:solution/main_feat_screens/behavior_edit_screen.dart';
-import 'package:solution/sudent_profile_page/student_profile.dart';
+import 'package:solution/student_profile_page/student_profile.dart';
 
-class BehavirManageScreen extends StatefulWidget {
-  BehavirManageScreen({super.key, required this.studentDataList});
+class BehavirRecordScreen extends StatefulWidget {
+  BehavirRecordScreen({super.key, required this.studentDataList});
   List<dynamic> studentDataList;
 
   @override
-  State<BehavirManageScreen> createState() => _BehavirManageScreenState();
+  State<BehavirRecordScreen> createState() => _BehavirRecordScreenState();
 }
 
-class _BehavirManageScreenState extends State<BehavirManageScreen> {
+class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
   // 학생의 이름과 행동을 저장할 Map 리스트
   List<Widget> behaviorWidgetList = [];
 

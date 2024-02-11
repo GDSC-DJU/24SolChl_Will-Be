@@ -7,9 +7,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
-import 'package:solution/main_feat_screens/behavior_manage.dart';
-import 'package:solution/main_feat_screens/behavior_record_screen.dart';
-import 'package:solution/main_feat_screens/dashboard.dart';
+import 'package:solution/main_feat_screens/behavior_record.dart';
+import 'package:solution/main_feat_screens/calendar_manage_screen.dart';
+import 'package:solution/main_feat_screens/dashboard_screen.dart';
 import 'package:solution/main_feat_screens/home_screen.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
 
@@ -43,8 +43,8 @@ class _Main_PageState extends State<Main_Page> {
       label: '홈',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.edit),
-      label: '행동기록',
+      icon: Icon(Icons.calendar_month),
+      label: '일정관리',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.edit_document),
@@ -52,7 +52,7 @@ class _Main_PageState extends State<Main_Page> {
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.pie_chart),
-      label: '대시보드',
+      label: '요약',
     ),
   ];
 
@@ -140,10 +140,11 @@ class _Main_PageState extends State<Main_Page> {
 
   @override
   Widget build(BuildContext context) {
+    ///바텀 네비게이션
     List<Widget> widgetOptions = <Widget>[
       HomeScreen(studentDataList: studentDataList),
-      const BehaviorRecordScreen(),
-      BehavirManageScreen(
+      const CalendarManageScreen(),
+      BehavirRecordScreen(
         studentDataList: studentDataList,
       ),
       const DashBoardScreen(),
