@@ -1,6 +1,8 @@
 ///이 파일은 행동관리를 위한 화면으로 계정이 속한 학교/학급의 아동들의
 ///행동들을 넘겨받아 화면에 보여줌.
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,28 +21,61 @@ class BehavirRecordScreen extends StatefulWidget {
 class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
   // 학생의 이름과 행동을 저장할 Map 리스트
   List<Widget> behaviorWidgetList = [];
+  final _authentication = FirebaseAuth.instance;
 
   ///행동 카드들의 순서를 내부 저장소에서 가져오는 메서드
   ///메서드 흐름: 순서정보가 없을 때는 1부터 정상적으로 저장하고, 있다면 정수 리스트로 반환
-  Future<List<int>> getCardSequenceNumber() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? sequenceStrList = prefs.getStringList("cardSequence");
-    if (sequenceStrList == null) {
-      // 순서 정보가 없을 때는 1부터 순서대로 반환
-      return List<int>.generate(behaviorWidgetList.length, (i) => i + 1);
-    } else {
-      // 순서 정보가 있을 때는 이를 정수 리스트로 변환하여 반환
-      return sequenceStrList.map((s) => int.parse(s)).toList();
+  final db = FirebaseFirestore.instance;
+  User user = FirebaseAuth.instance.currentUser!;
+  List<String>? studnetList;
+
+  ///Firestore의 계정에서 카드들의 순번을 받아와서 정렬 후 행동UUID를 순번대로 정렬 후 List형태로 출력
+  Future<List<String>?> getSortedBehaviors() async {
+    QuerySnapshot? snapshotOrder;
+    Map<String, dynamic>? behaviors;
+
+    int lengthOfBehaviors = 0;
+    List<String> valuesList = [];
+
+    String studentUID;
+    studentUID = user.uid;
+    try {
+      snapshotOrder = await db
+          .collection('Educator')
+          .doc(studentUID)
+          .collection('order')
+          .get();
+    } catch (e) {
+      print("fetchdata error------------------------------------");
     }
+
+    for (var doc in snapshotOrder!.docs) {
+      behaviors = doc.data() as Map<String, dynamic>?;
+      behaviors?.forEach((key, value) {
+        lengthOfBehaviors++;
+        print('Behavior name: $key, Value: $value');
+      });
+    }
+
+    for (int i = 0; i <= lengthOfBehaviors; i++) {
+      behaviors!.forEach((key, value) {
+        if (value == i.toString()) {
+          valuesList.add(key);
+        }
+      });
+    }
+
+    for (var element in valuesList) {
+      print('정렬 후 출력 $element');
+    }
+    return valuesList;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCardSequenceNumber().then((sequence) {
-      print('순서 번호: $sequence');
-    });
+    getSortedBehaviors();
   }
 
   @override
@@ -59,8 +94,6 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               name: name,
               behavior: behavior.toString(),
               type: "횟수")); //현재 행동 유형은 횟수로 통일 됨 추후 개선 요망
-          print("여기서 키값을 프린트 함.");
-          print('name: $name, behavior: $behavior, key: $name$behavior');
         }
       }
     }
@@ -76,25 +109,15 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '행동 관리',
+                  '행동 기록',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BehaviorAddScreen(
-                              studentDataList: studentDataList,
-                            ),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.add_circle_outline_rounded),
-                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                    )
                   ],
                 ),
               ],
