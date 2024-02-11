@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 
-class Tutorial_Behavior_Detail extends StatefulWidget {
-  Tutorial_Behavior_Detail(
+class Add_Behavior_Detail extends StatefulWidget {
+  Add_Behavior_Detail(
       {Key? key,
       required this.name,
       required this.schoolValue,
@@ -14,11 +14,10 @@ class Tutorial_Behavior_Detail extends StatefulWidget {
   String? behaviorName;
 
   @override
-  State<Tutorial_Behavior_Detail> createState() =>
-      _Tutorial_Behavior_Detail_State();
+  State<Add_Behavior_Detail> createState() => _Add_Behavior_Detail_State();
 }
 
-class _Tutorial_Behavior_Detail_State extends State<Tutorial_Behavior_Detail> {
+class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
   // 입력값을 추적하기 위한 controllers
   Map<String, TextEditingController> textControllers = {
     "behaviorName": TextEditingController(),
@@ -34,7 +33,7 @@ class _Tutorial_Behavior_Detail_State extends State<Tutorial_Behavior_Detail> {
           const SnackBar(content: Text('측정할 도전행동의 세부사항을 작성해주세요!')));
       return;
     }
-    
+
     // 알림창 띄우기 -> 확인 버튼 누르면 DB에 객체 생성
   }
 

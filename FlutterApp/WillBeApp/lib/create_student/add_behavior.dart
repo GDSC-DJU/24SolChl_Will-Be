@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:solution/tutorial/tutorial_behavior_detail.dart';
+import 'package:solution/create_student/add_behavior_detail.dart';
 
-class Tutorial_Behavior_Select extends StatefulWidget {
-  Tutorial_Behavior_Select(
+class Add_Behavior extends StatefulWidget {
+  Add_Behavior(
       {Key? key, required this.name, required this.schoolValue});
   final String? name;
   final int? schoolValue;
@@ -11,11 +11,11 @@ class Tutorial_Behavior_Select extends StatefulWidget {
   int? behaviorValue;
 
   @override
-  State<Tutorial_Behavior_Select> createState() =>
-      _Tutorial_Behavior_Select_State();
+  State<Add_Behavior> createState() =>
+      _Add_Behavior_State();
 }
 
-class _Tutorial_Behavior_Select_State extends State<Tutorial_Behavior_Select> {
+class _Add_Behavior_State extends State<Add_Behavior> {
   // 입력값을 추적하기 위한 controllers
   Map<String, TextEditingController> textControllers = {
     "name": TextEditingController(),
@@ -44,7 +44,7 @@ class _Tutorial_Behavior_Select_State extends State<Tutorial_Behavior_Select> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Tutorial_Behavior_Detail(
+        builder: (context) => Add_Behavior_Detail(
           name: widget.name,
           schoolValue: widget.schoolValue,
           behaviorValue: widget.behaviorValue,
