@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/login_screens/role_selection_screen.dart';
 import 'package:solution/main_feat_screens/main_page.dart';
-import 'package:solution/tutorial/tutorial_student_create.dart';
+import 'package:solution/create_student/add_student_info.dart';
 
 class PrimaryLoginScreen extends StatefulWidget {
   const PrimaryLoginScreen({super.key});
@@ -17,7 +17,7 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
   final _authentication = FirebaseAuth.instance;
 
   ///파이어스토어 인스턴스 받아오기
-  ///User instance for loged in user
+  ///User instance for logged in user
   User? _user;
 
   ///구글로그인을 담당하는 메서드.
@@ -178,7 +178,7 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Tutorial_Student_Create(),
+                      builder: (context) => Add_Student_Info(),
                     ),
                   );
                 },

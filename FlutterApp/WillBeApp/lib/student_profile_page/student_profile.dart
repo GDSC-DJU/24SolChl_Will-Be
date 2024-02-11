@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:solution/student_profile_page/student_profile_tab_proivder.dart';
 import 'package:provider/provider.dart';
 import 'package:solution/student_profile_page/student_profile_edit.dart';
-import 'package:solution/tutorial/tutorial_student_create.dart';
+import 'package:solution/create_student/add_student_info.dart';
 
 class StudentProfile extends StatelessWidget {
   const StudentProfile({super.key, required this.data});
@@ -42,7 +42,7 @@ class StudentProfile extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Tutorial_Student_Create(),
+                      builder: (context) => Add_Student_Info(),
                     ),
                   );
                 },
