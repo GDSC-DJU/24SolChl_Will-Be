@@ -175,3 +175,10 @@ app.*.symbols
 
 ###--- for API Key security ---###
 **/api_keys.dart
+.DS_Store
+.idea/
+*.iml
+.dart_tool/
+/pubspec.lock
+.vscode/
+
