@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solution/main_feat_screens/behavior_add_screen.dart';
 import 'package:solution/main_feat_screens/behavior_edit_screen.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
+import 'package:intl/intl.dart';
 
 class BehavirRecordScreen extends StatefulWidget {
   BehavirRecordScreen({super.key, required this.studentDataList});
@@ -20,22 +21,24 @@ class BehavirRecordScreen extends StatefulWidget {
 
 class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
   // 학생의 이름과 행동을 저장할 Map 리스트
-  List<Widget> behaviorWidgetList = [];
   final _authentication = FirebaseAuth.instance;
 
   ///행동 카드들의 순서를 내부 저장소에서 가져오는 메서드
   ///메서드 흐름: 순서정보가 없을 때는 1부터 정상적으로 저장하고, 있다면 정수 리스트로 반환
   final db = FirebaseFirestore.instance;
   User user = FirebaseAuth.instance.currentUser!;
-  List<String>? studnetList;
 
+  List<String>? sortedBehaviors = [];
+  List<String> valuesList = [];
+  Future<Widget>? cards;
+
+  ///행동카드 순번대로 정렬하는 함수
   ///Firestore의 계정에서 카드들의 순번을 받아와서 정렬 후 행동UUID를 순번대로 정렬 후 List형태로 출력
   Future<List<String>?> getSortedBehaviors() async {
     QuerySnapshot? snapshotOrder;
     Map<String, dynamic>? behaviors;
 
     int lengthOfBehaviors = 0;
-    List<String> valuesList = [];
 
     String studentUID;
     studentUID = user.uid;
@@ -71,11 +74,21 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
     return valuesList;
   }
 
+  String getCurrentDate() {
+    DateTime now = DateTime.now();
+    return DateFormat('yyyy년 MM월 dd일').format(now);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getSortedBehaviors();
+    getSortedBehaviors().then((value) {
+      setState(() {
+        sortedBehaviors = value;
+        cards = buildBehaviorCards(behaviorList: sortedBehaviors);
+      });
+    });
   }
 
   @override
@@ -83,148 +96,92 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
     // 학생 데이터 리스트
     List<dynamic> studentDataList = widget.studentDataList;
 
-    for (var studentData in studentDataList) {
-      if (studentData is Map<String, dynamic>) {
-        String name = studentData['name'];
-        List<dynamic> behaviors = studentData['behavior'];
-        // 각 행동에 대해 Text 위젯을 생성하여 behaviorWidgetList에 추가
-        for (var behavior in behaviors) {
-          behaviorWidgetList.add(buildBehaviorCard(
-              //여기서 키값을 index처럼 0~n 번까지의 숫자로 넘겨줘야 하나?
-              name: name,
-              behavior: behavior.toString(),
-              type: "횟수")); //현재 행동 유형은 횟수로 통일 됨 추후 개선 요망
-        }
-      }
-    }
-    print(behaviorWidgetList.toString());
     return Expanded(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            height: MediaQuery.of(context).size.height / 6,
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Container(
+        padding: const EdgeInsets.only(top: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    '행동 기록',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                ],
+              ),
+            ),
+            Row(
               children: [
                 Text(
-                  '행동 기록',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  getCurrentDate(),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height / 4,
-                    )
-                  ],
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.expand_more_sharp),
                 ),
               ],
             ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: behaviorWidgetList,
+            Container(
+              height: MediaQuery.of(context).size.height / 7,
+              width: MediaQuery.sizeOf(context).width,
+              color: Colors.blue,
+              child: const Column(
+                children: [Row()],
               ),
             ),
-          )
-        ],
+            Expanded(
+              child: Container(
+                color: Colors.amber,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
   ///학생의 이름, 행동, 행동유형을 기반으로 행동 카드를 생성해주는 기능
-  Widget buildBehaviorCard(
-      {Key? key,
-      required String name,
-      required String behavior,
-      required String type}) {
-    double buttonsSize = 35;
-    if (behavior.isEmpty || name.isEmpty || type.isEmpty) {
-      return Container();
-    }
-    return Container(
-      padding: const EdgeInsets.all(14),
-      margin: const EdgeInsets.only(top: 10),
-      height: 130, //카드들의 높이는 하드코딩으로 정해주는 것이 가로/세로에 이득이다.
-      width: MediaQuery.of(context).size.width - 10,
-      decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(20),
-          ),
-          border: Border.all(color: Colors.grey)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Row(
-          children: [
-            //행동관리의 아동 사진 추후 업데이트 필요!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            ClipOval(
-              child: Image.network(
-                "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                fit: BoxFit.cover,
-                width: 90,
-                height: 90,
-              ),
-            ),
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Future<Widget> buildBehaviorCards(
+      {required List<String>? behaviorList}) async {
+    QuerySnapshot? snapshotStudents;
+    DocumentSnapshot? snapshotTemp;
 
-            const SizedBox(
-              //사진과 텍스트간 공백
-              width: 10,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - buttonsSize - 230,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      behavior,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                Text(
-                  name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.grey),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      "측정 단위 :",
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      type,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    )
-                  ],
-                )
-              ],
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.edit,
-                size: buttonsSize,
-              ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.menu, size: buttonsSize),
-            )
-          ],
-        ),
-      ]),
-    );
+    try {
+      snapshotStudents = await db
+          .collection('Educator')
+          .doc(user.uid)
+          .collection('student')
+          .get();
+    } catch (e) {
+      print("fetchdata error------------------------------------");
+    }
+    print("소유한 학생 아이디들 출력");
+
+    for (var behavior in behaviorList!) {
+      for (var student in snapshotStudents!.docs) {
+        try {
+          snapshotTemp = await db
+              .collection('Student')
+              .doc(student.id)
+              .collection('Behaviors')
+              .doc(behavior)
+              .get();
+        } catch (e) {}
+        if (snapshotTemp!.exists) {
+          print('${student.id}의 행동:  $behavior 이름: ${snapshotTemp.get("행동명")}');
+        }
+      }
+    }
+
+    for (var doc in snapshotStudents!.docs) {
+      print(doc.id);
+    }
+
+    return Container();
   }
 }
