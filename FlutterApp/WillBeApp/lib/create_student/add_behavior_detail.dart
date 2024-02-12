@@ -44,6 +44,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(),
         body: Container(
           height: MediaQuery.sizeOf(context).height,
@@ -266,7 +267,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                   color: Color.fromARGB(255, 102, 108, 255),
                   child: Center(
                     child: Text(
-                      '다음',
+                      '등록하고 측정하러 가기',
                       style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                   ),

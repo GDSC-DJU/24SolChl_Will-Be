@@ -3,16 +3,21 @@ import 'package:get/get.dart';
 import 'package:solution/create_student/add_behavior_detail.dart';
 
 class Add_Behavior extends StatefulWidget {
-  Add_Behavior(
-      {Key? key, required this.name, required this.schoolValue});
+  Add_Behavior({
+    Key? key,
+    required this.name,
+    required this.schoolValue,
+    required this.expValue,
+    required this.selfHelpValue,
+  });
   final String? name;
   final int? schoolValue;
-
+  int? expValue;
+  int? selfHelpValue;
   int? behaviorValue;
 
   @override
-  State<Add_Behavior> createState() =>
-      _Add_Behavior_State();
+  State<Add_Behavior> createState() => _Add_Behavior_State();
 }
 
 class _Add_Behavior_State extends State<Add_Behavior> {

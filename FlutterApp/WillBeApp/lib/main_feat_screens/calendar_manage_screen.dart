@@ -11,35 +11,38 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "행동 기록",
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            height: MediaQuery.of(context).size.height / 6,
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '일정 관리',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
-                      width: 300,
-                      height: 1500,
-                      color: Colors.black,
-                    ),
-                    Container(
-                      width: 300,
-                      height: 1500,
-                      color: Colors.green,
+                      height: MediaQuery.of(context).size.height / 4,
                     )
                   ],
                 ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [],
               ),
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

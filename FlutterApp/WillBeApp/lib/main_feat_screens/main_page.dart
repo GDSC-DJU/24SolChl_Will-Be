@@ -39,8 +39,8 @@ class _Main_PageState extends State<Main_Page> {
 
   static const bottomBarItems = <BottomNavigationBarItem>[
     BottomNavigationBarItem(
-      icon: Icon(Icons.home),
-      label: '홈',
+      icon: Icon(Icons.person),
+      label: '아이들',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.calendar_month),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:solution/create_student/add_behavior.dart';
 
 class Add_Student_Info extends StatefulWidget {
@@ -14,11 +13,28 @@ class Add_Student_Info extends StatefulWidget {
 }
 
 class _Add_Student_Info_State extends State<Add_Student_Info> {
-  // 입력값을 추적하기 위한 controllers
   Map<String, TextEditingController> textControllers = {
     "name": TextEditingController(),
   };
   List schoolList = ["유치원", "초등학교", "중학교", "고등학교"];
+
+  int expValue = 1; // 추가된 부분
+  List expMsgList = [
+    "1.~~",
+    "2.~~",
+    "3.~~",
+    "4.~~",
+    "5.~~",
+  ];
+  List selfHelpMsgList = [
+    "1.~~",
+    "2.~~",
+    "3.~~",
+    "4.~~",
+    "5.~~",
+  ];
+
+  int selfHelpValue = 1; // 추가된 부분
 
   void _submitData() {
     if (widget.name == "" || widget.schoolValue == null) {
@@ -32,6 +48,8 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
         builder: (context) => Add_Behavior(
           name: widget.name,
           schoolValue: widget.schoolValue,
+          expValue: expValue.toInt(), // 수정된 부분
+          selfHelpValue: selfHelpValue.toInt(),
         ),
       ),
     );
@@ -45,9 +63,10 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(),
         body: Container(
-          height: MediaQuery.sizeOf(context).height,
+          height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
               Padding(
@@ -170,10 +189,134 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 32,
+                  padding: EdgeInsets.only(
+                    top: 16,
+                    bottom: 8,
+                  ),
+                  child: Text(
+                    "의사소통 수준",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromARGB(255, 102, 108, 255),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 32,
+                  padding: EdgeInsets.only(
+                    top: 16,
+                    bottom: 8,
+                  ),
+                  child: Text(
+                    expMsgList[expValue - 1],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: SliderTheme(
+                  data: SliderThemeData(
+                    thumbColor: Color.fromARGB(255, 102, 108, 255),
+                    thumbShape: AppSliderShape(
+                        thumbRadius: 10, thumbValue: expValue.toString()),
+                  ),
+                  child: Slider(
+                    value: expValue?.toDouble() ?? 1.0,
+                    onChanged: (value) {
+                      setState(() {
+                        expValue = value.toInt();
+                      });
+                    },
+                    min: 1.0,
+                    max: 5.0,
+                    divisions: 4,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 32,
+                  padding: EdgeInsets.only(
+                    top: 16,
+                    bottom: 8,
+                  ),
+                  child: Text(
+                    "자조기술 수준",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromARGB(255, 102, 108, 255),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 32,
+                  padding: EdgeInsets.only(
+                    top: 16,
+                    bottom: 8,
+                  ),
+                  child: Text(
+                    selfHelpMsgList[selfHelpValue - 1],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: SliderTheme(
+                  data: SliderThemeData(
+                    thumbColor: Color.fromARGB(255, 102, 108, 255),
+                    thumbShape: AppSliderShape(
+                        thumbRadius: 10, thumbValue: selfHelpValue.toString()),
+                  ),
+                  child: Slider(
+                    value: selfHelpValue?.toDouble() ?? 1.0,
+                    onChanged: (value) {
+                      setState(() {
+                        selfHelpValue = value.toInt();
+                      });
+                    },
+                    min: 1.0,
+                    max: 5.0,
+                    divisions: 4,
+                  ),
+                ),
+              ),
               Spacer(),
               ElevatedButton(
                 onPressed: () {
-                  print([widget.name, widget.schoolValue]);
+                  print([widget.name, widget.schoolValue, expValue]);
                   _submitData();
                 },
                 style: ElevatedButton.styleFrom(
@@ -241,5 +384,73 @@ class CustomRadioButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class AppSliderShape extends SliderComponentShape {
+  final double thumbRadius;
+  final String thumbValue;
+
+  const AppSliderShape({required this.thumbRadius, required this.thumbValue});
+
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
+    return Size.fromRadius(thumbRadius);
+  }
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
+    final Canvas canvas = context.canvas;
+
+    TextSpan span = new TextSpan(
+      style: new TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: Colors.black,
+      ),
+      text: thumbValue,
+    );
+
+    TextPainter textPainter = new TextPainter(
+      text: span,
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout();
+
+    Offset textCenter = Offset(
+      center.dx - (textPainter.width / 2),
+      center.dy - (textPainter.height / 2),
+    );
+
+    canvas.drawCircle(
+      center,
+      20,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = Color.fromARGB(255, 102, 108, 255),
+    );
+    canvas.drawCircle(
+      center,
+      15,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = Colors.white,
+    );
+    textPainter.paint(canvas, textCenter);
   }
 }
