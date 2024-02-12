@@ -52,6 +52,8 @@ class _Add_Behavior_State extends State<Add_Behavior> {
         builder: (context) => Add_Behavior_Detail(
           name: widget.name,
           schoolValue: widget.schoolValue,
+          expValue: widget.expValue,
+          selfHelpValue: widget.selfHelpValue,
           behaviorValue: widget.behaviorValue,
         ),
       ),

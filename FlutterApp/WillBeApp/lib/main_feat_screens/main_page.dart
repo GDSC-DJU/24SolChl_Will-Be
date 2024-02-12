@@ -84,34 +84,37 @@ class _Main_PageState extends State<Main_Page> {
 
   // Function : 로그인 성공 시 현재 접속중인 교사 data 가져오기
   Future<void> getEducator(String? userUid) async {
-    // 현재 접속 UID 문서로 갖는 객체를 Educator collection에서 가져오기
-    DocumentReference educatorCollectionRef =
-        FirebaseFirestore.instance.collection('Educator').doc(uid);
-    // 찾은 객체의 데이터 get
-    DocumentSnapshot documentSnapshot = await educatorCollectionRef.get();
-    // 변수에 할당
-    userData = documentSnapshot.data();
+    // 현재 접속 UID를 document로 갖는 객체를 Educator collection에서 가져오기 & Student collection 가져오기
+    CollectionReference educatorCollectionRef = FirebaseFirestore.instance
+        .collection('Educator')
+        .doc(uid)
+        .collection('Student');
+    // 찾은 객체의 학생 리스트 get (문서 id)
+    dynamic documentSnapshot = await educatorCollectionRef.get();
+    // 리스트로 변환
+    studentList = documentSnapshot.docs.map((doc) => doc.id).toList();
     // 디버깅 print
-    print(userData);
-    dynamic temp = userData;
-    getStudentList(temp['school'], temp['class']);
+    print(studentList);
+    // 학생 데이터 추출 함수 호출
+    getStudentData(studentList);
   }
 
   // Function : 교사 데이터 접근 완료 시 학교 DB에서 학생 ID 가져오기
-  Future<void> getStudentList(String school, String classNum) async {
-    await db.collection("School").doc(school).collection(classNum).get().then(
-      (querySnapshot) {
-        print("Successfully completed");
-        studentList = querySnapshot.docs.map((doc) => doc.id).toList();
-        print(studentList);
-        getStudentData(studentList);
-      },
-      onError: (e) => print("Error completing: $e"),
-    );
-  }
+  // Future<void> getStudentList(String school, String classNum) async {
+  //   await db.collection("School").doc(school).collection(classNum).get().then(
+  //     (querySnapshot) {
+  //       print("Successfully completed");
+  //       studentList = querySnapshot.docs.map((doc) => doc.id).toList();
+  //       print(studentList);
+  //       getStudentData(studentList);
+  //     },
+  //     onError: (e) => print("Error completing: $e"),
+  //   );
+  // }
 
   bool isLoading = true;
 
+  // Function : 학생List -> 학생 데이터 추출 함수
   Future<void> getStudentData(List studentList) async {
     if (!isLoading) {
       return; // 이미 데이터 로딩이 완료된 경우 중복 호출 방지

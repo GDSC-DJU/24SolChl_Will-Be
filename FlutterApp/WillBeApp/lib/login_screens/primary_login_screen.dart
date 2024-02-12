@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/login_screens/role_selection_screen.dart';
 import 'package:solution/main_feat_screens/main_page.dart';
-import 'package:solution/create_student/add_student_info.dart';
+import 'package:solution/create_student/create_student_msg.dart';
 
 class PrimaryLoginScreen extends StatefulWidget {
   const PrimaryLoginScreen({super.key});
@@ -52,7 +52,7 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const RoleSelectionScreen(),
+              builder: (context) => Create_student_Msg(),
             ),
           );
         }
@@ -63,7 +63,7 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const RoleSelectionScreen(),
+            builder: (context) => Create_student_Msg(),
           ),
         );
       }
@@ -144,44 +144,6 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
                     ),
                   ],
                 ),
-              ),
-            ),
-          ),
-          Spacer(),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 40,
-              ),
-              child: TextButton(
-                child: DefaultTextStyle(
-                  style: const TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.black,
-                          width: 1.0, // Underline thickness
-                        ),
-                      ),
-                    ),
-                    child: const Text(
-                      '로그인 건너뛰기',
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Add_Student_Info(),
-                    ),
-                  );
-                },
               ),
             ),
           ),
