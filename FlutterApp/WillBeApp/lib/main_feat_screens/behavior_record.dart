@@ -12,9 +12,10 @@ import 'package:solution/student_profile_page/student_profile.dart';
 import 'package:intl/intl.dart';
 
 class BehavirRecordScreen extends StatefulWidget {
-  BehavirRecordScreen({super.key, required this.studentDataList});
+  BehavirRecordScreen(
+      {super.key, required this.studentDataList, required this.cards});
   List<dynamic> studentDataList;
-
+  Widget? cards;
   @override
   State<BehavirRecordScreen> createState() => _BehavirRecordScreenState();
 }
@@ -30,7 +31,8 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
 
   List<String>? sortedBehaviors = [];
   List<String> valuesList = [];
-  Future<Widget>? cards;
+
+  // 형식 {행동ID : {행동 이름 : 아동 이름} }
 
   ///행동카드 순번대로 정렬하는 함수
   ///Firestore의 계정에서 카드들의 순번을 받아와서 정렬 후 행동UUID를 순번대로 정렬 후 List형태로 출력
@@ -83,12 +85,8 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getSortedBehaviors().then((value) {
-      setState(() {
-        sortedBehaviors = value;
-        cards = buildBehaviorCards(behaviorList: sortedBehaviors);
-      });
-    });
+
+    print(widget.cards.toString());
   }
 
   @override
@@ -134,54 +132,14 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                 children: [Row()],
               ),
             ),
-            Expanded(
-              child: Container(
-                color: Colors.amber,
-              ),
-            )
+            Text(
+              "버튼 눌러서 기록하기",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Expanded(child: widget.cards!)
           ],
         ),
       ),
     );
-  }
-
-  ///학생의 이름, 행동, 행동유형을 기반으로 행동 카드를 생성해주는 기능
-  Future<Widget> buildBehaviorCards(
-      {required List<String>? behaviorList}) async {
-    QuerySnapshot? snapshotStudents;
-    DocumentSnapshot? snapshotTemp;
-
-    try {
-      snapshotStudents = await db
-          .collection('Educator')
-          .doc(user.uid)
-          .collection('student')
-          .get();
-    } catch (e) {
-      print("fetchdata error------------------------------------");
-    }
-    print("소유한 학생 아이디들 출력");
-
-    for (var behavior in behaviorList!) {
-      for (var student in snapshotStudents!.docs) {
-        try {
-          snapshotTemp = await db
-              .collection('Student')
-              .doc(student.id)
-              .collection('Behaviors')
-              .doc(behavior)
-              .get();
-        } catch (e) {}
-        if (snapshotTemp!.exists) {
-          print('${student.id}의 행동:  $behavior 이름: ${snapshotTemp.get("행동명")}');
-        }
-      }
-    }
-
-    for (var doc in snapshotStudents!.docs) {
-      print(doc.id);
-    }
-
-    return Container();
   }
 }
