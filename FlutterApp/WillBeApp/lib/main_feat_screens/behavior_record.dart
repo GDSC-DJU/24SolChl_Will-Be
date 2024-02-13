@@ -36,45 +36,6 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
 
   ///행동카드 순번대로 정렬하는 함수
   ///Firestore의 계정에서 카드들의 순번을 받아와서 정렬 후 행동UUID를 순번대로 정렬 후 List형태로 출력
-  Future<List<String>?> getSortedBehaviors() async {
-    QuerySnapshot? snapshotOrder;
-    Map<String, dynamic>? behaviors;
-
-    int lengthOfBehaviors = 0;
-
-    String studentUID;
-    studentUID = user.uid;
-    try {
-      snapshotOrder = await db
-          .collection('Educator')
-          .doc(studentUID)
-          .collection('order')
-          .get();
-    } catch (e) {
-      print("fetchdata error------------------------------------");
-    }
-
-    for (var doc in snapshotOrder!.docs) {
-      behaviors = doc.data() as Map<String, dynamic>?;
-      behaviors?.forEach((key, value) {
-        lengthOfBehaviors++;
-        print('Behavior name: $key, Value: $value');
-      });
-    }
-
-    for (int i = 0; i <= lengthOfBehaviors; i++) {
-      behaviors!.forEach((key, value) {
-        if (value == i.toString()) {
-          valuesList.add(key);
-        }
-      });
-    }
-
-    for (var element in valuesList) {
-      print('정렬 후 출력 $element');
-    }
-    return valuesList;
-  }
 
   String getCurrentDate() {
     DateTime now = DateTime.now();

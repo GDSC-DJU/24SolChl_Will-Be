@@ -73,6 +73,17 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
         'behaviorName': widget.behaviorName,
         'behaviorType': widget.behaviorValue,
       });
+
+      ///주석으로 감싸진 코드 조기홍이 추가
+      await FirebaseFirestore.instance
+          .collection('Educator')
+          .doc(user.uid)
+          .collection('Order')
+          .doc(docParty.id)
+          .set({subDocParty.id: "1"});
+
+      ///
+
       await FirebaseFirestore.instance
           .collection('Educator')
           .doc(user.uid)
@@ -80,11 +91,12 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .doc(docParty.id)
           .set({});
     }
-    Navigator.pushReplacement(
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (context) => Main_Page(),
       ),
+      (route) => false,
     );
   }
 

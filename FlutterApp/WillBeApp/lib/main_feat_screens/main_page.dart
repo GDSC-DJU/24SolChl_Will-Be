@@ -93,7 +93,7 @@ class _Main_PageState extends State<Main_Page> {
   // Function : 로그인 성공 시 현재 접속중인 교사 data 가져오기
   Future<void> getEducator(String? userUid) async {
     // 현재 접속 UID를 document로 갖는 객체를 Educator collection에서 가져오기 & Student collection 가져오기
-    CollectionReference educatorCollectionRef = await FirebaseFirestore.instance
+    CollectionReference educatorCollectionRef = FirebaseFirestore.instance
         .collection('Educator')
         .doc(uid)
         .collection('Student');
@@ -164,7 +164,7 @@ class _Main_PageState extends State<Main_Page> {
       snapshotOrder = await db
           .collection('Educator')
           .doc(studentUID)
-          .collection('order')
+          .collection('Order')
           .get();
     } catch (e) {
       print("fetchdata error------------------------------------");
@@ -258,7 +258,7 @@ class _Main_PageState extends State<Main_Page> {
       snapshotStudents = await db
           .collection('Educator')
           .doc(user.uid)
-          .collection('student')
+          .collection('Student')
           .get();
       print("fetchdata error------------------------------------이 아님!!!!");
     } catch (e) {
@@ -272,19 +272,18 @@ class _Main_PageState extends State<Main_Page> {
           snapshotTempBehavior = await db
               .collection('Student')
               .doc(student.id)
-              .collection('Behaviors')
+              .collection('Behavior')
               .doc(behavior)
               .get();
           snapshotTempStudent =
               await db.collection('Student').doc(student.id).get();
-        } catch (e) {
-          print("여기서 오류~");
-        }
+        } catch (e) {}
         if (snapshotTempBehavior!.exists) {
           print(
-              '${student.id}의 행동:  $behavior 이름: ${snapshotTempBehavior.get("행동명")}');
+              '${student.id}의 행동:  $behavior 이름: ${snapshotTempBehavior.get("behaviorName")}');
           mapForBehaviorsData[behavior] = {
-            snapshotTempBehavior.get('행동명'): snapshotTempStudent!.get('name')
+            snapshotTempBehavior.get('behaviorName'):
+                snapshotTempStudent!.get('name')
           };
 
           behaviorIDAndStudentID[behavior] = student.id;
@@ -1104,7 +1103,7 @@ class _Main_PageState extends State<Main_Page> {
           .doc(documentID)
           .set({
         // 여기에 필드와 값을 추가하면 됩니다.
-        '행동명': mapForBehaviorsData[behaviorID]!.keys.first,
+        'BehaviorName': mapForBehaviorsData[behaviorID]!.keys.first,
       });
       print('Document successfully added with ID: $documentID');
     } catch (e) {

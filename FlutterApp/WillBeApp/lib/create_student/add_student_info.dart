@@ -42,6 +42,7 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
           .showSnackBar(const SnackBar(content: Text('모든 항목을 입력해주세요!')));
       return;
     }
+
     Navigator.push(
       context,
       MaterialPageRoute(
