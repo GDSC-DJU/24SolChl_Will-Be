@@ -26,10 +26,19 @@ class _Main_PageState extends State<Main_Page> {
   final db = FirebaseFirestore.instance;
   //내부 저장소 사용을 위한 SharedPreferences 객체
 
+  List<String> valuesList = [];
+  List<String>? sortedBehaviors = [];
+  Widget? cards;
+  //행동ID : 아동ID의 형태로 저장
+  Map<String?, String?> behaviorIDAndStudentID = {};
+
+  Map<String, Map<String, String>> mapForBehaviorsData = {};
+
   ///하단 네비게이션 바를 위한 인데스
   int _selected_screen = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  User user = FirebaseAuth.instance.currentUser!;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -57,7 +66,6 @@ class _Main_PageState extends State<Main_Page> {
   ];
 
   ///User instance for logged in user
-  User? user;
   //UID of logged in user
   String? uid;
   //Data of logged in user
@@ -132,10 +140,60 @@ class _Main_PageState extends State<Main_Page> {
     setState(() {}); // 화면을 다시 그리도록 강제 업데이트
   }
 
+  ///행동카드 순번대로 정렬하는 함수
+  ///Firestore의 계정에서 카드들의 순번을 받아와서 정렬 후 행동UUID를 순번대로 정렬 후 List형태로 출력
+  Future<List<String>?> getSortedBehaviors() async {
+    QuerySnapshot? snapshotOrder;
+    Map<String, dynamic>? behaviors;
+
+    int lengthOfBehaviors = 0;
+
+    String studentUID;
+    studentUID = user.uid;
+    try {
+      snapshotOrder = await db
+          .collection('Educator')
+          .doc(studentUID)
+          .collection('order')
+          .get();
+    } catch (e) {
+      print("fetchdata error------------------------------------");
+    }
+
+    for (var doc in snapshotOrder!.docs) {
+      behaviors = doc.data() as Map<String, dynamic>?;
+      behaviors?.forEach((key, value) {
+        lengthOfBehaviors++;
+        print('Behavior name: $key, Value: $value');
+      });
+    }
+
+    for (int i = 0; i <= lengthOfBehaviors; i++) {
+      behaviors!.forEach((key, value) {
+        if (value == i.toString()) {
+          valuesList.add(key);
+        }
+      });
+    }
+
+    return valuesList;
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    getSortedBehaviors().then((value) {
+      print("getSortedBehaviors Finished well");
+
+      setState(() {
+        sortedBehaviors = value;
+        buildBehaviorCards(
+          behaviorList: sortedBehaviors,
+        ).then((value) => cards = value);
+      });
+    });
   }
 
   @override
@@ -146,13 +204,14 @@ class _Main_PageState extends State<Main_Page> {
       const CalendarManageScreen(),
       BehavirRecordScreen(
         studentDataList: studentDataList,
+        cards: cards,
       ),
       const DashBoardScreen(),
     ];
 
     final authentication = FirebaseAuth.instance;
-    user = authentication.currentUser;
-    uid = user?.uid; //현재 접속한 유저의 UID 할당
+    user = authentication.currentUser!;
+    uid = user.uid; //현재 접속한 유저의 UID 할당
     getEducator(uid);
     return Scaffold(
       body: Padding(
@@ -173,5 +232,873 @@ class _Main_PageState extends State<Main_Page> {
         showUnselectedLabels: true,
       ),
     );
+  }
+
+  ///학생의 이름, 행동, 행동유형을 기반으로 행동 카드를 생성해주는 기능
+  Future<Widget> buildBehaviorCards(
+      {required List<String>? behaviorList}) async {
+    ///내 계정에 등록된 아이의 ID를 가져오는 스냅샷
+    QuerySnapshot? snapshotStudents;
+
+    DocumentSnapshot? snapshotTempBehavior;
+    DocumentSnapshot? snapshotTempStudent;
+
+    try {
+      //사용자가 가지는 학생들의 데이터 불러옴
+      snapshotStudents = await db
+          .collection('Educator')
+          .doc(user.uid)
+          .collection('student')
+          .get();
+      print("fetchdata error------------------------------------이 아님!!!!");
+    } catch (e) {
+      print("fetchdata error------------------------------------");
+    }
+
+    for (var behavior in behaviorList!) {
+      //각 행동의 주인인 아동을 찾아 behaviorIDAndStudentID에 [행동ID] : [아동ID]의 형태로 저장하는 반복문
+      for (var student in snapshotStudents!.docs) {
+        try {
+          snapshotTempBehavior = await db
+              .collection('Student')
+              .doc(student.id)
+              .collection('Behaviors')
+              .doc(behavior)
+              .get();
+          snapshotTempStudent =
+              await db.collection('Student').doc(student.id).get();
+        } catch (e) {
+          print("여기서 오류~");
+        }
+        if (snapshotTempBehavior!.exists) {
+          print(
+              '${student.id}의 행동:  $behavior 이름: ${snapshotTempBehavior.get("행동명")}');
+          mapForBehaviorsData[behavior] = {
+            snapshotTempBehavior.get('행동명'): snapshotTempStudent!.get('name')
+          };
+
+          behaviorIDAndStudentID[behavior] = student.id;
+          break;
+        }
+      }
+    }
+
+    //행동의 개수에 따라 다른 화면을 보여주기 위한 swtich 문
+    switch (behaviorIDAndStudentID.length) {
+      case 0:
+        return const Expanded(
+          child: Center(
+            child: Text("아동 데이터 또는 행동 데이터가 없습니다."),
+          ),
+        );
+
+      case 1:
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            print(
+                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+            return Container(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      //first bahavior
+                      GestureDetector(
+                        onTap: () async {
+                          recordBahvior(
+                            behaviorID: behaviorList[0],
+                            studentID: behaviorIDAndStudentID[behaviorList[0]],
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight - 20,
+                          width: constraints.maxWidth - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(mapForBehaviorsData[
+                                                  behaviorList[0]]!
+                                              .values
+                                              .first[0]),
+                                        ),
+                                      ),
+                                      Text(
+                                        "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    mapForBehaviorsData[behaviorList[0]]!
+                                        .keys
+                                        .first,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      case 2:
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            print(
+                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+            return Container(
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      recordBahvior(
+                        behaviorID: behaviorList[0],
+                        studentID: behaviorIDAndStudentID[behaviorList[0]],
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      height: constraints.maxHeight / 2 - 20,
+                      width: constraints.maxWidth - 20,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                          color: const Color.fromRGBO(195, 255, 250, 1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: const Offset(
+                                  0, 10), // changes position of shadow
+                            ),
+                          ]),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white60,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                          mapForBehaviorsData[behaviorList[0]]!
+                                              .values
+                                              .first[0]),
+                                    ),
+                                  ),
+                                  Text(
+                                    "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                mapForBehaviorsData[behaviorList[0]]!
+                                    .keys
+                                    .first,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  //두번째 카드
+                  GestureDetector(
+                    onTap: () async {
+                      recordBahvior(
+                        behaviorID: behaviorList[1],
+                        studentID: behaviorIDAndStudentID[behaviorList[1]],
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      height: constraints.maxHeight / 2 - 20,
+                      width: constraints.maxWidth - 20,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                          color: const Color.fromRGBO(195, 255, 250, 1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: const Offset(
+                                  0, 10), // changes position of shadow
+                            ),
+                          ]),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white60,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                          mapForBehaviorsData[behaviorList[1]]!
+                                              .values
+                                              .first[0]),
+                                    ),
+                                  ),
+                                  Text(
+                                    "  ${mapForBehaviorsData[behaviorList[1]]!.values.first}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                mapForBehaviorsData[behaviorList[1]]!
+                                    .keys
+                                    .first,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      case 3:
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            print(
+                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+            return Container(
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      recordBahvior(
+                        behaviorID: behaviorList[0],
+                        studentID: behaviorIDAndStudentID[behaviorList[0]],
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      height: constraints.maxHeight / 3 - 20,
+                      width: constraints.maxWidth - 20,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(15),
+                        ),
+                        color: const Color.fromRGBO(195, 255, 250, 1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0,
+                            blurRadius: 5,
+                            offset: const Offset(
+                                0, 10), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white60,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                          mapForBehaviorsData[behaviorList[0]]!
+                                              .values
+                                              .first[0]),
+                                    ),
+                                  ),
+                                  Text(
+                                    "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                mapForBehaviorsData[behaviorList[0]]!
+                                    .keys
+                                    .first,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  //두번째 카드
+                  GestureDetector(
+                    onTap: () async {
+                      recordBahvior(
+                        behaviorID: behaviorList[1],
+                        studentID: behaviorIDAndStudentID[behaviorList[1]],
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      height: constraints.maxHeight / 3 - 20,
+                      width: constraints.maxWidth - 20,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                          color: const Color.fromRGBO(195, 255, 250, 1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: const Offset(
+                                  0, 10), // changes position of shadow
+                            ),
+                          ]),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white60,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                          mapForBehaviorsData[behaviorList[1]]!
+                                              .values
+                                              .first[0]),
+                                    ),
+                                  ),
+                                  Text(
+                                    "  ${mapForBehaviorsData[behaviorList[1]]!.values.first}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                mapForBehaviorsData[behaviorList[1]]!
+                                    .keys
+                                    .first,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  //3번째 코드
+                  GestureDetector(
+                    onTap: () async {
+                      recordBahvior(
+                        behaviorID: behaviorList[2],
+                        studentID: behaviorIDAndStudentID[behaviorList[2]],
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      height: constraints.maxHeight / 3 - 20,
+                      width: constraints.maxWidth - 20,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                          color: const Color.fromRGBO(195, 255, 250, 1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: const Offset(
+                                  0, 10), // changes position of shadow
+                            ),
+                          ]),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white60,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                          mapForBehaviorsData[behaviorList[2]]!
+                                              .values
+                                              .first[0]),
+                                    ),
+                                  ),
+                                  Text(
+                                    "  ${mapForBehaviorsData[behaviorList[2]]!.values.first}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                mapForBehaviorsData[behaviorList[2]]!
+                                    .keys
+                                    .first,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+
+      //행동 4개일 때
+      case 4:
+        // key를 사용하여 behaviorIDAndStudentID에서 value를 가져옴
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            print(
+                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+            return Container(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      // 첫번째 카드
+                      GestureDetector(
+                        onTap: () async {
+                          recordBahvior(
+                            behaviorID: behaviorList[0],
+                            studentID: behaviorIDAndStudentID[behaviorList[0]],
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight / 2 - 20,
+                          width: constraints.maxWidth / 2 - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(mapForBehaviorsData[
+                                                  behaviorList[0]]!
+                                              .values
+                                              .first[0]),
+                                        ),
+                                      ),
+                                      Text(
+                                        "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    mapForBehaviorsData[behaviorList[0]]!
+                                        .keys
+                                        .first,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      //두번째 카드
+                      GestureDetector(
+                        onTap: () async {
+                          recordBahvior(
+                            behaviorID: behaviorList[1],
+                            studentID: behaviorIDAndStudentID[behaviorList[1]],
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight / 2 - 20,
+                          width: constraints.maxWidth / 2 - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(mapForBehaviorsData[
+                                                  behaviorList[1]]!
+                                              .values
+                                              .first[0]),
+                                        ),
+                                      ),
+                                      Text(
+                                        "  ${mapForBehaviorsData[behaviorList[1]]!.values.first}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    mapForBehaviorsData[behaviorList[1]]!
+                                        .keys
+                                        .first,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      //3번째 행동 카드
+                      GestureDetector(
+                        onTap: () async {
+                          recordBahvior(
+                            behaviorID: behaviorList[2],
+                            studentID: behaviorIDAndStudentID[behaviorList[2]],
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight / 2 - 20,
+                          width: constraints.maxWidth / 2 - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(mapForBehaviorsData[
+                                                  behaviorList[2]]!
+                                              .values
+                                              .first[0]),
+                                        ),
+                                      ),
+                                      Text(
+                                        "  ${mapForBehaviorsData[behaviorList[2]]!.values.first}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    mapForBehaviorsData[behaviorList[2]]!
+                                        .keys
+                                        .first,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      //4번째
+                      GestureDetector(
+                        onTap: () async {
+                          recordBahvior(
+                            behaviorID: behaviorList[3],
+                            studentID: behaviorIDAndStudentID[behaviorList[3]],
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight / 2 - 20,
+                          width: constraints.maxWidth / 2 - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(mapForBehaviorsData[
+                                                  behaviorList[3]]!
+                                              .values
+                                              .first[0]),
+                                        ),
+                                      ),
+                                      Text(
+                                        "  ${mapForBehaviorsData[behaviorList[3]]!.values.first}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    mapForBehaviorsData[behaviorList[3]]!
+                                        .keys
+                                        .first,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+    }
+
+    return Container();
+  }
+
+  void recordBahvior({
+    required String? behaviorID,
+    required String? studentID,
+  }) async {
+    // 현재 시간을 가져옵니다.
+    DateTime now = DateTime.now();
+    // 도큐먼트 ID로 사용할 문자열을 생성합니다.
+    String documentID = now.toString();
+
+    try {
+      await db
+          .collection('Student')
+          .doc(studentID)
+          .collection('BehaviorRecord')
+          .doc(documentID)
+          .set({
+        // 여기에 필드와 값을 추가하면 됩니다.
+        '행동명': mapForBehaviorsData[behaviorID]!.keys.first,
+      });
+      print('Document successfully added with ID: $documentID');
+    } catch (e) {
+      print('Failed to add document: $e');
+    }
   }
 }
