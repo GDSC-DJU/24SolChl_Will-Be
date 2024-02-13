@@ -80,6 +80,12 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .doc(docParty.id)
           .set({});
     }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Main_Page(),
+      ),
+    );
   }
 
   void _submitData() async {
@@ -149,15 +155,9 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                         padding: const EdgeInsets.all(4.0),
                         textStyle: const TextStyle(fontSize: 15),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         signUp();
                         createStudent();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Main_Page(),
-                          ),
-                        );
                       },
                       child: const Text('확인'),
                     ),

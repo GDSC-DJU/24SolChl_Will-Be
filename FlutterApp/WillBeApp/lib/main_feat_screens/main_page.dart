@@ -85,17 +85,23 @@ class _Main_PageState extends State<Main_Page> {
   // Function : 로그인 성공 시 현재 접속중인 교사 data 가져오기
   Future<void> getEducator(String? userUid) async {
     // 현재 접속 UID를 document로 갖는 객체를 Educator collection에서 가져오기 & Student collection 가져오기
-    CollectionReference educatorCollectionRef = FirebaseFirestore.instance
+    CollectionReference educatorCollectionRef = await FirebaseFirestore.instance
         .collection('Educator')
         .doc(uid)
         .collection('Student');
+
     // 찾은 객체의 학생 리스트 get (문서 id)
-    dynamic documentSnapshot = await educatorCollectionRef.get();
-    // 리스트로 변환
-    studentList = documentSnapshot.docs.map((doc) => doc.id).toList();
-    // 디버깅 print
-    print(studentList);
-    // 학생 데이터 추출 함수 호출
+    await educatorCollectionRef.get().then(
+      (documentSnapshot) {
+        // 리스트로 변환
+        studentList = documentSnapshot.docs.map((doc) => doc.id).toList();
+        // 디버깅 print
+        print("HELELO");
+        print(studentList);
+        // 학생 데이터 추출 함수 호출
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
     getStudentData(studentList);
   }
 
@@ -121,6 +127,7 @@ class _Main_PageState extends State<Main_Page> {
     }
 
     print(studentList);
+    print("Hell222o");
 
     for (var student in studentList) {
       await db.collection("Student").doc(student).get().then((querySnapshot) {
