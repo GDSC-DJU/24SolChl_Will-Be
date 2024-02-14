@@ -22,16 +22,46 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
             SizedBox(
               width: MediaQuery.sizeOf(context).height - 16,
               child: Text(
-                '시간표',
+                '일정관리',
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.left,
               ),
             ),
+            Padding(
+              padding: EdgeInsets.only(top: 20),
+              child: SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    padding: EdgeInsets.zero,
+                    backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    child: Center(
+                      child: Text(
+                        '루틴 설정하기',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             SizedBox(
               width: MediaQuery.sizeOf(context).width - 16,
-              height: MediaQuery.sizeOf(context).height / 2,
+              height: MediaQuery.sizeOf(context).height - 220,
               child: Container(
-                child: Timetable(),
+                child: TimeTableCalendar(),
               ),
             )
           ],
