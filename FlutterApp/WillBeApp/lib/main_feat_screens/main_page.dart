@@ -198,6 +198,8 @@ class _Main_PageState extends State<Main_Page> {
     final authentication = FirebaseAuth.instance;
     user = authentication.currentUser!;
     uid = user.uid; //현재 접속한 유저의 UID 할당
+    getEducator(uid);
+
     getSortedBehaviors().then((value) {
       print("getSortedBehaviors Finished well");
 
@@ -232,7 +234,6 @@ class _Main_PageState extends State<Main_Page> {
       const DashBoardScreen(),
     ];
 
-    getEducator(uid);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
