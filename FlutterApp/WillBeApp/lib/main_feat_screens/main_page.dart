@@ -29,10 +29,12 @@ class _Main_PageState extends State<Main_Page> {
   List<String> valuesList = [];
   List<String>? sortedBehaviors = [];
   Widget? cards;
-  //행동ID : 아동ID의 형태로 저장
-  Map<String?, String?> behaviorIDAndStudentID = {};
+  Map<String?, String?> behaviorIDAndStudentID = {}; //행동ID : 아동ID의 형태로 저장
 
-  Map<String, Map<String, String>> mapForBehaviorsData = {};
+  Map<String, Map<String, String>> mapForBehaviorsData =
+      {}; //행동ID : <행동이름 : 아동이름> 의 형태로 저장
+
+  List<Widget> historyWidgetList = [];
 
   ///하단 네비게이션 바를 위한 인데스
   int _selected_screen = 0;
@@ -105,7 +107,7 @@ class _Main_PageState extends State<Main_Page> {
         studentList = documentSnapshot.docs.map((doc) => doc.id).toList();
         // 디버깅 print
         print("HELELO");
-        print(studentList);
+        print(studentList.first);
         // 학생 데이터 추출 함수 호출
       },
       onError: (e) => print("Error completing: $e"),
@@ -202,6 +204,11 @@ class _Main_PageState extends State<Main_Page> {
         buildBehaviorCards(
           behaviorList: sortedBehaviors,
         ).then((value) => cards = value);
+        historyToday(
+                behaviorIDAndStudentID: behaviorIDAndStudentID,
+                mapForBehaviorsData: mapForBehaviorsData,
+                studentsID: studentList)
+            .then((value) => historyWidgetList = value);
       });
     });
   }
@@ -215,6 +222,10 @@ class _Main_PageState extends State<Main_Page> {
       BehavirRecordScreen(
         studentDataList: studentDataList,
         cards: cards,
+        behaviorIDAndStudentID: behaviorIDAndStudentID,
+        mapForBehaviorsData: mapForBehaviorsData,
+        studentList: studentList,
+        historyToday: historyWidgetList,
       ),
       const DashBoardScreen(),
     ];
@@ -244,7 +255,132 @@ class _Main_PageState extends State<Main_Page> {
     );
   }
 
-  ///학생의 이름, 행동, 행동유형을 기반으로 행동 카드를 생성해주는 기능
+  ///학생의 이름, 행동, 행동유형을 기반으로 행동 카드를 생성해주는 메서드
+  ///아래부터의 코드는 behavior_record.dart에서 작동하는 파일임.
+  ///
+  ///
+  ///
+
+  Future<List<Widget>> historyToday({
+    required Map<String?, String?> behaviorIDAndStudentID,
+    required Map<String, Map<String, String>> mapForBehaviorsData,
+    required List studentsID,
+  }) async {
+    List<Widget> recordList = [];
+    Map<String, String> mapTimeName = {};
+
+    Future<List<DocumentSnapshot>> fetchRecords() async {
+      List<DocumentSnapshot> records = [];
+      String nowDay = DateTime.now().toString().substring(0, 10);
+
+      QuerySnapshot? snapshotStudents = await db
+          .collection('Educator')
+          .doc(user.uid)
+          .collection('Student')
+          .get();
+
+      for (var doc in snapshotStudents.docs) {
+        DocumentSnapshot docSnapshot = await db
+            .collection('Student')
+            .doc(doc.id)
+            .collection('BehaviorRecord')
+            .doc(nowDay) //예) 2024-02-14
+            .get();
+
+        Map<String, dynamic> fields =
+            docSnapshot.data() as Map<String, dynamic>;
+        DocumentSnapshot stdCollection =
+            await docSnapshot.reference.parent.parent!.get();
+
+        if (docSnapshot.exists) {
+          fields.forEach((key, value) {
+            mapTimeName[key] = stdCollection.get('name');
+          });
+
+          records.add(docSnapshot);
+        }
+      }
+
+      return records;
+    }
+
+    List<DocumentSnapshot> records = await fetchRecords();
+
+    List<Record> allRecords = []; // 모든 행동의 기록을 저장할 리스트
+
+    for (var record in records) {
+      Map<String, dynamic> data = record.data() as Map<String, dynamic>;
+      data.forEach((key, value) {
+        Map<String, dynamic> behaviorData = value as Map<String, dynamic>;
+        behaviorData.forEach((behaviorKey, behaviorValue) {
+          allRecords.add(Record(
+              time: key,
+              behaviorKey: behaviorKey,
+              behaviorValue: behaviorValue));
+        });
+      });
+    }
+
+    // 모든 행동의 기록을 시간 순으로 정렬
+    allRecords.sort(
+        (a, b) => DateTime.parse(b.time).compareTo(DateTime.parse(a.time)));
+
+    for (var record in allRecords) {
+      recordList.add(
+        ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                mapTimeName[record.time]!,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Text(
+                record.behaviorValue,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Text(
+                record.time.substring(10, 19),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+          onTap: () {
+            print(record.behaviorValue);
+          },
+        ),
+      );
+    }
+
+    return recordList;
+  }
+
+  void recordBahvior({
+    required String? behaviorID,
+    required String? studentID,
+  }) async {
+    // 현재 시간을 가져오기
+    DateTime now = DateTime.now();
+    // 도큐먼트 ID로 사용할 문자열을 생성
+    String nowDay = DateTime.now().toString().substring(0, 10);
+
+    try {
+      await db
+          .collection('Student')
+          .doc(studentID)
+          .collection('BehaviorRecord')
+          .doc(nowDay)
+          .set({
+        // 여기에 필드와 값을 추가하면 됨
+        now.toString(): {
+          'BehaviorName': mapForBehaviorsData[behaviorID]!.keys.first
+        },
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print('Failed to add document: $e');
+    }
+  }
+
   Future<Widget> buildBehaviorCards(
       {required List<String>? behaviorList}) async {
     ///내 계정에 등록된 아이의 ID를 가져오는 스냅샷
@@ -1085,29 +1221,15 @@ class _Main_PageState extends State<Main_Page> {
 
     return Container();
   }
+}
 
-  void recordBahvior({
-    required String? behaviorID,
-    required String? studentID,
-  }) async {
-    // 현재 시간을 가져옵니다.
-    DateTime now = DateTime.now();
-    // 도큐먼트 ID로 사용할 문자열을 생성합니다.
-    String documentID = now.toString();
+class Record {
+  final String time;
+  final String behaviorKey;
+  final String behaviorValue;
 
-    try {
-      await db
-          .collection('Student')
-          .doc(studentID)
-          .collection('BehaviorRecord')
-          .doc(documentID)
-          .set({
-        // 여기에 필드와 값을 추가하면 됩니다.
-        'BehaviorName': mapForBehaviorsData[behaviorID]!.keys.first,
-      });
-      print('Document successfully added with ID: $documentID');
-    } catch (e) {
-      print('Failed to add document: $e');
-    }
-  }
+  Record(
+      {required this.time,
+      required this.behaviorKey,
+      required this.behaviorValue});
 }

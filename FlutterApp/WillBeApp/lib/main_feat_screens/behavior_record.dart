@@ -13,9 +13,22 @@ import 'package:intl/intl.dart';
 
 class BehavirRecordScreen extends StatefulWidget {
   BehavirRecordScreen(
-      {super.key, required this.studentDataList, required this.cards});
+      {super.key,
+      required this.studentDataList,
+      required this.cards,
+      required this.behaviorIDAndStudentID,
+      required this.mapForBehaviorsData,
+      required this.studentList,
+      required this.historyToday});
   List<dynamic> studentDataList;
   Widget? cards;
+  List<Widget> historyToday;
+
+  Map<String?, String?> behaviorIDAndStudentID = {};
+  List studentList = [];
+
+  Map<String, Map<String, String>> mapForBehaviorsData = {};
+
   @override
   State<BehavirRecordScreen> createState() => _BehavirRecordScreenState();
 }
@@ -86,13 +99,23 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               ],
             ),
             Container(
-              height: MediaQuery.of(context).size.height / 7,
-              width: MediaQuery.sizeOf(context).width,
-              color: Colors.blue,
-              child: const Column(
-                children: [Row()],
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                      color: Color.fromARGB(128, 158, 158, 158), width: 2),
+                ),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [Text("이름"), Text("행동명"), Text("시간")],
               ),
             ),
+            SizedBox(
+                height: MediaQuery.of(context).size.height / 7,
+                width: MediaQuery.sizeOf(context).width,
+                child: ListView(
+                  children: widget.historyToday,
+                )),
             Text(
               "버튼 눌러서 기록하기",
               style: Theme.of(context).textTheme.headlineMedium,
