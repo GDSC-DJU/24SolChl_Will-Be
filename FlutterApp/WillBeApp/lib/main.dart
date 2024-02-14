@@ -89,7 +89,7 @@ class _MyAppState extends State<MyApp> {
                 color: Color.fromARGB(255, 0, 0, 0),
                 fontWeight: FontWeight.w600),
             bodyMedium: TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 color: Color.fromARGB(255, 0, 0, 0),
                 fontWeight: FontWeight.w600),
             bodySmall: TextStyle(

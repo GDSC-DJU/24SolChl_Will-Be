@@ -103,11 +103,11 @@ class _Main_PageState extends State<Main_Page> {
     // 찾은 객체의 학생 리스트 get (문서 id)
     await educatorCollectionRef.get().then(
       (documentSnapshot) {
-        // 리스트로 변환
+        // 리스트로 변환x4Dgi3VK0IWk8C1YPKObjjZfiHL
         studentList = documentSnapshot.docs.map((doc) => doc.id).toList();
         // 디버깅 print
         print("HELELO");
-        print(studentList.first);
+        print(studentList);
         // 학생 데이터 추출 함수 호출
       },
       onError: (e) => print("Error completing: $e"),
@@ -138,7 +138,7 @@ class _Main_PageState extends State<Main_Page> {
 
     print(studentList);
     print("Hell222o");
-
+    studentDataList = [];
     for (var student in studentList) {
       await db.collection("Student").doc(student).get().then((querySnapshot) {
         final temp = querySnapshot.data();
@@ -198,7 +198,10 @@ class _Main_PageState extends State<Main_Page> {
 
     getSortedBehaviors().then((value) {
       print("getSortedBehaviors Finished well");
-
+      final authentication = FirebaseAuth.instance;
+      user = authentication.currentUser!;
+      uid = user.uid; //현재 접속한 유저의 UID 할당
+      getEducator(uid);
       setState(() {
         sortedBehaviors = value;
         buildBehaviorCards(
@@ -230,10 +233,6 @@ class _Main_PageState extends State<Main_Page> {
       const DashBoardScreen(),
     ];
 
-    final authentication = FirebaseAuth.instance;
-    user = authentication.currentUser!;
-    uid = user.uid; //현재 접속한 유저의 UID 할당
-    getEducator(uid);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -307,12 +306,14 @@ class _Main_PageState extends State<Main_Page> {
     List<DocumentSnapshot> records = await fetchRecords();
 
     List<Record> allRecords = []; // 모든 행동의 기록을 저장할 리스트
-
+    int i = 0;
     for (var record in records) {
       Map<String, dynamic> data = record.data() as Map<String, dynamic>;
       data.forEach((key, value) {
         Map<String, dynamic> behaviorData = value as Map<String, dynamic>;
         behaviorData.forEach((behaviorKey, behaviorValue) {
+          print("순서대로 출력 $i 번째  : ${behaviorKey}");
+          i++;
           allRecords.add(Record(
               time: key,
               behaviorKey: behaviorKey,

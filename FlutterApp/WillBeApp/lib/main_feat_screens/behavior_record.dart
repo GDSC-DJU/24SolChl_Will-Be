@@ -107,9 +107,10 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               ),
             ),
             SizedBox(
-                height: MediaQuery.of(context).size.height / 7,
+                height: MediaQuery.of(context).size.height / 10,
                 width: MediaQuery.sizeOf(context).width,
                 child: ListView(
+                  padding: const EdgeInsets.only(top: 0),
                   children: widget.historyToday,
                 )),
             Text(

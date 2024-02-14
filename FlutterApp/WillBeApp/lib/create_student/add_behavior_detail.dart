@@ -7,7 +7,7 @@ import 'package:solution/main_feat_screens/main_page.dart';
 
 class Add_Behavior_Detail extends StatefulWidget {
   Add_Behavior_Detail(
-      {Key? key,
+      {super.key,
       required this.name,
       required this.schoolValue,
       required this.expValue,
@@ -94,7 +94,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => Main_Page(),
+        builder: (context) => const Main_Page(),
       ),
       (route) => false,
     );
@@ -134,15 +134,15 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
             ),
             content: SingleChildScrollView(
               child: Container(
-                  padding: EdgeInsets.only(top: 20),
-                  child: Text(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: const Text(
                     '아이 등록을 완료할까요?',
                     textAlign: TextAlign.center,
                   )),
             ),
             actions: [
               TextButton(
-                child: Text(
+                child: const Text(
                   '취소',
                   style: TextStyle(fontSize: 15),
                 ),
@@ -194,19 +194,19 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(),
-        body: Container(
+        body: SizedBox(
           height: MediaQuery.sizeOf(context).height,
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   width: MediaQuery.of(context).size.width - 32,
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     top: 16,
                     bottom: 16,
                   ),
-                  child: Text(
+                  child: const Text(
                     "측정할 측정행동의 세부사항을\n작성해주세요",
                     textAlign: TextAlign.left,
                     style: TextStyle(
@@ -216,13 +216,13 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextField(
-                  style: TextStyle(
+                  style: const TextStyle(
                     height: 1.5,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -256,21 +256,21 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
               SizedBox(
                 height: 40,
                 width: MediaQuery.of(context).size.width - 32,
-                child: Text(
+                child: const Text(
                   "정확히 어떤 행동을 말하는지 작성해주세요.\n ∙ 예시) 천장을 보고 욕설을 내뱉는 행동",
                   textAlign: TextAlign.left,
                   style: TextStyle(fontSize: 15, color: Colors.black26),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   width: MediaQuery.of(context).size.width - 32,
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     top: 16,
                     bottom: 8,
                   ),
-                  child: Text(
+                  child: const Text(
                     "측정 방식",
                     textAlign: TextAlign.left,
                     style: TextStyle(
@@ -282,16 +282,16 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SizedBox(
                   width: double.infinity,
                   height: 100.0, // 원하는 높이로 조절
                   child: CupertinoSlidingSegmentedControl(
                     groupValue: methodValue,
-                    thumbColor: Color.fromRGBO(211, 211, 211, 1),
-                    padding: EdgeInsets.all(7),
-                    children: {
-                      0: Container(
+                    thumbColor: const Color.fromRGBO(211, 211, 211, 1),
+                    padding: const EdgeInsets.all(7),
+                    children: const {
+                      0: SizedBox(
                         height: 50.0,
                         child: Center(
                             child: Text(
@@ -299,7 +299,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                           style: TextStyle(fontSize: 15),
                         )),
                       ),
-                      1: Container(
+                      1: SizedBox(
                         height: 50.0,
                         child: Center(
                             child: Text(
@@ -307,7 +307,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                           style: TextStyle(fontSize: 15),
                         )),
                       ),
-                      2: Container(
+                      2: SizedBox(
                         height: 50.0,
                         child: Center(
                             child: Text(
@@ -327,21 +327,21 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
               SizedBox(
                 height: 20,
                 width: MediaQuery.of(context).size.width - 32,
-                child: Text(
+                child: const Text(
                   "행동을 한 횟수로 측정해요.",
                   textAlign: TextAlign.left,
                   style: TextStyle(fontSize: 15, color: Colors.black26),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   width: MediaQuery.of(context).size.width - 32,
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     top: 16,
                     bottom: 8,
                   ),
-                  child: Text(
+                  child: const Text(
                     "추정되는 기능",
                     textAlign: TextAlign.left,
                     style: TextStyle(
@@ -353,16 +353,16 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SizedBox(
                   width: double.infinity,
                   height: 100.0, // 원하는 높이로 조절
                   child: CupertinoSlidingSegmentedControl(
                     groupValue: functionValue,
-                    thumbColor: Color.fromRGBO(211, 211, 211, 1),
-                    padding: EdgeInsets.all(7),
-                    children: {
-                      0: Container(
+                    thumbColor: const Color.fromRGBO(211, 211, 211, 1),
+                    padding: const EdgeInsets.all(7),
+                    children: const {
+                      0: SizedBox(
                         height: 50.0,
                         child: Center(
                             child: Text(
@@ -370,7 +370,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                           style: TextStyle(fontSize: 15),
                         )),
                       ),
-                      1: Container(
+                      1: SizedBox(
                         height: 50.0,
                         child: Center(
                             child: Text(
@@ -378,7 +378,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                           style: TextStyle(fontSize: 15),
                         )),
                       ),
-                      2: Container(
+                      2: SizedBox(
                         height: 50.0,
                         child: Center(
                             child: Text(
@@ -395,25 +395,25 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Spacer(),
+              const Spacer(),
               ElevatedButton(
                 onPressed: () {
                   _submitData();
                 },
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero,
                   ),
                   padding: EdgeInsets.zero,
                 ),
                 child: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 32),
-                  color: Color.fromARGB(255, 102, 108, 255),
-                  child: Center(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  color: const Color.fromARGB(255, 102, 108, 255),
+                  child: const Center(
                     child: Text(
                       '등록하고 측정하러 가기',
                       style: TextStyle(fontSize: 20, color: Colors.white),

@@ -13,6 +13,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ///빌드 여기있어요~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~₩
   @override
   Widget build(BuildContext context) {
+    print("리스트 길이 출력 ${widget.studentDataList.length}");
     if (widget.studentDataList.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
