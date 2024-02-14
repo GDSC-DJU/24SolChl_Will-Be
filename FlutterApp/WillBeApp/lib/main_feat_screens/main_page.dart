@@ -195,13 +195,12 @@ class _Main_PageState extends State<Main_Page> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    final authentication = FirebaseAuth.instance;
+    user = authentication.currentUser!;
+    uid = user.uid; //현재 접속한 유저의 UID 할당
     getSortedBehaviors().then((value) {
       print("getSortedBehaviors Finished well");
-      final authentication = FirebaseAuth.instance;
-      user = authentication.currentUser!;
-      uid = user.uid; //현재 접속한 유저의 UID 할당
-      getEducator(uid);
+
       setState(() {
         sortedBehaviors = value;
         buildBehaviorCards(
@@ -233,6 +232,7 @@ class _Main_PageState extends State<Main_Page> {
       const DashBoardScreen(),
     ];
 
+    getEducator(uid);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -312,7 +312,7 @@ class _Main_PageState extends State<Main_Page> {
       data.forEach((key, value) {
         Map<String, dynamic> behaviorData = value as Map<String, dynamic>;
         behaviorData.forEach((behaviorKey, behaviorValue) {
-          print("순서대로 출력 $i 번째  : ${behaviorKey}");
+          print("순서대로 출력 $i 번째  : $behaviorKey");
           i++;
           allRecords.add(Record(
               time: key,
