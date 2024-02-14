@@ -92,10 +92,6 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                 Text(
                   getCurrentDate(),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.expand_more_sharp),
-                ),
               ],
             ),
             Container(
