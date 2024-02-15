@@ -1,6 +1,8 @@
 ///이 파일은 사용자가 로그인 후 최초 보여지는 화면입니다.
 ///로그아웃 버튼을 클릭 시 자동로그인이 풀리며 사용자의 계정 정보는 앱에서 지워지게 됩니다.
 ///따라서 다시 로그인을 해야합니다.
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,7 +36,7 @@ class _Main_PageState extends State<Main_Page> {
   Map<String, Map<String, String>> mapForBehaviorsData =
       {}; //행동ID : <행동이름 : 아동이름> 의 형태로 저장
 
-  List<Widget> historyWidgetList = [];
+  Stream<List<Widget>> historyWidgetList = const Stream.empty();
 
   ///하단 네비게이션 바를 위한 인데스
   int _selected_screen = 0;
@@ -208,11 +210,6 @@ class _Main_PageState extends State<Main_Page> {
         buildBehaviorCards(
           behaviorList: sortedBehaviors,
         ).then((value) => cards = value);
-        historyToday(
-                behaviorIDAndStudentID: behaviorIDAndStudentID,
-                mapForBehaviorsData: mapForBehaviorsData,
-                studentsID: studentList)
-            .then((value) => historyWidgetList = value);
       });
     });
   }
@@ -260,103 +257,6 @@ class _Main_PageState extends State<Main_Page> {
   ///
   ///
   ///
-
-  Future<List<Widget>> historyToday({
-    required Map<String?, String?> behaviorIDAndStudentID,
-    required Map<String, Map<String, String>> mapForBehaviorsData,
-    required List studentsID,
-  }) async {
-    List<Widget> recordList = [];
-    Map<String, String> mapTimeName = {};
-
-    Future<List<DocumentSnapshot>> fetchRecords() async {
-      List<DocumentSnapshot> records = [];
-      String nowDay = DateTime.now().toString().substring(0, 10);
-
-      QuerySnapshot? snapshotStudents = await db
-          .collection('Educator')
-          .doc(user.uid)
-          .collection('Student')
-          .get();
-
-      for (var doc in snapshotStudents.docs) {
-        DocumentSnapshot docSnapshot = await db
-            .collection('Student')
-            .doc(doc.id)
-            .collection('BehaviorRecord')
-            .doc(nowDay) //예) 2024-02-14
-            .get();
-
-        Map<String, dynamic> fields =
-            docSnapshot.data() as Map<String, dynamic>;
-        DocumentSnapshot stdCollection =
-            await docSnapshot.reference.parent.parent!.get();
-
-        if (docSnapshot.exists) {
-          fields.forEach((key, value) {
-            mapTimeName[key] = stdCollection.get('name');
-          });
-
-          records.add(docSnapshot);
-        }
-      }
-
-      return records;
-    }
-
-    List<DocumentSnapshot> records = await fetchRecords();
-
-    List<Record> allRecords = []; // 모든 행동의 기록을 저장할 리스트
-
-    for (var record in records) {
-      Map<String, dynamic> data = record.data() as Map<String, dynamic>;
-      data.forEach((key, value) {
-        Map<String, dynamic> behaviorData = value as Map<String, dynamic>;
-        behaviorData.forEach((behaviorKey, behaviorValue) {
-          allRecords.add(Record(
-              time: key,
-              behaviorKey: behaviorKey,
-              behaviorValue: behaviorValue));
-        });
-      });
-    }
-
-    // 모든 행동의 기록을 시간 순으로 정렬
-    allRecords.sort(
-        (a, b) => DateTime.parse(b.time).compareTo(DateTime.parse(a.time)));
-
-    for (var record in allRecords) {
-      recordList.add(
-        ListTile(
-          minVerticalPadding: 0,
-          selectedTileColor: Colors.blue,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                mapTimeName[record.time]!,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              Text(
-                record.behaviorValue,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              Text(
-                record.time.substring(10, 19),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ),
-          onTap: () {
-            print(record.behaviorValue);
-          },
-        ),
-      );
-    }
-
-    return recordList;
-  }
 
   Future<void> recordBahvior({
     required String? behaviorID,
@@ -538,13 +438,6 @@ class _Main_PageState extends State<Main_Page> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      setState(() {
-                        historyToday(
-                                behaviorIDAndStudentID: behaviorIDAndStudentID,
-                                mapForBehaviorsData: mapForBehaviorsData,
-                                studentsID: studentList)
-                            .then((value) => historyWidgetList = value);
-                      });
                       recordBahvior(
                         behaviorID: behaviorList[0],
                         studentID: behaviorIDAndStudentID[behaviorList[0]],
@@ -616,13 +509,6 @@ class _Main_PageState extends State<Main_Page> {
                   //두번째 카드
                   GestureDetector(
                     onTap: () async {
-                      setState(() {
-                        historyToday(
-                                behaviorIDAndStudentID: behaviorIDAndStudentID,
-                                mapForBehaviorsData: mapForBehaviorsData,
-                                studentsID: studentList)
-                            .then((value) => historyWidgetList = value);
-                      });
                       recordBahvior(
                         behaviorID: behaviorList[1],
                         studentID: behaviorIDAndStudentID[behaviorList[1]],
@@ -706,18 +592,11 @@ class _Main_PageState extends State<Main_Page> {
                 children: [
                   GestureDetector(
                     onTap: () async {
+                      setState(() {});
                       await recordBahvior(
                         behaviorID: behaviorList[0],
                         studentID: behaviorIDAndStudentID[behaviorList[0]],
                       );
-
-                      setState(() {
-                        historyToday(
-                                behaviorIDAndStudentID: behaviorIDAndStudentID,
-                                mapForBehaviorsData: mapForBehaviorsData,
-                                studentsID: studentList)
-                            .then((value) => {historyWidgetList = value});
-                      });
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -790,18 +669,6 @@ class _Main_PageState extends State<Main_Page> {
                         behaviorID: behaviorList[1],
                         studentID: behaviorIDAndStudentID[behaviorList[1]],
                       );
-                      getSortedBehaviors().then((value) {
-                        print("getSortedBehaviors Finished well");
-
-                        setState(() {
-                          historyToday(
-                                  behaviorIDAndStudentID:
-                                      behaviorIDAndStudentID,
-                                  mapForBehaviorsData: mapForBehaviorsData,
-                                  studentsID: studentList)
-                              .then((value) => historyWidgetList = value);
-                        });
-                      });
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -873,22 +740,6 @@ class _Main_PageState extends State<Main_Page> {
                         behaviorID: behaviorList[2],
                         studentID: behaviorIDAndStudentID[behaviorList[2]],
                       );
-                      getSortedBehaviors().then((value) {
-                        print("getSortedBehaviors Finished well");
-
-                        setState(() {
-                          sortedBehaviors = value;
-                          buildBehaviorCards(
-                            behaviorList: sortedBehaviors,
-                          ).then((value) => cards = value);
-                          historyToday(
-                                  behaviorIDAndStudentID:
-                                      behaviorIDAndStudentID,
-                                  mapForBehaviorsData: mapForBehaviorsData,
-                                  studentsID: studentList)
-                              .then((value) => historyWidgetList = value);
-                        });
-                      });
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -974,14 +825,6 @@ class _Main_PageState extends State<Main_Page> {
                       // 첫번째 카드
                       GestureDetector(
                         onTap: () async {
-                          setState(() {
-                            historyToday(
-                                    behaviorIDAndStudentID:
-                                        behaviorIDAndStudentID,
-                                    mapForBehaviorsData: mapForBehaviorsData,
-                                    studentsID: studentList)
-                                .then((value) => historyWidgetList = value);
-                          });
                           recordBahvior(
                             behaviorID: behaviorList[0],
                             studentID: behaviorIDAndStudentID[behaviorList[0]],
@@ -1054,14 +897,6 @@ class _Main_PageState extends State<Main_Page> {
                       //두번째 카드
                       GestureDetector(
                         onTap: () async {
-                          setState(() {
-                            historyToday(
-                                    behaviorIDAndStudentID:
-                                        behaviorIDAndStudentID,
-                                    mapForBehaviorsData: mapForBehaviorsData,
-                                    studentsID: studentList)
-                                .then((value) => historyWidgetList = value);
-                          });
                           recordBahvior(
                             behaviorID: behaviorList[1],
                             studentID: behaviorIDAndStudentID[behaviorList[1]],
@@ -1138,14 +973,6 @@ class _Main_PageState extends State<Main_Page> {
                       //3번째 행동 카드
                       GestureDetector(
                         onTap: () async {
-                          setState(() {
-                            historyToday(
-                                    behaviorIDAndStudentID:
-                                        behaviorIDAndStudentID,
-                                    mapForBehaviorsData: mapForBehaviorsData,
-                                    studentsID: studentList)
-                                .then((value) => historyWidgetList = value);
-                          });
                           recordBahvior(
                             behaviorID: behaviorList[2],
                             studentID: behaviorIDAndStudentID[behaviorList[2]],
@@ -1218,14 +1045,6 @@ class _Main_PageState extends State<Main_Page> {
                       //4번째
                       GestureDetector(
                         onTap: () async {
-                          setState(() {
-                            historyToday(
-                                    behaviorIDAndStudentID:
-                                        behaviorIDAndStudentID,
-                                    mapForBehaviorsData: mapForBehaviorsData,
-                                    studentsID: studentList)
-                                .then((value) => historyWidgetList = value);
-                          });
                           recordBahvior(
                             behaviorID: behaviorList[3],
                             studentID: behaviorIDAndStudentID[behaviorList[3]],
@@ -1306,15 +1125,4 @@ class _Main_PageState extends State<Main_Page> {
 
     return Container();
   }
-}
-
-class Record {
-  final String time;
-  final String behaviorKey;
-  final String behaviorValue;
-
-  Record(
-      {required this.time,
-      required this.behaviorKey,
-      required this.behaviorValue});
 }
