@@ -16,28 +16,30 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
   Map<String, TextEditingController> textControllers = {
     "name": TextEditingController(),
   };
-  List schoolList = ["유치원", "초등학교", "중학교", "고등학교"];
+  // List schoolList = ["유치원", "초등학교", "중학교", "고등학교"];
 
-  int expValue = 1; // 추가된 부분
-  List expMsgList = [
-    "1.~~",
-    "2.~~",
-    "3.~~",
-    "4.~~",
-    "5.~~",
-  ];
-  List selfHelpMsgList = [
-    "1.~~",
-    "2.~~",
-    "3.~~",
-    "4.~~",
-    "5.~~",
-  ];
+  // int expValue = 1; // 추가된 부분
+  // List expMsgList = [
+  //   "1.~~",
+  //   "2.~~",
+  //   "3.~~",
+  //   "4.~~",
+  //   "5.~~",
+  // ];
+  // List selfHelpMsgList = [
+  //   "1.~~",
+  //   "2.~~",
+  //   "3.~~",
+  //   "4.~~",
+  //   "5.~~",
+  // ];
 
-  int selfHelpValue = 1; // 추가된 부분
+  // int selfHelpValue = 1; // 추가된 부분
 
   void _submitData() {
-    if (widget.name == "" || widget.schoolValue == null) {
+    if (widget.name == ""
+        // || widget.schoolValue == null
+        ) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('모든 항목을 입력해주세요!')));
       return;
@@ -48,9 +50,9 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
       MaterialPageRoute(
         builder: (context) => Add_Behavior(
           name: widget.name,
-          schoolValue: widget.schoolValue,
-          expValue: expValue.toInt(), // 수정된 부분
-          selfHelpValue: selfHelpValue.toInt(),
+          // schoolValue: widget.schoolValue,
+          // expValue: expValue.toInt(), // 수정된 부분
+          // selfHelpValue: selfHelpValue.toInt(),
         ),
       ),
     );
@@ -122,202 +124,201 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
                   },
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 32,
-                  padding: EdgeInsets.only(
-                    top: 16,
-                    bottom: 8,
-                  ),
-                  child: Text(
-                    "학령 선택",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Color.fromARGB(255, 102, 108, 255),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    CustomRadioButton(
-                      isSelected: widget.schoolValue == 0,
-                      onTap: () {
-                        setState(() {
-                          widget.schoolValue = 0;
-                        });
-                      },
-                      text: '유치원',
-                    ),
-                    SizedBox(width: 14),
-                    CustomRadioButton(
-                      isSelected: widget.schoolValue == 1,
-                      onTap: () {
-                        setState(() {
-                          widget.schoolValue = 1;
-                        });
-                      },
-                      text: '초등학교',
-                    ),
-                    SizedBox(width: 14),
-                    CustomRadioButton(
-                      isSelected: widget.schoolValue == 2,
-                      onTap: () {
-                        setState(() {
-                          widget.schoolValue = 2;
-                        });
-                      },
-                      text: '중학교',
-                    ),
-                    SizedBox(width: 14),
-                    CustomRadioButton(
-                      isSelected: widget.schoolValue == 3,
-                      onTap: () {
-                        setState(() {
-                          widget.schoolValue = 3;
-                        });
-                      },
-                      text: '고등학교',
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 32,
-                  padding: EdgeInsets.only(
-                    top: 16,
-                    bottom: 8,
-                  ),
-                  child: Text(
-                    "의사소통 수준",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Color.fromARGB(255, 102, 108, 255),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 32,
-                  padding: EdgeInsets.only(
-                    top: 16,
-                    bottom: 8,
-                  ),
-                  child: Text(
-                    expMsgList[expValue - 1],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: SliderTheme(
-                  data: SliderThemeData(
-                    thumbColor: Color.fromARGB(255, 102, 108, 255),
-                    thumbShape: AppSliderShape(
-                        thumbRadius: 10, thumbValue: expValue.toString()),
-                  ),
-                  child: Slider(
-                    value: expValue?.toDouble() ?? 1.0,
-                    onChanged: (value) {
-                      setState(() {
-                        expValue = value.toInt();
-                      });
-                    },
-                    min: 1.0,
-                    max: 5.0,
-                    divisions: 4,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 32,
-                  padding: EdgeInsets.only(
-                    top: 16,
-                    bottom: 8,
-                  ),
-                  child: Text(
-                    "자조기술 수준",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Color.fromARGB(255, 102, 108, 255),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 32,
-                  padding: EdgeInsets.only(
-                    top: 16,
-                    bottom: 8,
-                  ),
-                  child: Text(
-                    selfHelpMsgList[selfHelpValue - 1],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: SliderTheme(
-                  data: SliderThemeData(
-                    thumbColor: Color.fromARGB(255, 102, 108, 255),
-                    thumbShape: AppSliderShape(
-                        thumbRadius: 10, thumbValue: selfHelpValue.toString()),
-                  ),
-                  child: Slider(
-                    value: selfHelpValue?.toDouble() ?? 1.0,
-                    onChanged: (value) {
-                      setState(() {
-                        selfHelpValue = value.toInt();
-                      });
-                    },
-                    min: 1.0,
-                    max: 5.0,
-                    divisions: 4,
-                  ),
-                ),
-              ),
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: Container(
+              //     width: MediaQuery.of(context).size.width - 32,
+              //     padding: EdgeInsets.only(
+              //       top: 16,
+              //       bottom: 8,
+              //     ),
+              //     child: Text(
+              //       "학령 선택",
+              //       textAlign: TextAlign.left,
+              //       style: TextStyle(
+              //         fontSize: 18,
+              //         fontWeight: FontWeight.w500,
+              //         color: Color.fromARGB(255, 102, 108, 255),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: Row(
+              //     children: [
+              //       CustomRadioButton(
+              //         isSelected: widget.schoolValue == 0,
+              //         onTap: () {
+              //           setState(() {
+              //             widget.schoolValue = 0;
+              //           });
+              //         },
+              //         text: '유치원',
+              //       ),
+              //       SizedBox(width: 14),
+              //       CustomRadioButton(
+              //         isSelected: widget.schoolValue == 1,
+              //         onTap: () {
+              //           setState(() {
+              //             widget.schoolValue = 1;
+              //           });
+              //         },
+              //         text: '초등학교',
+              //       ),
+              //       SizedBox(width: 14),
+              //       CustomRadioButton(
+              //         isSelected: widget.schoolValue == 2,
+              //         onTap: () {
+              //           setState(() {
+              //             widget.schoolValue = 2;
+              //           });
+              //         },
+              //         text: '중학교',
+              //       ),
+              //       SizedBox(width: 14),
+              //       CustomRadioButton(
+              //         isSelected: widget.schoolValue == 3,
+              //         onTap: () {
+              //           setState(() {
+              //             widget.schoolValue = 3;
+              //           });
+              //         },
+              //         text: '고등학교',
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: Container(
+              //     width: MediaQuery.of(context).size.width - 32,
+              //     padding: EdgeInsets.only(
+              //       top: 16,
+              //       bottom: 8,
+              //     ),
+              //     child: Text(
+              //       "의사소통 수준",
+              //       textAlign: TextAlign.left,
+              //       style: TextStyle(
+              //         fontSize: 18,
+              //         fontWeight: FontWeight.w500,
+              //         color: Color.fromARGB(255, 102, 108, 255),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: Container(
+              //     width: MediaQuery.of(context).size.width - 32,
+              //     padding: EdgeInsets.only(
+              //       top: 16,
+              //       bottom: 8,
+              //     ),
+              //     child: Text(
+              //       expMsgList[expValue - 1],
+              //       textAlign: TextAlign.center,
+              //       style: TextStyle(
+              //         fontSize: 18,
+              //         fontWeight: FontWeight.w500,
+              //         color: Colors.black,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: SliderTheme(
+              //     data: SliderThemeData(
+              //       thumbColor: Color.fromARGB(255, 102, 108, 255),
+              //       thumbShape: AppSliderShape(
+              //           thumbRadius: 10, thumbValue: expValue.toString()),
+              //     ),
+              //     child: Slider(
+              //       value: expValue?.toDouble() ?? 1.0,
+              //       onChanged: (value) {
+              //         setState(() {
+              //           expValue = value.toInt();
+              //         });
+              //       },
+              //       min: 1.0,
+              //       max: 5.0,
+              //       divisions: 4,
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: Container(
+              //     width: MediaQuery.of(context).size.width - 32,
+              //     padding: EdgeInsets.only(
+              //       top: 16,
+              //       bottom: 8,
+              //     ),
+              //     child: Text(
+              //       "자조기술 수준",
+              //       textAlign: TextAlign.left,
+              //       style: TextStyle(
+              //         fontSize: 18,
+              //         fontWeight: FontWeight.w500,
+              //         color: Color.fromARGB(255, 102, 108, 255),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: Container(
+              //     width: MediaQuery.of(context).size.width - 32,
+              //     padding: EdgeInsets.only(
+              //       top: 16,
+              //       bottom: 8,
+              //     ),
+              //     child: Text(
+              //       selfHelpMsgList[selfHelpValue - 1],
+              //       textAlign: TextAlign.center,
+              //       style: TextStyle(
+              //         fontSize: 18,
+              //         fontWeight: FontWeight.w500,
+              //         color: Colors.black,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: SliderTheme(
+              //     data: SliderThemeData(
+              //       thumbColor: Color.fromARGB(255, 102, 108, 255),
+              //       thumbShape: AppSliderShape(
+              //           thumbRadius: 10, thumbValue: selfHelpValue.toString()),
+              //     ),
+              //     child: Slider(
+              //       value: selfHelpValue?.toDouble() ?? 1.0,
+              //       onChanged: (value) {
+              //         setState(() {
+              //           selfHelpValue = value.toInt();
+              //         });
+              //       },
+              //       min: 1.0,
+              //       max: 5.0,
+              //       divisions: 4,
+              //     ),
+              //   ),
+              // ),
               Spacer(),
               ElevatedButton(
                 onPressed: () {
-                  print([widget.name, widget.schoolValue, expValue]);
                   _submitData();
                 },
                 style: ElevatedButton.styleFrom(

@@ -9,16 +9,16 @@ class Add_Behavior_Detail extends StatefulWidget {
   Add_Behavior_Detail(
       {super.key,
       required this.name,
-      required this.schoolValue,
-      required this.expValue,
-      required this.selfHelpValue,
+      // required this.schoolValue,
+      // required this.expValue,
+      // required this.selfHelpValue,
       required this.behaviorValue});
 
   String? name;
-  int? schoolValue;
-  int? expValue;
-  int? selfHelpValue;
-  int? behaviorValue;
+  // int? schoolValue;
+  // int? expValue;
+  // int? selfHelpValue;
+  int behaviorValue;
   String? behaviorName;
 
   @override
@@ -30,8 +30,30 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
   Map<String, TextEditingController> textControllers = {
     "behaviorName": TextEditingController(),
   };
-  int methodValue = 0; // 초기값
-  int functionValue = 0; // 초기값
+  int methodValue = 0; // 초기값 (0: 횟수 / 1: 지속시간 / 2: 지연시간)
+  // int functionValue = 0; // 초기값
+  List<String> schoolOptions = [
+    '언어적 공격(욕설, 고함)',
+    '불순종',
+    '과제 이탈',
+    '신체적 공격(차기, 꼬집기, 때리기)',
+    '기물 파괴',
+    '다른 사람을 놀리거나 화나게함',
+    '달아나기',
+    '안절부절못함',
+    '울화 터뜨리기',
+    '소리 지르기',
+    '기타'
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      textControllers['behaviorName']?.text =
+          schoolOptions[widget.behaviorValue];
+    });
+  }
 
   void signUp() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -44,46 +66,107 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
   }
 
   void createStudent() async {
+    // 유저 객체
     User? user = FirebaseAuth.instance.currentUser;
+    // 학생 doc 생성 (id 자동 생성)
     final docParty = FirebaseFirestore.instance.collection('Student').doc();
-    final subDocParty = FirebaseFirestore.instance
-        .collection('Student')
-        .doc(docParty.id)
-        .collection('Behavior')
-        .doc();
+
+    // final subDocParty = FirebaseFirestore.instance
+    //     .collection('Student')
+    //     .doc(docParty.id)
+    //     .collection('Behavior')
+    //     .doc();
+
     if (user != null) {
+      // 학생 객체 필드 데이터 저장
       await FirebaseFirestore.instance
           .collection('Student')
           .doc(docParty.id)
           .set({
         'name': widget.name,
-        'schoolValue': widget.schoolValue,
-        'level': {
-          'expression': widget.expValue,
-          'selfHelp': widget.selfHelpValue
-        },
         'educator': user.uid,
       });
+
+      // Record collection에 학생 doc 생성
       await FirebaseFirestore.instance
-          .collection('Student')
+          .collection('Record')
+          .doc(docParty.id)
+          .set({});
+
+      // Record 컬렉션 내 Behavior 세팅
+      await FirebaseFirestore.instance
+          .collection('Record')
           .doc(docParty.id)
           .collection('Behavior')
-          .doc(subDocParty.id)
-          .set({
-        'behaviorName': widget.behaviorName,
-        'behaviorType': widget.behaviorValue,
-      });
+          .doc(widget.behaviorName)
+          .set({});
 
-      ///주석으로 감싸진 코드 조기홍이 추가
+      // Record 컬렉션 내 Behavior 유형 등록
+      await FirebaseFirestore.instance
+          .collection('Record')
+          .doc(docParty.id)
+          .collection('Behavior')
+          .doc(widget.behaviorName)
+          .set({'method': methodValue}); // (0: 횟수 / 1: 지속시간 / 2: 지연시간)
+
+      // Record 컬렉션 내 Report doc 생성
+      await FirebaseFirestore.instance
+          .collection('Record')
+          .doc(docParty.id)
+          .collection('Report')
+          .doc(user.uid)
+          .set({});
+
+      // Record 컬렉션 내 Report 세팅 (Daily)
+      await FirebaseFirestore.instance
+          .collection('Record')
+          .doc(docParty.id)
+          .collection('Report')
+          .doc(user.uid)
+          .collection("Daily")
+          .doc(widget.behaviorName)
+          .set({});
+
+      // Record 컬렉션 내 Report 세팅 (Weekly)
+      await FirebaseFirestore.instance
+          .collection('Record')
+          .doc(docParty.id)
+          .collection('Report')
+          .doc(user.uid)
+          .collection("Weekly")
+          .doc(widget.behaviorName)
+          .set({});
+
+      // 교사 컬렉션 내 행동 Order 등록
       await FirebaseFirestore.instance
           .collection('Educator')
           .doc(user.uid)
           .collection('Order')
-          .doc(docParty.id)
-          .set({subDocParty.id: "1"});
+          .doc() //랜덤 id
+          .set({'${widget.behaviorName}': "1"}); //행동 명으로 변경
 
-      ///
+      // 교사 컬렉션 내 Timetable doc 생성
+      await FirebaseFirestore.instance
+          .collection('Educator')
+          .doc(user.uid)
+          .collection('Schedule')
+          .doc('Timetable')
+          .set({});
 
+      List weekList = ['Mon', 'Tue', "Wed", "Thu", "Fri"];
+      // 교사 컬렉션 내 Schedule 등록
+      for (var day in weekList) {
+        await FirebaseFirestore.instance
+            .collection('Educator')
+            .doc(user.uid)
+            .collection('Schedule')
+            .doc('Timetable')
+            .collection("Routine")
+            .doc(day)
+            .set({});
+      }
+
+      // 교사 내 학생 id 등록
       await FirebaseFirestore.instance
           .collection('Educator')
           .doc(user.uid)
@@ -103,14 +186,10 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
   void _submitData() async {
     print([
       widget.name,
-      widget.schoolValue,
-      widget.expValue,
-      widget.selfHelpValue,
       widget.behaviorValue,
       widget.behaviorName,
     ]);
     if (widget.name == "" ||
-        widget.schoolValue == null ||
         widget.behaviorValue == null ||
         widget.behaviorName == "") {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -333,71 +412,71 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                   style: TextStyle(fontSize: 15, color: Colors.black26),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 32,
-                  padding: const EdgeInsets.only(
-                    top: 16,
-                    bottom: 8,
-                  ),
-                  child: const Text(
-                    "추정되는 기능",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Color.fromARGB(255, 102, 108, 255),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 100.0, // 원하는 높이로 조절
-                  child: CupertinoSlidingSegmentedControl(
-                    groupValue: functionValue,
-                    thumbColor: const Color.fromRGBO(211, 211, 211, 1),
-                    padding: const EdgeInsets.all(7),
-                    children: const {
-                      0: SizedBox(
-                        height: 50.0,
-                        child: Center(
-                            child: Text(
-                          '유형물/활동의 획득',
-                          style: TextStyle(fontSize: 15),
-                        )),
-                      ),
-                      1: SizedBox(
-                        height: 50.0,
-                        child: Center(
-                            child: Text(
-                          '사회적 자극',
-                          style: TextStyle(fontSize: 15),
-                        )),
-                      ),
-                      2: SizedBox(
-                        height: 50.0,
-                        child: Center(
-                            child: Text(
-                          '감각자극',
-                          style: TextStyle(fontSize: 15),
-                        )),
-                      ),
-                    },
-                    onValueChanged: (value) {
-                      setState(() {
-                        functionValue = value as int;
-                      });
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 16),
+              //   child: Container(
+              //     width: MediaQuery.of(context).size.width - 32,
+              //     padding: const EdgeInsets.only(
+              //       top: 16,
+              //       bottom: 8,
+              //     ),
+              //     child: const Text(
+              //       "추정되는 기능",
+              //       textAlign: TextAlign.left,
+              //       style: TextStyle(
+              //         fontSize: 18,
+              //         fontWeight: FontWeight.w500,
+              //         color: Color.fromARGB(255, 102, 108, 255),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 16),
+              //   child: SizedBox(
+              //     width: double.infinity,
+              //     height: 100.0, // 원하는 높이로 조절
+              //     child: CupertinoSlidingSegmentedControl(
+              //       groupValue: functionValue,
+              //       thumbColor: const Color.fromRGBO(211, 211, 211, 1),
+              //       padding: const EdgeInsets.all(7),
+              //       children: const {
+              //         0: SizedBox(
+              //           height: 50.0,
+              //           child: Center(
+              //               child: Text(
+              //             '유형물/활동의 획득',
+              //             style: TextStyle(fontSize: 15),
+              //           )),
+              //         ),
+              //         1: SizedBox(
+              //           height: 50.0,
+              //           child: Center(
+              //               child: Text(
+              //             '사회적 자극',
+              //             style: TextStyle(fontSize: 15),
+              //           )),
+              //         ),
+              //         2: SizedBox(
+              //           height: 50.0,
+              //           child: Center(
+              //               child: Text(
+              //             '감각자극',
+              //             style: TextStyle(fontSize: 15),
+              //           )),
+              //         ),
+              //       },
+              //       onValueChanged: (value) {
+              //         setState(() {
+              //           functionValue = value as int;
+              //         });
+              //       },
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
               const Spacer(),
               ElevatedButton(
                 onPressed: () {

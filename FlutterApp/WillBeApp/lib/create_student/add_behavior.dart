@@ -6,15 +6,15 @@ class Add_Behavior extends StatefulWidget {
   Add_Behavior({
     Key? key,
     required this.name,
-    required this.schoolValue,
-    required this.expValue,
-    required this.selfHelpValue,
+    // required this.schoolValue,
+    // required this.expValue,
+    // required this.selfHelpValue,
   });
   final String? name;
-  final int? schoolValue;
-  int? expValue;
-  int? selfHelpValue;
-  int? behaviorValue;
+  // final int? schoolValue;
+  // int? expValue;
+  // int? selfHelpValue;
+  int behaviorValue = 0;
 
   @override
   State<Add_Behavior> createState() => _Add_Behavior_State();
@@ -22,9 +22,6 @@ class Add_Behavior extends StatefulWidget {
 
 class _Add_Behavior_State extends State<Add_Behavior> {
   // 입력값을 추적하기 위한 controllers
-  Map<String, TextEditingController> textControllers = {
-    "name": TextEditingController(),
-  };
   List<String> schoolOptions = [
     '언어적 공격(욕설, 고함)',
     '불순종',
@@ -40,7 +37,7 @@ class _Add_Behavior_State extends State<Add_Behavior> {
   ];
   void _submitData() {
     if (widget.name == "" ||
-        widget.schoolValue == null ||
+        // widget.schoolValue == null ||
         widget.behaviorValue == null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('측정할 도전행동의 유형을 선택해주세요!')));
@@ -51,9 +48,9 @@ class _Add_Behavior_State extends State<Add_Behavior> {
       MaterialPageRoute(
         builder: (context) => Add_Behavior_Detail(
           name: widget.name,
-          schoolValue: widget.schoolValue,
-          expValue: widget.expValue,
-          selfHelpValue: widget.selfHelpValue,
+          // schoolValue: widget.schoolValue,
+          // expValue: widget.expValue,
+          // selfHelpValue: widget.selfHelpValue,
           behaviorValue: widget.behaviorValue,
         ),
       ),
