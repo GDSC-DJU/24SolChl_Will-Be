@@ -106,7 +106,8 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                 children: [Text("이름"), Text("행동명"), Text("시간")],
               ),
             ),
-            SizedBox(
+            Container(
+                margin: const EdgeInsets.only(bottom: 20),
                 height: MediaQuery.of(context).size.height / 10,
                 width: MediaQuery.sizeOf(context).width,
                 child: ListView(

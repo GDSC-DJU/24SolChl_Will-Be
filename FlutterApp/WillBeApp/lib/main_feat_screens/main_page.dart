@@ -30,7 +30,7 @@ class _Main_PageState extends State<Main_Page> {
   List<String>? sortedBehaviors = [];
   Widget? cards;
   Map<String?, String?> behaviorIDAndStudentID = {}; //행동ID : 아동ID의 형태로 저장
-
+  List<Widget> widgetOptions = [];
   Map<String, Map<String, String>> mapForBehaviorsData =
       {}; //행동ID : <행동이름 : 아동이름> 의 형태로 저장
 
@@ -198,6 +198,8 @@ class _Main_PageState extends State<Main_Page> {
     final authentication = FirebaseAuth.instance;
     user = authentication.currentUser!;
     uid = user.uid; //현재 접속한 유저의 UID 할당
+    getEducator(uid);
+
     getSortedBehaviors().then((value) {
       print("getSortedBehaviors Finished well");
 
@@ -218,7 +220,7 @@ class _Main_PageState extends State<Main_Page> {
   @override
   Widget build(BuildContext context) {
     ///바텀 네비게이션
-    List<Widget> widgetOptions = <Widget>[
+    widgetOptions = <Widget>[
       HomeScreen(studentDataList: studentDataList),
       const CalendarManageScreen(),
       BehavirRecordScreen(
@@ -232,7 +234,6 @@ class _Main_PageState extends State<Main_Page> {
       const DashBoardScreen(),
     ];
 
-    getEducator(uid);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -306,14 +307,12 @@ class _Main_PageState extends State<Main_Page> {
     List<DocumentSnapshot> records = await fetchRecords();
 
     List<Record> allRecords = []; // 모든 행동의 기록을 저장할 리스트
-    int i = 0;
+
     for (var record in records) {
       Map<String, dynamic> data = record.data() as Map<String, dynamic>;
       data.forEach((key, value) {
         Map<String, dynamic> behaviorData = value as Map<String, dynamic>;
         behaviorData.forEach((behaviorKey, behaviorValue) {
-          print("순서대로 출력 $i 번째  : $behaviorKey");
-          i++;
           allRecords.add(Record(
               time: key,
               behaviorKey: behaviorKey,
@@ -329,20 +328,23 @@ class _Main_PageState extends State<Main_Page> {
     for (var record in allRecords) {
       recordList.add(
         ListTile(
+          minVerticalPadding: 0,
+          selectedTileColor: Colors.blue,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 mapTimeName[record.time]!,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               Text(
                 record.behaviorValue,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               Text(
                 record.time.substring(10, 19),
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
           ),
@@ -356,7 +358,7 @@ class _Main_PageState extends State<Main_Page> {
     return recordList;
   }
 
-  void recordBahvior({
+  Future<void> recordBahvior({
     required String? behaviorID,
     required String? studentID,
   }) async {
@@ -428,7 +430,7 @@ class _Main_PageState extends State<Main_Page> {
         }
       }
     }
-
+    print("행동 아이디 수 ${behaviorIDAndStudentID.length}");
     //행동의 개수에 따라 다른 화면을 보여주기 위한 swtich 문
     switch (behaviorIDAndStudentID.length) {
       case 0:
@@ -451,7 +453,7 @@ class _Main_PageState extends State<Main_Page> {
                       //first bahavior
                       GestureDetector(
                         onTap: () async {
-                          recordBahvior(
+                          await recordBahvior(
                             behaviorID: behaviorList[0],
                             studentID: behaviorIDAndStudentID[behaviorList[0]],
                           );
@@ -536,6 +538,13 @@ class _Main_PageState extends State<Main_Page> {
                 children: [
                   GestureDetector(
                     onTap: () async {
+                      setState(() {
+                        historyToday(
+                                behaviorIDAndStudentID: behaviorIDAndStudentID,
+                                mapForBehaviorsData: mapForBehaviorsData,
+                                studentsID: studentList)
+                            .then((value) => historyWidgetList = value);
+                      });
                       recordBahvior(
                         behaviorID: behaviorList[0],
                         studentID: behaviorIDAndStudentID[behaviorList[0]],
@@ -607,6 +616,13 @@ class _Main_PageState extends State<Main_Page> {
                   //두번째 카드
                   GestureDetector(
                     onTap: () async {
+                      setState(() {
+                        historyToday(
+                                behaviorIDAndStudentID: behaviorIDAndStudentID,
+                                mapForBehaviorsData: mapForBehaviorsData,
+                                studentsID: studentList)
+                            .then((value) => historyWidgetList = value);
+                      });
                       recordBahvior(
                         behaviorID: behaviorList[1],
                         studentID: behaviorIDAndStudentID[behaviorList[1]],
@@ -690,10 +706,18 @@ class _Main_PageState extends State<Main_Page> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[0],
                         studentID: behaviorIDAndStudentID[behaviorList[0]],
                       );
+
+                      setState(() {
+                        historyToday(
+                                behaviorIDAndStudentID: behaviorIDAndStudentID,
+                                mapForBehaviorsData: mapForBehaviorsData,
+                                studentsID: studentList)
+                            .then((value) => {historyWidgetList = value});
+                      });
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -762,10 +786,22 @@ class _Main_PageState extends State<Main_Page> {
                   //두번째 카드
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[1],
                         studentID: behaviorIDAndStudentID[behaviorList[1]],
                       );
+                      getSortedBehaviors().then((value) {
+                        print("getSortedBehaviors Finished well");
+
+                        setState(() {
+                          historyToday(
+                                  behaviorIDAndStudentID:
+                                      behaviorIDAndStudentID,
+                                  mapForBehaviorsData: mapForBehaviorsData,
+                                  studentsID: studentList)
+                              .then((value) => historyWidgetList = value);
+                        });
+                      });
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -833,10 +869,26 @@ class _Main_PageState extends State<Main_Page> {
                   //3번째 코드
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[2],
                         studentID: behaviorIDAndStudentID[behaviorList[2]],
                       );
+                      getSortedBehaviors().then((value) {
+                        print("getSortedBehaviors Finished well");
+
+                        setState(() {
+                          sortedBehaviors = value;
+                          buildBehaviorCards(
+                            behaviorList: sortedBehaviors,
+                          ).then((value) => cards = value);
+                          historyToday(
+                                  behaviorIDAndStudentID:
+                                      behaviorIDAndStudentID,
+                                  mapForBehaviorsData: mapForBehaviorsData,
+                                  studentsID: studentList)
+                              .then((value) => historyWidgetList = value);
+                        });
+                      });
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -922,6 +974,14 @@ class _Main_PageState extends State<Main_Page> {
                       // 첫번째 카드
                       GestureDetector(
                         onTap: () async {
+                          setState(() {
+                            historyToday(
+                                    behaviorIDAndStudentID:
+                                        behaviorIDAndStudentID,
+                                    mapForBehaviorsData: mapForBehaviorsData,
+                                    studentsID: studentList)
+                                .then((value) => historyWidgetList = value);
+                          });
                           recordBahvior(
                             behaviorID: behaviorList[0],
                             studentID: behaviorIDAndStudentID[behaviorList[0]],
@@ -994,6 +1054,14 @@ class _Main_PageState extends State<Main_Page> {
                       //두번째 카드
                       GestureDetector(
                         onTap: () async {
+                          setState(() {
+                            historyToday(
+                                    behaviorIDAndStudentID:
+                                        behaviorIDAndStudentID,
+                                    mapForBehaviorsData: mapForBehaviorsData,
+                                    studentsID: studentList)
+                                .then((value) => historyWidgetList = value);
+                          });
                           recordBahvior(
                             behaviorID: behaviorList[1],
                             studentID: behaviorIDAndStudentID[behaviorList[1]],
@@ -1070,6 +1138,14 @@ class _Main_PageState extends State<Main_Page> {
                       //3번째 행동 카드
                       GestureDetector(
                         onTap: () async {
+                          setState(() {
+                            historyToday(
+                                    behaviorIDAndStudentID:
+                                        behaviorIDAndStudentID,
+                                    mapForBehaviorsData: mapForBehaviorsData,
+                                    studentsID: studentList)
+                                .then((value) => historyWidgetList = value);
+                          });
                           recordBahvior(
                             behaviorID: behaviorList[2],
                             studentID: behaviorIDAndStudentID[behaviorList[2]],
@@ -1142,6 +1218,14 @@ class _Main_PageState extends State<Main_Page> {
                       //4번째
                       GestureDetector(
                         onTap: () async {
+                          setState(() {
+                            historyToday(
+                                    behaviorIDAndStudentID:
+                                        behaviorIDAndStudentID,
+                                    mapForBehaviorsData: mapForBehaviorsData,
+                                    studentsID: studentList)
+                                .then((value) => historyWidgetList = value);
+                          });
                           recordBahvior(
                             behaviorID: behaviorList[3],
                             studentID: behaviorIDAndStudentID[behaviorList[3]],
