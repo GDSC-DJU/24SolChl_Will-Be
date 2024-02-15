@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:solution/calender_screens/timetable_example.dart';
-import 'package:solution/calender_screens/timetable.dart';
+import 'package:solution/calender_screens/set_routine_page.dart';
 
 class CalendarManageScreen extends StatefulWidget {
   const CalendarManageScreen({super.key});
@@ -33,7 +33,12 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SetRoutinePage(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
