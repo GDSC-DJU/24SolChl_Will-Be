@@ -50,122 +50,102 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
     return DateFormat('yyyy년 MM월 dd일').format(now);
   }
 
-  Stream<List<Widget>> historyToday({
+  Stream<List<Widget>> fetchAndSortRecords({
     required BuildContext context,
+    required String educatorId,
   }) {
-    StreamController<List<Widget>> controller = StreamController<
-        List<Widget>>.broadcast(); // BroadcastStreamController로 초기화
+    StreamController<List<Widget>> controller =
+        StreamController<List<Widget>>();
 
-    Map<String, String> mapTimeName = {};
+    String nowDay = DateTime.now().toString().substring(0, 10); // 오늘 날짜
 
-    Stream<List<DocumentSnapshot>> fetchRecords() {
-      StreamController<List<DocumentSnapshot>> controller = StreamController();
-      String nowDay = DateTime.now().toString().substring(0, 10);
+    Stream<QuerySnapshot> snapshotStudents = db
+        .collection('Educator')
+        .doc(educatorId)
+        .collection('Student')
+        .snapshots();
 
-      Stream<QuerySnapshot> snapshotStudents = db
-          .collection('Educator')
-          .doc(user.uid)
-          .collection('Student')
-          .snapshots();
+    snapshotStudents.listen((snapshot) async {
+      List<Map<String, dynamic>> allRecords = [];
 
-      snapshotStudents.listen((snapshot) async {
-        List<DocumentSnapshot> records = [];
+      for (var doc in snapshot.docs) {
+        db
+            .collection("Record")
+            .doc(doc.id)
+            .collection('Behavior')
+            .snapshots()
+            .listen((snapshotBH) {
+          for (var behaviorDoc in snapshotBH.docs) {
+            String behaviorName = behaviorDoc.id;
+            behaviorDoc.reference
+                .collection('BehaviorRecord')
+                .snapshots() // Details 컬렉션의 스냅샷을 구독합니다.
+                .listen((recordSnapshot) {
+              // 스냅샷이 변경될 때마다 코드 블록이 실행됩니다.
+              for (var element in recordSnapshot.docs) {
+                DateTime time = DateTime.parse(element.id);
 
-        for (var doc in snapshot.docs) {
-          DocumentSnapshot docSnapshot = await db
-              .collection('Student')
-              .doc(doc.id)
-              .collection('BehaviorRecord')
-              .doc(nowDay) //예) 2024-02-14
-              .get();
+                allRecords.add({
+                  'name': behaviorDoc.get('name'),
+                  'behavior': behaviorName,
+                  'time': time,
+                });
 
-          Map<String, dynamic> fields =
-              docSnapshot.data() as Map<String, dynamic>;
-          DocumentSnapshot stdCollection =
-              await docSnapshot.reference.parent.parent!.get();
+                // 시간 내림차순으로 정렬
+                allRecords.sort((a, b) => b['time'].compareTo(a['time']));
 
-          if (docSnapshot.exists) {
-            fields.forEach((key, value) {
-              mapTimeName[key] = stdCollection.get('name');
+                // 정렬된 결과를 바탕으로 ListTile 생성
+                List<Widget> tiles = allRecords.map((record) {
+                  String formattedTime =
+                      "${record['time'].hour.toString().padLeft(2, '0')}:${record['time'].minute.toString().padLeft(2, '0')}:${record['time'].second.toString().padLeft(2, '0')}";
+
+                  return ListTile(
+                    key: Key(
+                        record['time'].toString()), // 각 ListTile에 고유한 Key를 할당
+
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          record['name'],
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        Text(
+                          record['behavior'],
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        Text(
+                          formattedTime,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.cancel),
+                          onPressed: () async {
+                            await db
+                                .collection("Record")
+                                .doc(doc.id)
+                                .collection('Behavior')
+                                .doc(behaviorName)
+                                .collection('BehaviorRecord')
+                                .doc(element.id)
+                                .delete();
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList();
+
+                controller.add(tiles);
+              }
             });
-
-            records.add(docSnapshot);
           }
-        }
-
-        controller.add(records);
-      });
-
-      return controller.stream;
-    }
-
-    Stream<List<DocumentSnapshot>> recordsStream = fetchRecords();
-
-    recordsStream.listen((records) {
-      List<Record> allRecords = []; // 모든 행동의 기록을 저장할 리스트
-
-      for (var record in records) {
-        Map<String, dynamic> data = record.data() as Map<String, dynamic>;
-        data.forEach((key, value) {
-          Map<String, dynamic> behaviorData = value as Map<String, dynamic>;
-          behaviorData.forEach((behaviorKey, behaviorValue) {
-            allRecords.add(Record(
-                time: key,
-                behaviorKey: behaviorKey,
-                behaviorValue: behaviorValue));
-          });
         });
       }
-
-      // 모든 행동의 기록을 시간 순으로 정렬
-      allRecords.sort(
-          (a, b) => DateTime.parse(b.time).compareTo(DateTime.parse(a.time)));
-
-      List<Widget> recordList = [];
-      for (var record in allRecords) {
-        print("record ${record.time}");
-        print("behaviorKey ${record.behaviorKey}");
-        print("behaviorValue ${record.behaviorValue}");
-
-        recordList.add(
-          ListTile(
-            minVerticalPadding: 0,
-            selectedTileColor: Colors.blue,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  mapTimeName[record.time]!,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                Text(
-                  record.behaviorValue,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                Text(
-                  record.time.substring(10, 19),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-            onTap: () {
-              print(record.behaviorValue);
-            },
-          ),
-        );
-      }
-
-      controller.add(recordList); // controller에 데이터 추가
-      print("길이 확인 ${recordList.length}");
     });
 
-    controller.stream.listen((list) {
-      // 스트림의 데이터를 처리하고 출력
-      print('길이 확인: ${list.length}');
-    });
-
-    return controller.stream; // controller의 스트림을 반환
+    return controller.stream;
   }
 
   @override
@@ -182,11 +162,15 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     '행동 기록',
                     style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text("오늘의 기록하기"),
                   ),
                 ],
               ),
@@ -211,7 +195,8 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               ),
             ),
             StreamBuilder<List<Widget>>(
-              stream: historyToday(context: context),
+              stream:
+                  fetchAndSortRecords(context: context, educatorId: user.uid),
               builder:
                   (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

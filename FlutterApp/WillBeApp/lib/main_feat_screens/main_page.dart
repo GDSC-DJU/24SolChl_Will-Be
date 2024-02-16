@@ -257,7 +257,6 @@ class _Main_PageState extends State<Main_Page> {
   ///
   ///
   ///
-
   Future<void> recordBahvior({
     required String? behaviorID,
     required String? studentID,
@@ -269,16 +268,13 @@ class _Main_PageState extends State<Main_Page> {
 
     try {
       await db
-          .collection('Student')
+          .collection('Record')
           .doc(studentID)
+          .collection('Behavior')
+          .doc(mapForBehaviorsData[behaviorID]!.keys.first)
           .collection('BehaviorRecord')
-          .doc(nowDay)
-          .set({
-        // 여기에 필드와 값을 추가하면 됨
-        now.toString(): {
-          'BehaviorName': mapForBehaviorsData[behaviorID]!.keys.first
-        },
-      }, SetOptions(merge: true));
+          .doc(DateTime.now().toString())
+          .set({}, SetOptions(merge: true));
     } catch (e) {
       print('Failed to add document: $e');
     }
