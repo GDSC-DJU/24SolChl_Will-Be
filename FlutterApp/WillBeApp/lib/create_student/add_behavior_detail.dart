@@ -143,7 +143,9 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .doc(user.uid)
           .collection('Order')
           .doc() //랜덤 id
-          .set({'${widget.behaviorName}': "1"}); //행동 명으로 변경
+          .set({
+        '${docParty.id}_${widget.behaviorName}': "1"
+      }); // {아이ID_행동 명 : 숫자}로 변경
 
       // 교사 컬렉션 내 Timetable doc 생성
       await FirebaseFirestore.instance
