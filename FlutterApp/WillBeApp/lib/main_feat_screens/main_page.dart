@@ -1,6 +1,8 @@
 ///이 파일은 사용자가 로그인 후 최초 보여지는 화면입니다.
 ///로그아웃 버튼을 클릭 시 자동로그인이 풀리며 사용자의 계정 정보는 앱에서 지워지게 됩니다.
 ///따라서 다시 로그인을 해야합니다.
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,11 +32,11 @@ class _Main_PageState extends State<Main_Page> {
   List<String>? sortedBehaviors = [];
   Widget? cards;
   Map<String?, String?> behaviorIDAndStudentID = {}; //행동ID : 아동ID의 형태로 저장
-
+  List<Widget> widgetOptions = [];
   Map<String, Map<String, String>> mapForBehaviorsData =
       {}; //행동ID : <행동이름 : 아동이름> 의 형태로 저장
 
-  List<Widget> historyWidgetList = [];
+  Stream<List<Widget>> historyWidgetList = const Stream.empty();
 
   ///하단 네비게이션 바를 위한 인데스
   int _selected_screen = 0;
@@ -208,11 +210,6 @@ class _Main_PageState extends State<Main_Page> {
         buildBehaviorCards(
           behaviorList: sortedBehaviors,
         ).then((value) => cards = value);
-        historyToday(
-                behaviorIDAndStudentID: behaviorIDAndStudentID,
-                mapForBehaviorsData: mapForBehaviorsData,
-                studentsID: studentList)
-            .then((value) => historyWidgetList = value);
       });
     });
   }
@@ -220,7 +217,7 @@ class _Main_PageState extends State<Main_Page> {
   @override
   Widget build(BuildContext context) {
     ///바텀 네비게이션
-    List<Widget> widgetOptions = <Widget>[
+    widgetOptions = <Widget>[
       HomeScreen(studentDataList: studentDataList),
       const CalendarManageScreen(),
       BehavirRecordScreen(
@@ -261,103 +258,7 @@ class _Main_PageState extends State<Main_Page> {
   ///
   ///
 
-  Future<List<Widget>> historyToday({
-    required Map<String?, String?> behaviorIDAndStudentID,
-    required Map<String, Map<String, String>> mapForBehaviorsData,
-    required List studentsID,
-  }) async {
-    List<Widget> recordList = [];
-    Map<String, String> mapTimeName = {};
-
-    Future<List<DocumentSnapshot>> fetchRecords() async {
-      List<DocumentSnapshot> records = [];
-      String nowDay = DateTime.now().toString().substring(0, 10);
-
-      QuerySnapshot? snapshotStudents = await db
-          .collection('Educator')
-          .doc(user.uid)
-          .collection('Student')
-          .get();
-
-      for (var doc in snapshotStudents.docs) {
-        DocumentSnapshot docSnapshot = await db
-            .collection('Student')
-            .doc(doc.id)
-            .collection('BehaviorRecord')
-            .doc(nowDay) //예) 2024-02-14
-            .get();
-
-        Map<String, dynamic> fields =
-            docSnapshot.data() as Map<String, dynamic>;
-        DocumentSnapshot stdCollection =
-            await docSnapshot.reference.parent.parent!.get();
-
-        if (docSnapshot.exists) {
-          fields.forEach((key, value) {
-            mapTimeName[key] = stdCollection.get('name');
-          });
-
-          records.add(docSnapshot);
-        }
-      }
-
-      return records;
-    }
-
-    List<DocumentSnapshot> records = await fetchRecords();
-
-    List<Record> allRecords = []; // 모든 행동의 기록을 저장할 리스트
-    int i = 0;
-    for (var record in records) {
-      Map<String, dynamic> data = record.data() as Map<String, dynamic>;
-      data.forEach((key, value) {
-        Map<String, dynamic> behaviorData = value as Map<String, dynamic>;
-        behaviorData.forEach((behaviorKey, behaviorValue) {
-          print("순서대로 출력 $i 번째  : $behaviorKey");
-          i++;
-          allRecords.add(Record(
-              time: key,
-              behaviorKey: behaviorKey,
-              behaviorValue: behaviorValue));
-        });
-      });
-    }
-
-    // 모든 행동의 기록을 시간 순으로 정렬
-    allRecords.sort(
-        (a, b) => DateTime.parse(b.time).compareTo(DateTime.parse(a.time)));
-
-    for (var record in allRecords) {
-      recordList.add(
-        ListTile(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(
-                mapTimeName[record.time]!,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Text(
-                record.behaviorValue,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Text(
-                record.time.substring(10, 19),
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          ),
-          onTap: () {
-            print(record.behaviorValue);
-          },
-        ),
-      );
-    }
-
-    return recordList;
-  }
-
-  void recordBahvior({
+  Future<void> recordBahvior({
     required String? behaviorID,
     required String? studentID,
   }) async {
@@ -429,7 +330,7 @@ class _Main_PageState extends State<Main_Page> {
         }
       }
     }
-
+    print("행동 아이디 수 ${behaviorIDAndStudentID.length}");
     //행동의 개수에 따라 다른 화면을 보여주기 위한 swtich 문
     switch (behaviorIDAndStudentID.length) {
       case 0:
@@ -452,10 +353,11 @@ class _Main_PageState extends State<Main_Page> {
                       //first bahavior
                       GestureDetector(
                         onTap: () async {
-                          recordBahvior(
+                          await recordBahvior(
                             behaviorID: behaviorList[0],
                             studentID: behaviorIDAndStudentID[behaviorList[0]],
                           );
+                          setState(() {});
                         },
                         child: Container(
                           margin: const EdgeInsets.all(10),
@@ -537,10 +439,11 @@ class _Main_PageState extends State<Main_Page> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[0],
                         studentID: behaviorIDAndStudentID[behaviorList[0]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -608,10 +511,11 @@ class _Main_PageState extends State<Main_Page> {
                   //두번째 카드
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[1],
                         studentID: behaviorIDAndStudentID[behaviorList[1]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -691,10 +595,11 @@ class _Main_PageState extends State<Main_Page> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[0],
                         studentID: behaviorIDAndStudentID[behaviorList[0]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -763,10 +668,11 @@ class _Main_PageState extends State<Main_Page> {
                   //두번째 카드
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[1],
                         studentID: behaviorIDAndStudentID[behaviorList[1]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -834,10 +740,11 @@ class _Main_PageState extends State<Main_Page> {
                   //3번째 코드
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[2],
                         studentID: behaviorIDAndStudentID[behaviorList[2]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -1223,15 +1130,4 @@ class _Main_PageState extends State<Main_Page> {
 
     return Container();
   }
-}
-
-class Record {
-  final String time;
-  final String behaviorKey;
-  final String behaviorValue;
-
-  Record(
-      {required this.time,
-      required this.behaviorKey,
-      required this.behaviorValue});
 }
