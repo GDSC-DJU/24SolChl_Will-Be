@@ -96,10 +96,11 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
       child: Card(
-        color: Colors.blue.withOpacity(tappedCardOpacityValue[name] ?? 1.0),
+        color: const Color.fromARGB(255, 237, 237, 237)
+            .withOpacity(tappedCardOpacityValue[name] ?? 1.0),
         child: SizedBox(
-          width: 150.0,
-          height: 150.0,
+          width: 160.0,
+          height: 250.0,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -107,7 +108,84 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black, fontSize: 30),
+                ),
+                Spacer(),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => SetRoutinePage(),
+                        //   ),
+                        // );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            '의사소통사전',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                  child: Text("측정중인 도전행동 : ", style: TextStyle(fontSize: 15)),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => SetRoutinePage(),
+                        //   ),
+                        // );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            '도전행동 추가하기',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
