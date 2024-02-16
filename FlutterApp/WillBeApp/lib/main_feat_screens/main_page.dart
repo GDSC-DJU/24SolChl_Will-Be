@@ -357,6 +357,7 @@ class _Main_PageState extends State<Main_Page> {
                             behaviorID: behaviorList[0],
                             studentID: behaviorIDAndStudentID[behaviorList[0]],
                           );
+                          setState(() {});
                         },
                         child: Container(
                           margin: const EdgeInsets.all(10),
@@ -438,10 +439,11 @@ class _Main_PageState extends State<Main_Page> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[0],
                         studentID: behaviorIDAndStudentID[behaviorList[0]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -509,10 +511,11 @@ class _Main_PageState extends State<Main_Page> {
                   //두번째 카드
                   GestureDetector(
                     onTap: () async {
-                      recordBahvior(
+                      await recordBahvior(
                         behaviorID: behaviorList[1],
                         studentID: behaviorIDAndStudentID[behaviorList[1]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -592,11 +595,11 @@ class _Main_PageState extends State<Main_Page> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      setState(() {});
                       await recordBahvior(
                         behaviorID: behaviorList[0],
                         studentID: behaviorIDAndStudentID[behaviorList[0]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -669,6 +672,7 @@ class _Main_PageState extends State<Main_Page> {
                         behaviorID: behaviorList[1],
                         studentID: behaviorIDAndStudentID[behaviorList[1]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -740,6 +744,7 @@ class _Main_PageState extends State<Main_Page> {
                         behaviorID: behaviorList[2],
                         studentID: behaviorIDAndStudentID[behaviorList[2]],
                       );
+                      setState(() {});
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),

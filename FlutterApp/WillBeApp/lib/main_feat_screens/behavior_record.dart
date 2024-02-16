@@ -215,7 +215,10 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               builder:
                   (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                      child: SizedBox(
+                          height: 120,
+                          child: Center(child: RefreshProgressIndicator())));
                 } else if (snapshot.hasError) {
                   return const Text('Error occurred');
                 } else if (snapshot.hasData) {
