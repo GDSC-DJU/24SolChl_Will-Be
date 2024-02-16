@@ -257,7 +257,6 @@ class _Main_PageState extends State<Main_Page> {
   ///
   ///
   ///
-
   Future<void> recordBahvior({
     required String? behaviorID,
     required String? studentID,
@@ -271,7 +270,9 @@ class _Main_PageState extends State<Main_Page> {
       await db
           .collection('Record')
           .doc(studentID)
-          .collection(mapForBehaviorsData[behaviorID]!.keys.first)
+          .collection('Behavior')
+          .doc(mapForBehaviorsData[behaviorID]!.keys.first)
+          .collection('BehaviorRecord')
           .doc(DateTime.now().toString())
           .set({}, SetOptions(merge: true));
     } catch (e) {

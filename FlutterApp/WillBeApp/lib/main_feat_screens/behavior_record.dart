@@ -69,61 +69,76 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
       List<Map<String, dynamic>> allRecords = [];
 
       for (var doc in snapshot.docs) {
-        // 스냅샷 스트림을 사용하여 변화 감지
-        db.collection("Record").doc(doc.id).snapshots().listen((snapshotBH) {
-          List<dynamic> behaviorNames = [];
-          behaviorNames = snapshotBH.get('behaviorName') as List<dynamic>;
-
-          for (var behaviorName in behaviorNames) {
-            db
-                .collection('Record')
-                .doc(doc.id)
-                .collection(behaviorName)
-                .where(FieldPath.documentId, isGreaterThanOrEqualTo: nowDay)
-                .where(FieldPath.documentId,
-                    isLessThan: "$nowDay 23:59:59.999999")
-                .get()
-                .then((recordSnapshot) {
+        db
+            .collection("Record")
+            .doc(doc.id)
+            .collection('Behavior')
+            .snapshots()
+            .listen((snapshotBH) {
+          for (var behaviorDoc in snapshotBH.docs) {
+            String behaviorName = behaviorDoc.id;
+            behaviorDoc.reference
+                .collection('BehaviorRecord')
+                .snapshots() // Details 컬렉션의 스냅샷을 구독합니다.
+                .listen((recordSnapshot) {
+              // 스냅샷이 변경될 때마다 코드 블록이 실행됩니다.
               for (var element in recordSnapshot.docs) {
                 DateTime time = DateTime.parse(element.id);
 
                 allRecords.add({
-                  'name': snapshotBH.get('name'),
+                  'name': behaviorDoc.get('name'),
                   'behavior': behaviorName,
                   'time': time,
                 });
+
+                // 시간 내림차순으로 정렬
+                allRecords.sort((a, b) => b['time'].compareTo(a['time']));
+
+                // 정렬된 결과를 바탕으로 ListTile 생성
+                List<Widget> tiles = allRecords.map((record) {
+                  String formattedTime =
+                      "${record['time'].hour.toString().padLeft(2, '0')}:${record['time'].minute.toString().padLeft(2, '0')}:${record['time'].second.toString().padLeft(2, '0')}";
+
+                  return ListTile(
+                    key: Key(
+                        record['time'].toString()), // 각 ListTile에 고유한 Key를 할당
+
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          record['name'],
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        Text(
+                          record['behavior'],
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        Text(
+                          formattedTime,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.cancel),
+                          onPressed: () async {
+                            await db
+                                .collection("Record")
+                                .doc(doc.id)
+                                .collection('Behavior')
+                                .doc(behaviorName)
+                                .collection('BehaviorRecord')
+                                .doc(element.id)
+                                .delete();
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList();
+
+                controller.add(tiles);
               }
-
-              // 시간 내림차순으로 정렬
-              allRecords.sort((a, b) => b['time'].compareTo(a['time']));
-
-              // 정렬된 결과를 바탕으로 ListTile 생성
-              List<Widget> tiles = allRecords.map((record) {
-                String formattedTime =
-                    "${record['time'].hour.toString().padLeft(2, '0')}:${record['time'].minute.toString().padLeft(2, '0')}:${record['time'].second.toString().padLeft(2, '0')}";
-
-                return ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        record['name'],
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Text(
-                        record['behavior'],
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Text(
-                        formattedTime,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
-                );
-              }).toList();
-
-              controller.add(tiles);
             });
           }
         });
@@ -147,11 +162,15 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     '행동 기록',
                     style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text("오늘의 기록하기"),
                   ),
                 ],
               ),
