@@ -4,7 +4,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,7 +74,10 @@ class _Main_PageState extends State<Main_Page> {
   //Data of logged in user
   Object? userData = {};
   List studentList = [];
+  List studentIdList = [];
   List studentDataList = [];
+  List itemContentList = [];
+
   //Function for sign out
   Future<void> signOut() async {
     try {
@@ -96,6 +98,29 @@ class _Main_PageState extends State<Main_Page> {
 
   // Function : 로그인 성공 시 현재 접속중인 교사 data 가져오기
   Future<void> getEducator(String? userUid) async {
+    // 현재 접속 UID를 document로 갖는 객체를 Educator collection에서 가져오기 & Student collection 가져오기
+    CollectionReference educatorCollectionRef = FirebaseFirestore.instance
+        .collection('Educator')
+        .doc(uid)
+        .collection('Student');
+
+    // 찾은 객체의 학생 리스트 get (문서 id)
+    await educatorCollectionRef.get().then(
+      (documentSnapshot) {
+        // 리스트로 변환x4Dgi3VK0IWk8C1YPKObjjZfiHL
+        studentList = documentSnapshot.docs.map((doc) => doc.id).toList();
+        // 디버깅 print
+        print("HELELO");
+        print(studentList);
+        // 학생 데이터 추출 함수 호출
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+    getStudentData(studentList);
+    getBehaviorList(studentList);
+  }
+
+  Future<void> getBehavior(String? userUid) async {
     // 현재 접속 UID를 document로 갖는 객체를 Educator collection에서 가져오기 & Student collection 가져오기
     CollectionReference educatorCollectionRef = FirebaseFirestore.instance
         .collection('Educator')
@@ -140,16 +165,38 @@ class _Main_PageState extends State<Main_Page> {
 
     print(studentList);
     print("Hell222o");
+    studentIdList = [];
     studentDataList = [];
     for (var student in studentList) {
       await db.collection("Student").doc(student).get().then((querySnapshot) {
         final temp = querySnapshot.data();
+        studentIdList.add(querySnapshot.id);
         studentDataList.add(temp);
       });
     }
     print("Hello");
     print(studentDataList);
+  }
 
+  Future<void> getBehaviorList(List studentList) async {
+    if (!isLoading) {
+      return; // 이미 데이터 로딩이 완료된 경우 중복 호출 방지
+    }
+    for (var student in studentList) {
+      await FirebaseFirestore.instance
+          .collection("Record")
+          .doc(student)
+          .collection("Behavior")
+          .get()
+          .then((valueList) {
+        dynamic temp = [];
+        valueList.docs.forEach((element) {
+          temp.add(element.id);
+        });
+        itemContentList.add(temp);
+      });
+    }
+    print(itemContentList);
     isLoading = false; // 데이터 로딩이 완료되었음을 표시
     setState(() {}); // 화면을 다시 그리도록 강제 업데이트
   }
@@ -218,7 +265,10 @@ class _Main_PageState extends State<Main_Page> {
   Widget build(BuildContext context) {
     ///바텀 네비게이션
     widgetOptions = <Widget>[
-      HomeScreen(studentDataList: studentDataList),
+      HomeScreen(
+          studentDataList: studentDataList,
+          studentIdList: studentIdList,
+          itemContentList: itemContentList),
       const CalendarManageScreen(),
       BehavirRecordScreen(
         studentDataList: studentDataList,

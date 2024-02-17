@@ -1,87 +1,147 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:solution/create_student/add_student_info.dart';
 
 class HomeScreen extends StatefulWidget {
   List<dynamic> studentDataList;
+  List<dynamic> studentIdList;
+  List<dynamic> itemContentList;
 
-  HomeScreen({super.key, required this.studentDataList});
+  HomeScreen(
+      {super.key,
+      required this.studentDataList,
+      required this.studentIdList,
+      required this.itemContentList});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  ///빌드 여기있어요~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~₩
+  final CarouselController _controller = CarouselController();
+  int _current = 0;
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    print("intinetet");
+    print(widget.studentDataList);
+    print(widget.studentIdList);
+    // getBehaviorList(widget.studentIdList);
+  }
+
   @override
   Widget build(BuildContext context) {
-    print("리스트 길이 출력 ${widget.studentDataList.length}");
-    if (widget.studentDataList.isEmpty) {
+    if (widget.studentDataList.isEmpty || widget.itemContentList.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
     return Expanded(
-      child: ListView.builder(
-        itemCount: (widget.studentDataList.length / 2).ceil(),
-        itemBuilder: (BuildContext context, int index) {
-          return buildRowOfCards(index);
-        },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width - 16,
+            child: Text(
+              '아이들',
+              style: Theme.of(context).textTheme.headlineMedium,
+              textAlign: TextAlign.left,
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width - 32,
+            height: MediaQuery.of(context).size.height / 1.5,
+            child: CarouselSlider(
+              items: List.generate(
+                widget.studentDataList.length,
+                (index) => buildCard(widget.studentDataList[index],index),
+              ),
+              carouselController: _controller,
+              options: CarouselOptions(
+                autoPlay: true,
+                enlargeCenterPage: true,
+                aspectRatio: 2 / 3, // 카드 비율
+                viewportFraction: 0.8, // 카드가 보이는 정도
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _current = index;
+                  });
+                },
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (int i = 0; i < widget.studentDataList.length; i++)
+                buildDot(i, _current),
+            ],
+          ),
+          Spacer(),
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: SizedBox(
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Add_Student_Info(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  padding: EdgeInsets.zero,
+                  backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  height: 50,
+                  child: Center(
+                    child: Text(
+                      '아이 추가하기',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildRowOfCards(int rowIndex) {
-    int startIndex = rowIndex * 2;
-    int endIndex = (rowIndex + 1) * 2;
-    endIndex = endIndex > widget.studentDataList.length
-        ? widget.studentDataList.length
-        : endIndex;
-
-    List<dynamic> rowData =
-        widget.studentDataList.sublist(startIndex, endIndex);
-
-    // 데이터 수가 홀수이고 현재 행이 마지막 행인 경우
-    if (rowData.length % 2 == 1 &&
-        rowIndex == (widget.studentDataList.length / 2).floor()) {
-      // 마지막 Card를 왼쪽 정렬
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            buildCard(rowData[0]),
-            // 두 번째 아이템은 없으므로 비워둠
-            Container(),
-          ],
-        ),
-      );
-    } else {
-      // 짝수 개의 아이템인 경우나 홀수 개의 아이템인데 마지막 행이 아닌 경우
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: rowData.map((item) {
-            return buildCard(item);
-          }).toList(),
-        ),
-      );
-    }
-  }
-
-  @override
-  Widget buildCard(Object data) {
-    // Object에서 필요한 필드(이름) 추출
+  Widget buildCard(Object data, int index) {
     Map<String, dynamic> studentData = (data as Map<String, dynamic>);
+
     String name = studentData['name'];
     return GestureDetector(
       onTapDown: (_) {
-        // 탭이 발생했을 때 해당 Card의 투명도를 낮추기
         print('onTapDown: $name');
         setState(() {
           tappedCardOpacityValue[name] = 0.3;
         });
       },
       onTapUp: (_) {
-        // 탭이 해제되었을 때 해당 Card의 투명도를 초기값으로 복원
         print('onTapUp: $name');
         setState(() {
           tappedCardOpacityValue[name] = 1.0;
@@ -95,91 +155,197 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       },
-      child: Card(
-        color: const Color.fromARGB(255, 237, 237, 237)
-            .withOpacity(tappedCardOpacityValue[name] ?? 1.0),
-        child: SizedBox(
-          width: 160.0,
-          height: 250.0,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 237, 237, 237)
+              .withOpacity(tappedCardOpacityValue[name] ?? 1.0),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  name,
-                  style: const TextStyle(color: Colors.black, fontSize: 30),
+                Container(
+                  height: 160.0,
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 100.0,
+                          height: 100.0,
+                          child: Card(
+                            clipBehavior: Clip.antiAlias,
+                            elevation: 0,
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(100)),
+                            ),
+                            child: Image.network(
+                              // 이미지 DB 구축 시 대치
+                              "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(30),
+                          child: Text(
+                            name,
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 30),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      width: 125,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Add_Student_Info(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          padding: EdgeInsets.zero,
+                          backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                        ),
+                        child: Container(
+                          width: 150,
+                          height: 50,
+                          child: Center(
+                            child: Text(
+                              '의사소통사전',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 125,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await FirebaseFirestore.instance
+                              .collection('Educator')
+                              .doc("jazP2SBljKd8uZHQoQuv5n98LX72")
+                              .collection('Order')
+                              .doc('OrderList')
+                              .get()
+                              .then((querySnapshot) {
+                            final temp = querySnapshot.data();
+                            print(temp);
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          padding: EdgeInsets.zero,
+                          backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                        ),
+                        child: Container(
+                          width: 150,
+                          height: 50,
+                          child: Center(
+                            child: Text(
+                              '측정 기록',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 32,
+                  height: MediaQuery.of(context).size.height / 4.4,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width - 32,
+                          height: 100,
+                          // color: Colors.black,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...widget.itemContentList[index]
+                                  .map((item) => Center(
+                                        child: Text(
+                                          item,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList(),
+                              SizedBox(
+                                height: 30, // Icon의 높이와 동일하게 설정
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 Spacer(),
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                   child: SizedBox(
-                    height: 50,
+                    width: 180,
+                    height: 40,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => SetRoutinePage(),
-                        //   ),
-                        // );
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
+                        side: BorderSide(color: Colors.black),
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         padding: EdgeInsets.zero,
-                        backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                        backgroundColor: Color.fromARGB(255, 255, 255, 255),
                       ),
                       child: Container(
                         width: double.infinity,
-                        height: 50,
                         child: Center(
                           child: Text(
-                            '의사소통사전',
+                            '도전행동 추가하기 +',
                             style: TextStyle(
                                 fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                  child: Text("측정중인 도전행동 : ", style: TextStyle(fontSize: 15)),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: SizedBox(
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => SetRoutinePage(),
-                        //   ),
-                        // );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        padding: EdgeInsets.zero,
-                        backgroundColor: Color.fromARGB(255, 102, 108, 255),
-                      ),
-                      child: Container(
-                        width: double.infinity,
-                        height: 50,
-                        child: Center(
-                          child: Text(
-                            '도전행동 추가하기',
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
+                                color: Colors.black,
                                 fontWeight: FontWeight.w500),
                           ),
                         ),
@@ -195,8 +361,23 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Map을 사용하여 각 Card에 대한 투명도 값을 저장
   Map<String, double> tappedCardOpacityValue = {};
 
-  double opacityValue = 1.0; // 초기 투명도 값
+  Widget buildDot(int index, int currentIndex) {
+    return GestureDetector(
+      onTap: () => _controller.animateToPage(index),
+      child: Container(
+        width: 12.0,
+        height: 12.0,
+        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: (Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black)
+              .withOpacity(currentIndex == index ? 0.9 : 0.4),
+        ),
+      ),
+    );
+  }
 }
