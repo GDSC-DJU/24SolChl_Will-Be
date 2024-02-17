@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solution/main_feat_screens/behavior_add_screen.dart';
 import 'package:solution/main_feat_screens/behavior_edit_screen.dart';
+import 'package:solution/main_feat_screens/todays_report.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
 import 'package:intl/intl.dart';
 
@@ -169,7 +170,20 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TodaysReportPage(
+                            studentDataList: widget.studentDataList,
+                            behaviorIDAndStudentID:
+                                widget.behaviorIDAndStudentID,
+                            studentList: widget.studentList,
+                            mapForBehaviorsData: widget.mapForBehaviorsData,
+                          ),
+                        ),
+                      );
+                    },
                     child: const Text("오늘의 기록하기"),
                   ),
                 ],
@@ -223,21 +237,10 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               "버튼 눌러서 기록하기",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            Expanded(child: widget.cards!)
+            Expanded(child: widget.cards ?? const SizedBox())
           ],
         ),
       ),
     );
   }
-}
-
-class Record {
-  final String time;
-  final String behaviorKey;
-  final String behaviorValue;
-
-  Record(
-      {required this.time,
-      required this.behaviorKey,
-      required this.behaviorValue});
 }
