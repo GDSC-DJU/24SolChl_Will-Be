@@ -144,14 +144,11 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .get()
           .then((querySnapshot) {
         Map<String, dynamic>? updates = {};
-        int idx = 0;
         updates = querySnapshot.data();
-        if (updates != null) {
-          idx = updates.length;
-        } else {
-          updates = {};
+        if (updates == null) {
+          updates = {"OrderList": []};
         }
-        updates['${docParty.id}_${widget.behaviorName}'] = '${idx + 1}';
+        updates["OrderList"].add('${docParty.id}_${widget.behaviorName}');
 
         FirebaseFirestore.instance
             .collection('Educator')
@@ -247,14 +244,11 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
         .get()
         .then((querySnapshot) {
       Map<String, dynamic>? updates = {};
-      int idx = 0;
       updates = querySnapshot.data();
-      if (updates != null) {
-        idx = updates.length;
-      } else {
-        updates = {};
+      if (updates == null) {
+        updates = {"OrderList": []};
       }
-      updates['${widget.id}_${widget.behaviorName}'] = '${idx + 1}';
+      updates["OrderList"].add('${widget.id}_${widget.behaviorName}');
 
       FirebaseFirestore.instance
           .collection('Educator')
