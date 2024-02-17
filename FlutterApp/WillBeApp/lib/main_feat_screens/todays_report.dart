@@ -154,213 +154,218 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        surfaceTintColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          surfaceTintColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          elevation: 0,
         ),
-        elevation: 0,
-      ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '오늘 기록하기',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    Text(
-                      "${DateTime.now().year}년 ${DateTime.now().month}월 ${DateTime.now().day}일",
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: ToggleButtons(
-                        isSelected: _isSelected,
-                        onPressed: (int index) {
-                          print(
-                              "index: $index 번째 ${_listedBehaviorIDStudentID[index]}");
-                          setState(() {
-                            for (int i = 0; i < _isSelected.length; i++) {
-                              _isSelected[i] = i == index;
+        body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '오늘 기록하기',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      Text(
+                        "${DateTime.now().year}년 ${DateTime.now().month}월 ${DateTime.now().day}일",
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: ToggleButtons(
+                          isSelected: _isSelected,
+                          onPressed: (int index) {
+                            print(
+                                "index: $index 번째 ${_listedBehaviorIDStudentID[index]}");
+                            setState(() {
+                              for (int i = 0; i < _isSelected.length; i++) {
+                                _isSelected[i] = i == index;
+                              }
+                              print(
+                                  "$index 번째 ID ${behaviorBtn[index].key.toString()}"); //행동의 ID
+                              print(
+                                  'mapForBehaviorsData: ${widget.mapForBehaviorsData[behaviorBtn[index].key.toString().substring(3, behaviorBtn[index].key.toString().length - 3)]}');
+                              _loadReport();
+                            });
+                          },
+                          selectedColor: Colors.white,
+                          fillColor: const Color.fromARGB(136, 205, 205, 205),
+                          color: Colors.red[400],
+                          constraints: const BoxConstraints(
+                            minHeight: 40.0,
+                            minWidth: 135.0,
+                          ),
+                          children: behaviorBtn,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            width: MediaQuery.of(context).size.width - 40,
+                            color: const Color.fromARGB(255, 169, 200, 206),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "데일리 노트",
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "선행사건(필수)",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      Text(
+                        "행동이 발생할 때 전반적인 상황 \n예시) 화장실이 급할 때 행동이 나타난다",
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        color: const Color.fromARGB(255, 240, 240, 240),
+                        child: TextFormField(
+                          controller: _precedingEventController,
+
+                          decoration: InputDecoration(
+                            labelStyle: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          autofillHints: const [AutofillHints.givenName],
+                          minLines: 5, // this will,
+                          maxLines: null, // 줄 수에 제한이 없습니다.
+
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '선행 사건은 필수로 입력해야 합니다.';
                             }
-                            print(
-                                "$index 번째 ID ${behaviorBtn[index].key.toString()}"); //행동의 ID
-                            print(
-                                'mapForBehaviorsData: ${widget.mapForBehaviorsData[behaviorBtn[index].key.toString().substring(3, behaviorBtn[index].key.toString().length - 3)]}');
-                            _loadReport();
-                          });
-                        },
-                        selectedColor: Colors.white,
-                        fillColor: const Color.fromARGB(136, 205, 205, 205),
-                        color: Colors.red[400],
-                        constraints: const BoxConstraints(
-                          minHeight: 40.0,
-                          minWidth: 135.0,
+                            return null;
+                          },
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
-                        children: behaviorBtn,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          width: MediaQuery.of(context).size.width - 40,
-                          color: const Color.fromARGB(255, 169, 200, 206),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "데일리 노트",
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "선행사건(필수)",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    Text(
-                      "행동이 발생할 때 전반적인 상황 \n예시) 화장실이 급할 때 행동이 나타난다",
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      color: const Color.fromARGB(255, 240, 240, 240),
-                      child: TextFormField(
-                        controller: _precedingEventController,
-
-                        decoration: InputDecoration(
-                          labelStyle: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        autofillHints: const [AutofillHints.givenName],
-                        minLines: 5, // this will,
-                        maxLines: null, // 줄 수에 제한이 없습니다.
-
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return '선행 사건은 필수로 입력해야 합니다.';
-                          }
-                          return null;
-                        },
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      Text(
+                        "후속결과(필수)",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      Text(
+                        "행동이 발생한 후 뒤에 따라온 결과 \n예시) 화장실이 급할 때 행동이 나타난다",
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Text(
-                      "후속결과(필수)",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    Text(
-                      "행동이 발생한 후 뒤에 따라온 결과 \n예시) 화장실이 급할 때 행동이 나타난다",
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      color: const Color.fromARGB(255, 240, 240, 240),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelStyle: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        controller: _subsequentResultsController,
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        color: const Color.fromARGB(255, 240, 240, 240),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelStyle: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          controller: _subsequentResultsController,
 
-                        maxLines: null, // 줄 수에 제한이 없습니다.
-                        autofillHints: const [AutofillHints.givenName],
-                        minLines: 5, // this will,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return ' 후속결과는 필수로 입력해야 합니다.';
-                          }
-                          return null;
-                        },
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 60,
-                    ),
-                    Text(
-                      "특이사항(선택)",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      color: const Color.fromARGB(255, 240, 240, 240),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelStyle: Theme.of(context).textTheme.bodySmall,
+                          maxLines: null, // 줄 수에 제한이 없습니다.
+                          autofillHints: const [AutofillHints.givenName],
+                          minLines: 5, // this will,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return ' 후속결과는 필수로 입력해야 합니다.';
+                            }
+                            return null;
+                          },
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
-                        controller: _specialNoteController,
+                      ),
+                      const SizedBox(
+                        height: 60,
+                      ),
+                      Text(
+                        "특이사항(선택)",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        color: const Color.fromARGB(255, 240, 240, 240),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelStyle: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          controller: _specialNoteController,
 
-                        maxLines: null, // 줄 수에 제한이 없습니다.
-                        autofillHints: const [AutofillHints.givenName],
-                        minLines: 5, // this will,
-                        style: Theme.of(context).textTheme.bodySmall,
+                          maxLines: null, // 줄 수에 제한이 없습니다.
+                          autofillHints: const [AutofillHints.givenName],
+                          minLines: 5, // this will,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 80,
-                    ),
-                  ],
-                ),
-              ),
-              TextButton(
-                style: ButtonStyle(
-                  shape: const MaterialStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(0),
+                      const SizedBox(
+                        height: 80,
                       ),
-                    ),
+                    ],
                   ),
-                  backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => Theme.of(context).colorScheme.primary),
                 ),
-                onPressed: () {
-                  _saveReport();
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "저장하기",
-                      style: TextStyle(
-                        fontSize: 27,
-                        color: Theme.of(context).colorScheme.onPrimary,
+                TextButton(
+                  style: ButtonStyle(
+                    shape: const MaterialStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(0),
+                        ),
                       ),
                     ),
-                  ],
+                    backgroundColor: MaterialStateColor.resolveWith(
+                        (states) => Theme.of(context).colorScheme.primary),
+                  ),
+                  onPressed: () {
+                    _saveReport();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "저장하기",
+                        style: TextStyle(
+                          fontSize: 27,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
