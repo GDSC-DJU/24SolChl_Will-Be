@@ -137,30 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     String name = studentData['name'];
     return GestureDetector(
-      onTapDown: (_) {
-        print('onTapDown: $name');
-        setState(() {
-          tappedCardOpacityValue[name] = 0.3;
-        });
-      },
-      onTapUp: (_) {
-        print('onTapUp: $name');
-        setState(() {
-          tappedCardOpacityValue[name] = 1.0;
-        });
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => StudentProfile(
-              data: studentData,
-            ),
-          ),
-        );
-      },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 237, 237, 237)
-              .withOpacity(tappedCardOpacityValue[name] ?? 1.0),
+          color: const Color.fromARGB(255, 237, 237, 237),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Padding(
@@ -219,7 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Expression_Dictionary(name:name),
+                              builder: (context) =>
+                                  Expression_Dictionary(name: name),
                             ),
                           );
                         },
@@ -374,8 +354,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  Map<String, double> tappedCardOpacityValue = {};
 
   Widget buildDot(int index, int currentIndex) {
     return GestureDetector(
