@@ -137,15 +137,40 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .doc(widget.behaviorName)
           .set({});
 
-      // 교사 컬렉션 내 행동 Order 등록
+      // Order List 생성
+      // await FirebaseFirestore.instance
+      //     .collection('Educator')
+      //     .doc(user.uid)
+      //     .collection('Order')
+      //     .doc('OrderList')
+      //     .set({});
+
       await FirebaseFirestore.instance
           .collection('Educator')
           .doc(user.uid)
           .collection('Order')
-          .doc() //랜덤 id
-          .set({
-        '${docParty.id}_${widget.behaviorName}': "1"
-      }); // {아이ID_행동 명 : 숫자}로 변경
+          .doc('OrderList')
+          .get()
+          .then((querySnapshot) {
+        Map<String, dynamic>? updates = {};
+        int idx = 0;
+        updates = querySnapshot.data();
+        if (updates != null) {
+          idx = updates.length;
+        } else {
+          updates = {};
+        }
+        updates['${docParty.id}_${widget.behaviorName}'] = '${idx + 1}';
+
+        FirebaseFirestore.instance
+            .collection('Educator')
+            .doc(user.uid)
+            .collection('Order')
+            .doc('OrderList')
+            .set(
+              updates,
+            );
+      });
 
       // 교사 컬렉션 내 Timetable doc 생성
       await FirebaseFirestore.instance
@@ -249,7 +274,20 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                         textStyle: const TextStyle(fontSize: 15),
                       ),
                       onPressed: () async {
-                        signUp();
+                        //firestore에 관련된 인스턴스들
+                        User? _user = FirebaseAuth.instance.currentUser;
+
+                        // currentUser가 있는지 확인
+                        if (_user != null) {
+                          final docSnapshot = await FirebaseFirestore.instance
+                              .collection('Educator')
+                              .doc(_user!.uid)
+                              .get();
+                          //파이어베이스에 등록이 되어있는지 확인
+                          if (!(docSnapshot.exists)) {
+                            signUp();
+                          }
+                        }
                         createStudent();
                       },
                       child: const Text('확인'),
