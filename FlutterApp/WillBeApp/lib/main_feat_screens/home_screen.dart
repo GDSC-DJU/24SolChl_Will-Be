@@ -6,6 +6,7 @@ import 'package:solution/student_profile_page/student_profile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:solution/create_student/add_student_info.dart';
 import 'package:solution/create_student/add_behavior.dart';
+import 'package:solution/dictionary_screens/expression_dictoinary.dart';
 
 class HomeScreen extends StatefulWidget {
   List<dynamic> studentDataList;
@@ -218,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Add_Student_Info(),
+                              builder: (context) => Expression_Dictionary(name:name),
                             ),
                           );
                         },
@@ -338,7 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           MaterialPageRoute(
                             builder: (context) => Add_Behavior(
                               name: name,
-                              id : widget.studentIdList[index],
+                              id: widget.studentIdList[index],
                             ),
                           ),
                         );
