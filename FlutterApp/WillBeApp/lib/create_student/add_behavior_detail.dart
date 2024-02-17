@@ -9,10 +9,8 @@ class Add_Behavior_Detail extends StatefulWidget {
   Add_Behavior_Detail(
       {super.key,
       required this.name,
-      // required this.schoolValue,
-      // required this.expValue,
-      // required this.selfHelpValue,
-      required this.behaviorValue});
+      required this.behaviorValue,
+      this.id = ""});
 
   String? name;
   // int? schoolValue;
@@ -20,6 +18,7 @@ class Add_Behavior_Detail extends StatefulWidget {
   // int? selfHelpValue;
   int behaviorValue;
   String? behaviorName;
+  String id;
 
   @override
   State<Add_Behavior_Detail> createState() => _Add_Behavior_Detail_State();
@@ -137,14 +136,6 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .doc(widget.behaviorName)
           .set({});
 
-      // Order List 생성
-      // await FirebaseFirestore.instance
-      //     .collection('Educator')
-      //     .doc(user.uid)
-      //     .collection('Order')
-      //     .doc('OrderList')
-      //     .set({});
-
       await FirebaseFirestore.instance
           .collection('Educator')
           .doc(user.uid)
@@ -201,6 +192,79 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .doc(docParty.id)
           .set({});
     }
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Main_Page(),
+      ),
+      (route) => false,
+    );
+  }
+
+  void addBehavior() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    // Record 컬렉션 내 Behavior 세팅
+    await FirebaseFirestore.instance
+        .collection('Record')
+        .doc(widget.id)
+        .collection('Behavior')
+        .doc(widget.behaviorName)
+        .set({});
+
+    // Record 컬렉션 내 Behavior 유형 등록
+    await FirebaseFirestore.instance
+        .collection('Record')
+        .doc(widget.id)
+        .collection('Behavior')
+        .doc(widget.behaviorName)
+        .set({'method': methodValue}); // (0: 횟수 / 1: 지속시간 / 2: 지연시간)
+
+    // Record 컬렉션 내 Report 세팅 (Daily)
+    await FirebaseFirestore.instance
+        .collection('Record')
+        .doc(widget.id)
+        .collection('Report')
+        .doc(user!.uid)
+        .collection("Daily")
+        .doc(widget.behaviorName)
+        .set({});
+
+    // Record 컬렉션 내 Report 세팅 (Weekly)
+    await FirebaseFirestore.instance
+        .collection('Record')
+        .doc(widget.id)
+        .collection('Report')
+        .doc(user.uid)
+        .collection("Weekly")
+        .doc(widget.behaviorName)
+        .set({});
+
+    await FirebaseFirestore.instance
+        .collection('Educator')
+        .doc(user.uid)
+        .collection('Order')
+        .doc('OrderList')
+        .get()
+        .then((querySnapshot) {
+      Map<String, dynamic>? updates = {};
+      int idx = 0;
+      updates = querySnapshot.data();
+      if (updates != null) {
+        idx = updates.length;
+      } else {
+        updates = {};
+      }
+      updates['${widget.id}_${widget.behaviorName}'] = '${idx + 1}';
+
+      FirebaseFirestore.instance
+          .collection('Educator')
+          .doc(user.uid)
+          .collection('Order')
+          .doc('OrderList')
+          .set(
+            updates,
+          );
+    });
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -288,7 +352,11 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                             signUp();
                           }
                         }
-                        createStudent();
+                        if (widget.id == "") {
+                          createStudent();
+                        } else {
+                          addBehavior();
+                        }
                       },
                       child: const Text('확인'),
                     ),
@@ -305,6 +373,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.id);
     widget.behaviorName = textControllers["behaviorName"]?.text;
     return GestureDetector(
       onTap: () {
