@@ -80,6 +80,7 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
             'name': studentName,
             'behavior': behaviorName,
             'time': time,
+            'studentId': studentId,
           });
         }
 
@@ -109,14 +110,17 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                 IconButton(
                   icon: const Icon(Icons.cancel),
                   onPressed: () async {
-                    print('record["time"] = ${record['time'].toString()}');
+                    print('record["time"] = [${record['time'].toString()}]');
                     print('record["name"] = ${record['name']}');
                     print('record["behavior"] = ${record['behavior']}');
+                    //print studentID and behaviorName
+                    print('studentId = $studentId');
+                    print('behaviorName = $behaviorName');
                     await db
                         .collection("Record")
-                        .doc(studentId)
+                        .doc(record['studentId'])
                         .collection('Behavior')
-                        .doc(behaviorName)
+                        .doc(record['behavior'])
                         .collection('BehaviorRecord')
                         .doc(record['time'].toString())
                         .delete();
