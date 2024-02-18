@@ -17,8 +17,8 @@ import 'package:intl/intl.dart';
 class BehavirRecordScreen extends StatefulWidget {
   BehavirRecordScreen({
     super.key,
-    required this.names,
     required this.cards,
+    required this.names,
     required this.behaviors,
     required this.studentIDs,
   });
@@ -161,18 +161,16 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => TodaysReportPage(
-                      //       studentDataList: widget.studentDataList,
-                      //       behaviorIDAndStudentID:
-                      //           widget.behaviorIDAndStudentID,
-                      //       studentList: widget.studentList,
-                      //       mapForBehaviorsData: widget.mapForBehaviorsData,
-                      //     ),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TodaysReportPage(
+                            studentIDs: widget.studentIDs,
+                            behaviors: widget.behaviors,
+                            names: widget.names,
+                          ),
+                        ),
+                      );
                     },
                     child: const Text("오늘의 기록하기"),
                   ),

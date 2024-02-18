@@ -5,16 +5,15 @@ import 'package:flutter/material.dart';
 class TodaysReportPage extends StatefulWidget {
   TodaysReportPage({
     super.key,
-    required this.studentDataList,
-    required this.behaviorIDAndStudentID,
-    required this.studentList,
-    required this.mapForBehaviorsData,
+    required this.names,
+    required this.behaviors,
+    required this.studentIDs,
   });
 
-  Map<String?, String?> behaviorIDAndStudentID = {};
-  List studentList = [];
-  List<dynamic> studentDataList;
-  Map<String, Map<String, String>> mapForBehaviorsData = {};
+  //학생명_행동이름: 학생ID
+  List names = [];
+  List behaviors = [];
+  List studentIDs = [];
 
   @override
   State<TodaysReportPage> createState() => _TodaysReportPageState();
@@ -34,64 +33,54 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
   final FirebaseFirestore db = FirebaseFirestore.instance;
   String selectedBehaviorIDStudentID = '';
   List<String> splitedIDs = [];
+  String nowDay = DateTime.now().toString().substring(0, 10);
 
   String behaviorName = "";
 
   Future<void> _loadReport() async {
-    selectedBehaviorIDStudentID =
-        _listedBehaviorIDStudentID[_isSelected.indexOf(true)];
-    splitedIDs = selectedBehaviorIDStudentID.split("/");
-    behaviorName = widget.mapForBehaviorsData[splitedIDs[0]]!.keys.first;
-
-    print(
-        'splitedIDs[1] : ${_listedBehaviorIDStudentID[_isSelected.indexOf(true)]}');
-    print('user.uid : ${user.uid}');
-    print(
-        'DateTime.now().toString().substring(0, 10) : ${DateTime.now().toString().substring(0, 10)}');
-    print('behaviorName : $behaviorName');
-
     DocumentSnapshot documentSnapshot = await db
         .collection("Record")
-        .doc(splitedIDs[1])
+        .doc(widget.studentIDs[_isSelected.indexOf(true)])
         .collection("Report")
         .doc(user.uid)
         .collection("Daily")
-        .doc(DateTime.now().toString().substring(0, 10))
+        .doc(widget.behaviors[_isSelected.indexOf(true)])
         .get();
 
-    dynamic data = documentSnapshot.get(behaviorName);
+    try {
+      dynamic data =
+          documentSnapshot.get(DateTime.now().toString().substring(0, 10));
 
-    if (documentSnapshot.exists) {
-      print("도큐몬트 가져오기 ${data.toString()}");
+      if (data != null) {
+        print("도큐몬트 가져오기 ${data.toString()}");
 
-      _precedingEventController.text = data['precedingEvent'] ?? '';
-      _subsequentResultsController.text = data['subsequentResults'] ?? '';
-      _specialNoteController.text = data['specialNote'] ?? '';
+        _precedingEventController.text = data['precedingEvent'] ?? '';
+        _subsequentResultsController.text = data['subsequentResults'] ?? '';
+        _specialNoteController.text = data['specialNote'] ?? '';
+        setState(() {});
+      }
+    } catch (e) {
+      _precedingEventController.clear();
+      _subsequentResultsController.clear();
+      _specialNoteController.clear();
     }
   }
 
   Future<void> _saveReport() async {
     if (_formKey.currentState!.validate()) {
       // 입력한 값들을 Firestore에 저장
-
-      List<String> splitedIDs =
-          _listedBehaviorIDStudentID[_isSelected.indexOf(true)]
-              .split("/"); //0번째가 행동ID, 1번째가 학생ID
-
-      String behaviorName =
-          widget.mapForBehaviorsData[splitedIDs[0]]!.keys.first;
+      String nowDay = DateTime.now().toString().substring(0, 10);
 
       DocumentSnapshot doc = await db
           .collection("Record")
-          .doc(splitedIDs[1])
+          .doc(widget.studentIDs[_isSelected.indexOf(true)])
           .collection("Report")
           .doc(user.uid)
           .collection("Daily")
-          .doc(DateTime.now().toString().substring(0, 10))
+          .doc(widget.behaviors[_isSelected.indexOf(true)])
           .get();
-
       doc.reference.update({
-        behaviorName: {
+        nowDay: {
           'precedingEvent': _precedingEventController.text,
           'subsequentResults': _subsequentResultsController.text,
           'specialNote': _specialNoteController.text,
@@ -99,8 +88,6 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
       });
 
       // _firestore
-      print(splitedIDs[0]);
-      print(splitedIDs[1]);
 
       print("procced : ${_precedingEventController.text}");
       print("_sub : ${_subsequentResultsController.text}");
@@ -124,30 +111,28 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
   void initState() {
     super.initState();
 
-    for (var element in widget.studentDataList) {
-      widget.studentList.add(element['name']);
+    for (int i = 0; i < widget.names.length; i++) {
+      String stdName = widget.names[i];
+      String behavName = widget.behaviors[i];
+      String stdID = widget.studentIDs[i].toString();
+
+      // _listedBehaviorIDStudentID)")
+      // _listedBehaviorIDStudentID
+      behaviorBtn.add(
+        Text(
+          key: Key("${stdID}_$behavName"), // 텍스트의 키  = "행동ID/학생ID"
+          '$stdName \n $behavName',
+          style: const TextStyle(
+              fontWeight: FontWeight.w400, color: Color.fromARGB(255, 0, 0, 0)),
+        ),
+      );
+
+      _isSelected.add(false);
     }
 
-    widget.mapForBehaviorsData.forEach((key, value) {
-      value.forEach((behavName, stdName) {
-        _listedBehaviorIDStudentID.add(
-            "${key.toString()}/${widget.behaviorIDAndStudentID[key.toString()]}"); // 아이와 행동 카드별로 리스트에 넣어줌 "행동ID/학생ID"
-        '$stdName \n $behavName';
-        // 텍스트의 키  = "행동ID/학생ID"
-        behaviorBtn.add(
-          Text(
-            key: Key(
-                "${key.toString()}/${widget.behaviorIDAndStudentID[key.toString()]}"), // 텍스트의 키  = "행동ID/학생ID"
-            '$stdName \n $behavName',
-            style: const TextStyle(
-                fontWeight: FontWeight.w400,
-                color: Color.fromARGB(255, 0, 0, 0)),
-          ),
-        );
-        _isSelected.add(false);
-      });
-    });
     _isSelected[0] = true;
+
+    print("lenghtof _isSelected : ${_isSelected.length}");
 
     _loadReport();
   }
@@ -195,16 +180,11 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                         child: ToggleButtons(
                           isSelected: _isSelected,
                           onPressed: (int index) {
-                            print(
-                                "index: $index 번째 ${_listedBehaviorIDStudentID[index]}");
                             setState(() {
                               for (int i = 0; i < _isSelected.length; i++) {
                                 _isSelected[i] = i == index;
                               }
-                              print(
-                                  "$index 번째 ID ${behaviorBtn[index].key.toString()}"); //행동의 ID
-                              print(
-                                  'mapForBehaviorsData: ${widget.mapForBehaviorsData[behaviorBtn[index].key.toString().substring(3, behaviorBtn[index].key.toString().length - 3)]}');
+                              print('_iselected : $_isSelected');
                               _loadReport();
                             });
                           },
