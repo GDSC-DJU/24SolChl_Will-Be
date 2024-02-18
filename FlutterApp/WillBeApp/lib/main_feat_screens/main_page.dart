@@ -358,14 +358,6 @@ class _Main_PageState extends State<Main_Page> {
     DocumentSnapshot? snapshotTempBehavior;
     DocumentSnapshot? snapshotTempStudent;
 
-    print("itemContentList: $itemContentList");
-    print("behaviorList: $behaviorList");
-    print("studentList: $studentList");
-    print("studentIdList: $studentIdList");
-    print("studentDataList: $studentDataList");
-
-    print("행동 아이디 수 ${itemContentList.length}");
-
     //행동의 개수에 따라 다른 화면을 보여주기 위한 swtich 문
     switch (numOfCards) {
       case 0:
