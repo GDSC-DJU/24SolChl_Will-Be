@@ -245,6 +245,7 @@ class _Main_PageState extends State<Main_Page> {
     return valuesList;
   }
 
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -284,9 +285,12 @@ class _Main_PageState extends State<Main_Page> {
 
   Widget buildBehaviorCards({required List behaviorList}) {
     ///내 계정에 등록된 아이의 ID를 가져오는 스냅샷
+    ///
 
+    print("behaviorList");
+    print(behaviorList);
     //행동의 개수에 따라 다른 화면을 보여주기 위한 swtich 문
-    switch (behaviorList.length) {
+    switch (numOfCards) {
       case 0:
         return const Expanded(
           child: Center(
