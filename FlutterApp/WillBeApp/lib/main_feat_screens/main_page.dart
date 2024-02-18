@@ -74,7 +74,6 @@ class _Main_PageState extends State<Main_Page> {
   //Data of logged in user
   Object? userData = {};
   List studentList = [];
-  List studentIdList = [];
   List studentDataList = [];
   List itemContentList = [];
 
@@ -165,12 +164,10 @@ class _Main_PageState extends State<Main_Page> {
 
     print(studentList);
     print("Hell222o");
-    studentIdList = [];
     studentDataList = [];
     for (var student in studentList) {
       await db.collection("Student").doc(student).get().then((querySnapshot) {
         final temp = querySnapshot.data();
-        studentIdList.add(querySnapshot.id);
         studentDataList.add(temp);
       });
     }
@@ -267,7 +264,7 @@ class _Main_PageState extends State<Main_Page> {
     widgetOptions = <Widget>[
       HomeScreen(
           studentDataList: studentDataList,
-          studentIdList: studentIdList,
+          studentIdList: studentList,
           itemContentList: itemContentList),
       const CalendarManageScreen(),
       BehavirRecordScreen(

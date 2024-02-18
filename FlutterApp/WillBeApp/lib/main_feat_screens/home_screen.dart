@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:solution/create_student/add_student_info.dart';
+import 'package:solution/create_student/add_behavior.dart';
+import 'package:solution/dictionary_screens/expression_dictoinary.dart';
 
 class HomeScreen extends StatefulWidget {
   List<dynamic> studentDataList;
@@ -66,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: CarouselSlider(
               items: List.generate(
                 widget.studentDataList.length,
-                (index) => buildCard(widget.studentDataList[index],index),
+                (index) => buildCard(widget.studentDataList[index], index),
               ),
               carouselController: _controller,
               options: CarouselOptions(
@@ -135,30 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     String name = studentData['name'];
     return GestureDetector(
-      onTapDown: (_) {
-        print('onTapDown: $name');
-        setState(() {
-          tappedCardOpacityValue[name] = 0.3;
-        });
-      },
-      onTapUp: (_) {
-        print('onTapUp: $name');
-        setState(() {
-          tappedCardOpacityValue[name] = 1.0;
-        });
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => StudentProfile(
-              data: studentData,
-            ),
-          ),
-        );
-      },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 237, 237, 237)
-              .withOpacity(tappedCardOpacityValue[name] ?? 1.0),
+          color: const Color.fromARGB(255, 237, 237, 237),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Padding(
@@ -217,7 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Add_Student_Info(),
+                              builder: (context) =>
+                                  Expression_Dictionary(name: name),
                             ),
                           );
                         },
@@ -329,7 +311,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 180,
                     height: 40,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // 학생 ID : widget.studentIdList[index]
+                        // 학생 이름 : name
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Add_Behavior(
+                              name: name,
+                              id: widget.studentIdList[index],
+                            ),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         side: BorderSide(color: Colors.black),
                         shape: RoundedRectangleBorder(
@@ -360,8 +354,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  Map<String, double> tappedCardOpacityValue = {};
 
   Widget buildDot(int index, int currentIndex) {
     return GestureDetector(
