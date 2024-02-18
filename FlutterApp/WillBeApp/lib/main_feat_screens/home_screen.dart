@@ -229,18 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 125,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          await FirebaseFirestore.instance
-                              .collection('Educator')
-                              .doc("jazP2SBljKd8uZHQoQuv5n98LX72")
-                              .collection('Order')
-                              .doc('OrderList')
-                              .get()
-                              .then((querySnapshot) {
-                            final temp = querySnapshot.data();
-                            print(temp);
-                          });
-                        },
+                        onPressed: () async {},
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius:

@@ -275,7 +275,10 @@ class _Main_PageState extends State<Main_Page> {
         studentList: studentList,
         historyToday: historyWidgetList,
       ),
-      const DashBoardScreen(),
+      DashBoardScreen(
+          studentDataList: studentDataList,
+          studentIdList: studentList,
+          itemContentList: itemContentList),
     ];
 
     return Scaffold(
