@@ -93,39 +93,52 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
           return ListTile(
             key: Key(record['time'].toString()),
             title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  record['name'],
-                  style: Theme.of(context).textTheme.bodyMedium,
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    record['name'],
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
-                Text(
-                  record['behavior'],
-                  style: Theme.of(context).textTheme.bodyMedium,
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    record['behavior'],
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
-                Text(
-                  formattedTime,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    formattedTime,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.cancel),
-                  onPressed: () async {
-                    print('record["time"] = [${record['time'].toString()}]');
-                    print('record["name"] = ${record['name']}');
-                    print('record["behavior"] = ${record['behavior']}');
-                    //print studentID and behaviorName
-                    print('studentId = $studentId');
-                    print('behaviorName = $behaviorName');
-                    await db
-                        .collection("Record")
-                        .doc(record['studentId'])
-                        .collection('Behavior')
-                        .doc(record['behavior'])
-                        .collection('BehaviorRecord')
-                        .doc(record['time'].toString())
-                        .delete();
-                    setState(() {});
-                  },
+                Expanded(
+                  child: Center(
+                    child: IconButton(
+                      icon: const Icon(Icons.cancel),
+                      onPressed: () async {
+                        print(
+                            'record["time"] = [${record['time'].toString()}]');
+                        print('record["name"] = ${record['name']}');
+                        print('record["behavior"] = ${record['behavior']}');
+                        //print studentID and behaviorName
+                        print('studentId = $studentId');
+                        print('behaviorName = $behaviorName');
+                        await db
+                            .collection("Record")
+                            .doc(record['studentId'])
+                            .collection('Behavior')
+                            .doc(record['behavior'])
+                            .collection('BehaviorRecord')
+                            .doc(record['time'].toString())
+                            .delete();
+                        setState(() {});
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -185,16 +198,38 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               ],
             ),
             Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
                       color: Color.fromARGB(128, 158, 158, 158), width: 2),
                 ),
               ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [Text("이름"), Text("행동명"), Text("시간")],
-              ),
+              child: const Row(children: [
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    "이름",
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    "행동명",
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    "시간",
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    "취소",
+                  ),
+                ),
+              ]),
             ),
             StreamBuilder<List<Widget>>(
               stream: fetchAndSortRecords(
