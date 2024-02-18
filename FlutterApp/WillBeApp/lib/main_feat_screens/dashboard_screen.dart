@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:solution/dictionary_screens/expression_dictoinary.dart';
+import 'package:solution/behavior_detail_screens/behavior_detail_screen.dart';
 
 class DashBoardScreen extends StatefulWidget {
   List<dynamic> studentDataList;
@@ -152,7 +153,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       style: const TextStyle(color: Colors.black, fontSize: 22),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Expression_Dictionary(
+                              name: name,
+                            ),
+                          ),
+                        );
+                      },
                       child: Text(
                         "의사소통사전 바로가기 >",
                         style:
@@ -168,7 +178,18 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   ...widget.itemContentList[index]
                       .map((item) => Container(
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Behavior_Detail_Screen(
+                                      name: name,
+                                      behaviorName: item,
+                                    ),
+                                  ),
+                                );
+                              },
                               child: Text(
                                 '$item >',
                                 style: const TextStyle(
