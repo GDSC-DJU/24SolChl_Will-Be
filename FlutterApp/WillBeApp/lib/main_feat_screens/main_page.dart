@@ -27,6 +27,15 @@ class _Main_PageState extends State<Main_Page> {
   final db = FirebaseFirestore.instance;
   //내부 저장소 사용을 위한 SharedPreferences 객체
 
+  ///정렬될, 정렬에 사용될 리스트들
+  List<Map> stdNamebhvNameTostdID = [];
+  int numOfCards = 0;
+  List names = [];
+  List LastNames = [];
+  List behaviors = [];
+  List studentIDs = [];
+  //여기까지
+
   List<String> valuesList = [];
   List<String>? sortedBehaviors = [];
   Widget? cards;
@@ -116,8 +125,8 @@ class _Main_PageState extends State<Main_Page> {
       },
       onError: (e) => print("Error completing: $e"),
     );
-    getStudentData(studentList);
-    getBehaviorList(studentList);
+    await Future.wait(
+        [getStudentData(studentList), getBehaviorList(studentList)]);
   }
 
   Future<void> getBehavior(String? userUid) async {
@@ -139,7 +148,8 @@ class _Main_PageState extends State<Main_Page> {
       },
       onError: (e) => print("Error completing: $e"),
     );
-    getStudentData(studentList);
+    await Future.wait([getStudentData(studentList)]);
+    print("studentList : $studentList");
   }
 
   // Function : 교사 데이터 접근 완료 시 학교 DB에서 학생 ID 가져오기
@@ -175,7 +185,8 @@ class _Main_PageState extends State<Main_Page> {
       });
     }
     print("Hello");
-    print(studentDataList);
+    print("studentDataList : $studentDataList");
+    isLoading = false; // 데이터 로딩이 완료");
   }
 
   Future<void> getBehaviorList(List studentList) async {
@@ -190,13 +201,12 @@ class _Main_PageState extends State<Main_Page> {
           .get()
           .then((valueList) {
         dynamic temp = [];
-        valueList.docs.forEach((element) {
+        for (var element in valueList.docs) {
           temp.add(element.id);
-        });
+        }
         itemContentList.add(temp);
       });
     }
-    print(itemContentList);
     isLoading = false; // 데이터 로딩이 완료되었음을 표시
     setState(() {}); // 화면을 다시 그리도록 강제 업데이트
   }
@@ -247,17 +257,34 @@ class _Main_PageState extends State<Main_Page> {
     final authentication = FirebaseAuth.instance;
     user = authentication.currentUser!;
     uid = user.uid; //현재 접속한 유저의 UID 할당
-    getEducator(uid);
 
-    getSortedBehaviors().then((value) {
-      print("getSortedBehaviors Finished well");
+    getEducator(uid).then((value) {
+      //학생이름_행동명 : 학생ID Map
 
-      setState(() {
-        sortedBehaviors = value;
-        buildBehaviorCards(
-          behaviorList: sortedBehaviors,
-        ).then((value) => cards = value);
-      });
+      for (int i = 0; i < itemContentList.length; i++) {
+        for (int j = 0; j < itemContentList[i].length; j++) {
+          print("배열안에 배열 출력 ${itemContentList[i][j]}");
+          print(studentDataList[i].values.first);
+          print(studentList[i]);
+          stdNamebhvNameTostdID.add({
+            "${studentDataList[i].values.first}_${itemContentList[i][j]}":
+                studentList[i]
+          });
+          numOfCards++;
+        }
+      }
+      print("item length $numOfCards");
+
+      for (int i = 0; i < numOfCards; i++) {
+        names.add(stdNamebhvNameTostdID[i].keys.first.split("_")[0]);
+        String tmp = stdNamebhvNameTostdID[i].keys.first.split("_")[0];
+        LastNames.add(tmp[0]);
+        print(tmp[0]);
+        behaviors.add(stdNamebhvNameTostdID[i].keys.first.split("_")[1]);
+        studentIDs.add(stdNamebhvNameTostdID[i].values.first);
+      }
+
+      buildBehaviorCards(behaviorList: itemContentList);
     });
   }
 
@@ -271,12 +298,10 @@ class _Main_PageState extends State<Main_Page> {
           itemContentList: itemContentList),
       const CalendarManageScreen(),
       BehavirRecordScreen(
-        studentDataList: studentDataList,
-        cards: cards,
-        behaviorIDAndStudentID: behaviorIDAndStudentID,
-        mapForBehaviorsData: mapForBehaviorsData,
-        studentList: studentList,
-        historyToday: historyWidgetList,
+        studentIDs: studentIDs,
+        names: names,
+        behaviors: behaviors,
+        cards: buildBehaviorCards(behaviorList: itemContentList),
       ),
       const DashBoardScreen(),
     ];
@@ -308,77 +333,44 @@ class _Main_PageState extends State<Main_Page> {
   ///
   ///
   Future<void> recordBahvior({
-    required String? behaviorID,
+    required String? behaivorName,
     required String? studentID,
   }) async {
     // 현재 시간을 가져오기
     DateTime now = DateTime.now();
     // 도큐먼트 ID로 사용할 문자열을 생성
-    String nowDay = DateTime.now().toString().substring(0, 10);
 
     try {
       await db
           .collection('Record')
           .doc(studentID)
           .collection('Behavior')
-          .doc(mapForBehaviorsData[behaviorID]!.keys.first)
+          .doc(behaivorName)
           .collection('BehaviorRecord')
-          .doc(DateTime.now().toString())
+          .doc(now.toString())
           .set({}, SetOptions(merge: true));
     } catch (e) {
       print('Failed to add document: $e');
     }
   }
 
-  Future<Widget> buildBehaviorCards(
-      {required List<String>? behaviorList}) async {
+  Widget buildBehaviorCards({required List behaviorList}) {
     ///내 계정에 등록된 아이의 ID를 가져오는 스냅샷
     QuerySnapshot? snapshotStudents;
 
     DocumentSnapshot? snapshotTempBehavior;
     DocumentSnapshot? snapshotTempStudent;
 
-    try {
-      //사용자가 가지는 학생들의 데이터 불러옴
-      snapshotStudents = await db
-          .collection('Educator')
-          .doc(user.uid)
-          .collection('Student')
-          .get();
-      print("fetchdata error------------------------------------이 아님!!!!");
-    } catch (e) {
-      print("fetchdata error------------------------------------");
-    }
+    print("itemContentList: $itemContentList");
+    print("behaviorList: $behaviorList");
+    print("studentList: $studentList");
+    print("studentIdList: $studentIdList");
+    print("studentDataList: $studentDataList");
 
-    for (var behavior in behaviorList!) {
-      //각 행동의 주인인 아동을 찾아 behaviorIDAndStudentID에 [행동ID] : [아동ID]의 형태로 저장하는 반복문
-      for (var student in snapshotStudents!.docs) {
-        try {
-          snapshotTempBehavior = await db
-              .collection('Student')
-              .doc(student.id)
-              .collection('Behavior')
-              .doc(behavior)
-              .get();
-          snapshotTempStudent =
-              await db.collection('Student').doc(student.id).get();
-        } catch (e) {}
-        if (snapshotTempBehavior!.exists) {
-          print(
-              '${student.id}의 행동:  $behavior 이름: ${snapshotTempBehavior.get("behaviorName")}');
-          mapForBehaviorsData[behavior] = {
-            snapshotTempBehavior.get('behaviorName'):
-                snapshotTempStudent!.get('name')
-          };
+    print("행동 아이디 수 ${itemContentList.length}");
 
-          behaviorIDAndStudentID[behavior] = student.id;
-          break;
-        }
-      }
-    }
-    print("행동 아이디 수 ${behaviorIDAndStudentID.length}");
     //행동의 개수에 따라 다른 화면을 보여주기 위한 swtich 문
-    switch (behaviorIDAndStudentID.length) {
+    switch (numOfCards) {
       case 0:
         return const Expanded(
           child: Center(
@@ -386,251 +378,246 @@ class _Main_PageState extends State<Main_Page> {
           ),
         );
 
-      case 1:
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            print(
-                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
-            return Container(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      //first bahavior
-                      GestureDetector(
-                        onTap: () async {
-                          await recordBahvior(
-                            behaviorID: behaviorList[0],
-                            studentID: behaviorIDAndStudentID[behaviorList[0]],
-                          );
-                          setState(() {});
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight - 20,
-                          width: constraints.maxWidth - 20,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 0,
-                                  blurRadius: 5,
-                                  offset: const Offset(
-                                      0, 10), // changes position of shadow
-                                ),
-                              ]),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white60,
-                                        ),
-                                        child: Center(
-                                          child: Text(mapForBehaviorsData[
-                                                  behaviorList[0]]!
-                                              .values
-                                              .first[0]),
-                                        ),
-                                      ),
-                                      Text(
-                                        "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    mapForBehaviorsData[behaviorList[0]]!
-                                        .keys
-                                        .first,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      case 2:
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            print(
-                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
-            return Container(
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      await recordBahvior(
-                        behaviorID: behaviorList[0],
-                        studentID: behaviorIDAndStudentID[behaviorList[0]],
-                      );
-                      setState(() {});
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      height: constraints.maxHeight / 2 - 20,
-                      width: constraints.maxWidth - 20,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(15),
-                          ),
-                          color: const Color.fromRGBO(195, 255, 250, 1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 5,
-                              offset: const Offset(
-                                  0, 10), // changes position of shadow
-                            ),
-                          ]),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white60,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                          mapForBehaviorsData[behaviorList[0]]!
-                                              .values
-                                              .first[0]),
-                                    ),
-                                  ),
-                                  Text(
-                                    "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: Text(
-                                mapForBehaviorsData[behaviorList[0]]!
-                                    .keys
-                                    .first,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  //두번째 카드
-                  GestureDetector(
-                    onTap: () async {
-                      await recordBahvior(
-                        behaviorID: behaviorList[1],
-                        studentID: behaviorIDAndStudentID[behaviorList[1]],
-                      );
-                      setState(() {});
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      height: constraints.maxHeight / 2 - 20,
-                      width: constraints.maxWidth - 20,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(15),
-                          ),
-                          color: const Color.fromRGBO(195, 255, 250, 1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 5,
-                              offset: const Offset(
-                                  0, 10), // changes position of shadow
-                            ),
-                          ]),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white60,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                          mapForBehaviorsData[behaviorList[1]]!
-                                              .values
-                                              .first[0]),
-                                    ),
-                                  ),
-                                  Text(
-                                    "  ${mapForBehaviorsData[behaviorList[1]]!.values.first}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: Text(
-                                mapForBehaviorsData[behaviorList[1]]!
-                                    .keys
-                                    .first,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
+      // case 1:
+      //   return LayoutBuilder(
+      //     builder: (BuildContext context, BoxConstraints constraints) {
+      //       print(
+      //           'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+      //       return Container(
+      //         child: Column(
+      //           children: [
+      //             Row(
+      //               children: [
+      //                 //first bahavior
+      //                 GestureDetector(
+      //                   onTap: () async {
+      //                     await recordBahvior(
+      //                       behaviorID: behaviorList[0],
+      //                       studentID: behaviorIDAndStudentID[behaviorList[0]],
+      //                     );
+      //                     setState(() {});
+      //                   },
+      //                   child: Container(
+      //                     margin: const EdgeInsets.all(10),
+      //                     height: constraints.maxHeight - 20,
+      //                     width: constraints.maxWidth - 20,
+      //                     padding: const EdgeInsets.all(20),
+      //                     decoration: BoxDecoration(
+      //                         borderRadius: const BorderRadius.all(
+      //                           Radius.circular(15),
+      //                         ),
+      //                         color: const Color.fromRGBO(195, 255, 250, 1),
+      //                         boxShadow: [
+      //                           BoxShadow(
+      //                             color: Colors.grey.withOpacity(0.5),
+      //                             spreadRadius: 0,
+      //                             blurRadius: 5,
+      //                             offset: const Offset(
+      //                                 0, 10), // changes position of shadow
+      //                           ),
+      //                         ]),
+      //                     child: Center(
+      //                       child: Column(
+      //                         mainAxisAlignment: MainAxisAlignment.center,
+      //                         children: [
+      //                           Container(
+      //                             child: Row(
+      //                               mainAxisAlignment: MainAxisAlignment.center,
+      //                               children: [
+      //                                 Container(
+      //                                   height: 40,
+      //                                   width: 40,
+      //                                   decoration: const BoxDecoration(
+      //                                     shape: BoxShape.circle,
+      //                                     color: Colors.white60,
+      //                                   ),
+      //                                   child: Center(
+      //                                     child: Text(
+      //                                         "${stdNamebhvNameTostdID[0].keys.first.split('_')[0]}"),
+      //                                   ),
+      //                                 ),
+      //                                 Text(
+      //                                   "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
+      //                                   style: const TextStyle(
+      //                                       fontWeight: FontWeight.w300),
+      //                                 ),
+      //                               ],
+      //                             ),
+      //                           ),
+      //                           Container(
+      //                             child: Text(
+      //                               mapForBehaviorsData[behaviorList[0]]!
+      //                                   .keys
+      //                                   .first,
+      //                               style: const TextStyle(
+      //                                   fontWeight: FontWeight.bold),
+      //                             ),
+      //                           ),
+      //                         ],
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ],
+      //         ),
+      //       );
+      //     },
+      //   );
+      // case 2:
+      //   return LayoutBuilder(
+      //     builder: (BuildContext context, BoxConstraints constraints) {
+      //       print(
+      //           'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+      //       return Container(
+      //         child: Column(
+      //           children: [
+      //             GestureDetector(
+      //               onTap: () async {
+      //                 await recordBahvior(
+      //                   behaviorID: behaviorList[0],
+      //                   studentID: behaviorIDAndStudentID[behaviorList[0]],
+      //                 );
+      //                 setState(() {});
+      //               },
+      //               child: Container(
+      //                 margin: const EdgeInsets.all(10),
+      //                 height: constraints.maxHeight / 2 - 20,
+      //                 width: constraints.maxWidth - 20,
+      //                 padding: const EdgeInsets.all(20),
+      //                 decoration: BoxDecoration(
+      //                     borderRadius: const BorderRadius.all(
+      //                       Radius.circular(15),
+      //                     ),
+      //                     color: const Color.fromRGBO(195, 255, 250, 1),
+      //                     boxShadow: [
+      //                       BoxShadow(
+      //                         color: Colors.grey.withOpacity(0.5),
+      //                         spreadRadius: 0,
+      //                         blurRadius: 5,
+      //                         offset: const Offset(
+      //                             0, 10), // changes position of shadow
+      //                       ),
+      //                     ]),
+      //                 child: Center(
+      //                   child: Column(
+      //                     mainAxisAlignment: MainAxisAlignment.center,
+      //                     children: [
+      //                       Container(
+      //                         child: Row(
+      //                           mainAxisAlignment: MainAxisAlignment.center,
+      //                           children: [
+      //                             Container(
+      //                               height: 40,
+      //                               width: 40,
+      //                               decoration: const BoxDecoration(
+      //                                 shape: BoxShape.circle,
+      //                                 color: Colors.white60,
+      //                               ),
+      //                               child: Center(
+      //                                 child: Text(
+      //                                     "${stdNamebhvNameTostdID[0].keys.first.split('_')[0]}"),
+      //                               ),
+      //                             ),
+      //                             Text(
+      //                               "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
+      //                               style: const TextStyle(
+      //                                   fontWeight: FontWeight.w300),
+      //                             ),
+      //                           ],
+      //                         ),
+      //                       ),
+      //                       Container(
+      //                         child: Text(
+      //                           stdNamebhvNameTostdID[0]
+      //                               .keys
+      //                               .first
+      //                               .split('_')[1],
+      //                           style: const TextStyle(
+      //                               fontWeight: FontWeight.bold),
+      //                         ),
+      //                       ),
+      //                     ],
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //             //두번째 카드
+      //             GestureDetector(
+      //               onTap: () async {
+      //                 await recordBahvior(
+      //                   behaviorID: behaviorList[1],
+      //                   studentID: behaviorIDAndStudentID[behaviorList[1]],
+      //                 );
+      //                 setState(() {});
+      //               },
+      //               child: Container(
+      //                 margin: const EdgeInsets.all(10),
+      //                 height: constraints.maxHeight / 2 - 20,
+      //                 width: constraints.maxWidth - 20,
+      //                 padding: const EdgeInsets.all(20),
+      //                 decoration: BoxDecoration(
+      //                     borderRadius: const BorderRadius.all(
+      //                       Radius.circular(15),
+      //                     ),
+      //                     color: const Color.fromRGBO(195, 255, 250, 1),
+      //                     boxShadow: [
+      //                       BoxShadow(
+      //                         color: Colors.grey.withOpacity(0.5),
+      //                         spreadRadius: 0,
+      //                         blurRadius: 5,
+      //                         offset: const Offset(
+      //                             0, 10), // changes position of shadow
+      //                       ),
+      //                     ]),
+      //                 child: Center(
+      //                   child: Column(
+      //                     mainAxisAlignment: MainAxisAlignment.center,
+      //                     children: [
+      //                       Container(
+      //                         child: Row(
+      //                           mainAxisAlignment: MainAxisAlignment.center,
+      //                           children: [
+      //                             Container(
+      //                               height: 40,
+      //                               width: 40,
+      //                               decoration: const BoxDecoration(
+      //                                 shape: BoxShape.circle,
+      //                                 color: Colors.white60,
+      //                               ),
+      //                               child: Center(
+      //                                 child: Text(
+      //                                     mapForBehaviorsData[behaviorList[1]]!
+      //                                         .values
+      //                                         .first[0]),
+      //                               ),
+      //                             ),
+      //                             Text(
+      //                                 "${stdNamebhvNameTostdID[1].keys.first.split('_')[0]}"),
+      //                           ],
+      //                         ),
+      //                       ),
+      //                       Container(
+      //                         child: Text(
+      //                           stdNamebhvNameTostdID[1]
+      //                               .keys
+      //                               .first
+      //                               .split('_')[1],
+      //                           style: const TextStyle(
+      //                               fontWeight: FontWeight.bold),
+      //                         ),
+      //                       ),
+      //                     ],
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       );
+      //     },
+      //   );
       case 3:
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -642,8 +629,8 @@ class _Main_PageState extends State<Main_Page> {
                   GestureDetector(
                     onTap: () async {
                       await recordBahvior(
-                        behaviorID: behaviorList[0],
-                        studentID: behaviorIDAndStudentID[behaviorList[0]],
+                        behaivorName: behaviors[0],
+                        studentID: studentIDs[0],
                       );
                       setState(() {});
                     },
@@ -683,14 +670,11 @@ class _Main_PageState extends State<Main_Page> {
                                       color: Colors.white60,
                                     ),
                                     child: Center(
-                                      child: Text(
-                                          mapForBehaviorsData[behaviorList[0]]!
-                                              .values
-                                              .first[0]),
+                                      child: Text(LastNames[0]),
                                     ),
                                   ),
                                   Text(
-                                    "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
+                                    names[0],
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w300),
                                   ),
@@ -699,9 +683,7 @@ class _Main_PageState extends State<Main_Page> {
                             ),
                             Container(
                               child: Text(
-                                mapForBehaviorsData[behaviorList[0]]!
-                                    .keys
-                                    .first,
+                                behaviors[0],
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
@@ -715,8 +697,8 @@ class _Main_PageState extends State<Main_Page> {
                   GestureDetector(
                     onTap: () async {
                       await recordBahvior(
-                        behaviorID: behaviorList[1],
-                        studentID: behaviorIDAndStudentID[behaviorList[1]],
+                        behaivorName: behaviors[1],
+                        studentID: studentIDs[1],
                       );
                       setState(() {});
                     },
@@ -755,14 +737,11 @@ class _Main_PageState extends State<Main_Page> {
                                       color: Colors.white60,
                                     ),
                                     child: Center(
-                                      child: Text(
-                                          mapForBehaviorsData[behaviorList[1]]!
-                                              .values
-                                              .first[0]),
+                                      child: Text(LastNames[1]),
                                     ),
                                   ),
                                   Text(
-                                    "  ${mapForBehaviorsData[behaviorList[1]]!.values.first}",
+                                    names[1],
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w300),
                                   ),
@@ -771,9 +750,7 @@ class _Main_PageState extends State<Main_Page> {
                             ),
                             Container(
                               child: Text(
-                                mapForBehaviorsData[behaviorList[1]]!
-                                    .keys
-                                    .first,
+                                behaviors[1],
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
@@ -787,8 +764,8 @@ class _Main_PageState extends State<Main_Page> {
                   GestureDetector(
                     onTap: () async {
                       await recordBahvior(
-                        behaviorID: behaviorList[2],
-                        studentID: behaviorIDAndStudentID[behaviorList[2]],
+                        behaivorName: behaviors[2],
+                        studentID: studentIDs[2],
                       );
                       setState(() {});
                     },
@@ -827,14 +804,11 @@ class _Main_PageState extends State<Main_Page> {
                                       color: Colors.white60,
                                     ),
                                     child: Center(
-                                      child: Text(
-                                          mapForBehaviorsData[behaviorList[2]]!
-                                              .values
-                                              .first[0]),
+                                      child: Text(LastNames[2]),
                                     ),
                                   ),
                                   Text(
-                                    "  ${mapForBehaviorsData[behaviorList[2]]!.values.first}",
+                                    names[2],
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w300),
                                   ),
@@ -843,9 +817,7 @@ class _Main_PageState extends State<Main_Page> {
                             ),
                             Container(
                               child: Text(
-                                mapForBehaviorsData[behaviorList[2]]!
-                                    .keys
-                                    .first,
+                                behaviors[2],
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
@@ -862,316 +834,316 @@ class _Main_PageState extends State<Main_Page> {
         );
 
       //행동 4개일 때
-      case 4:
-        // key를 사용하여 behaviorIDAndStudentID에서 value를 가져옴
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            print(
-                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
-            return Container(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      // 첫번째 카드
-                      GestureDetector(
-                        onTap: () async {
-                          recordBahvior(
-                            behaviorID: behaviorList[0],
-                            studentID: behaviorIDAndStudentID[behaviorList[0]],
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight / 2 - 20,
-                          width: constraints.maxWidth / 2 - 20,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 0,
-                                  blurRadius: 5,
-                                  offset: const Offset(
-                                      0, 10), // changes position of shadow
-                                ),
-                              ]),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white60,
-                                        ),
-                                        child: Center(
-                                          child: Text(mapForBehaviorsData[
-                                                  behaviorList[0]]!
-                                              .values
-                                              .first[0]),
-                                        ),
-                                      ),
-                                      Text(
-                                        "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    mapForBehaviorsData[behaviorList[0]]!
-                                        .keys
-                                        .first,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      //두번째 카드
-                      GestureDetector(
-                        onTap: () async {
-                          recordBahvior(
-                            behaviorID: behaviorList[1],
-                            studentID: behaviorIDAndStudentID[behaviorList[1]],
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight / 2 - 20,
-                          width: constraints.maxWidth / 2 - 20,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 0,
-                                  blurRadius: 5,
-                                  offset: const Offset(
-                                      0, 10), // changes position of shadow
-                                ),
-                              ]),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white60,
-                                        ),
-                                        child: Center(
-                                          child: Text(mapForBehaviorsData[
-                                                  behaviorList[1]]!
-                                              .values
-                                              .first[0]),
-                                        ),
-                                      ),
-                                      Text(
-                                        "  ${mapForBehaviorsData[behaviorList[1]]!.values.first}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    mapForBehaviorsData[behaviorList[1]]!
-                                        .keys
-                                        .first,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      //3번째 행동 카드
-                      GestureDetector(
-                        onTap: () async {
-                          recordBahvior(
-                            behaviorID: behaviorList[2],
-                            studentID: behaviorIDAndStudentID[behaviorList[2]],
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight / 2 - 20,
-                          width: constraints.maxWidth / 2 - 20,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 0,
-                                  blurRadius: 5,
-                                  offset: const Offset(
-                                      0, 10), // changes position of shadow
-                                ),
-                              ]),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white60,
-                                        ),
-                                        child: Center(
-                                          child: Text(mapForBehaviorsData[
-                                                  behaviorList[2]]!
-                                              .values
-                                              .first[0]),
-                                        ),
-                                      ),
-                                      Text(
-                                        "  ${mapForBehaviorsData[behaviorList[2]]!.values.first}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    mapForBehaviorsData[behaviorList[2]]!
-                                        .keys
-                                        .first,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      //4번째
-                      GestureDetector(
-                        onTap: () async {
-                          recordBahvior(
-                            behaviorID: behaviorList[3],
-                            studentID: behaviorIDAndStudentID[behaviorList[3]],
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight / 2 - 20,
-                          width: constraints.maxWidth / 2 - 20,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 0,
-                                  blurRadius: 5,
-                                  offset: const Offset(
-                                      0, 10), // changes position of shadow
-                                ),
-                              ]),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white60,
-                                        ),
-                                        child: Center(
-                                          child: Text(mapForBehaviorsData[
-                                                  behaviorList[3]]!
-                                              .values
-                                              .first[0]),
-                                        ),
-                                      ),
-                                      Text(
-                                        "  ${mapForBehaviorsData[behaviorList[3]]!.values.first}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    mapForBehaviorsData[behaviorList[3]]!
-                                        .keys
-                                        .first,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
+      // case 4:
+      //   // key를 사용하여 behaviorIDAndStudentID에서 value를 가져옴
+      //   return LayoutBuilder(
+      //     builder: (BuildContext context, BoxConstraints constraints) {
+      //       print(
+      //           'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+      //       return Container(
+      //         child: Column(
+      //           children: [
+      //             Row(
+      //               children: [
+      //                 // 첫번째 카드
+      //                 GestureDetector(
+      //                   onTap: () async {
+      //                     recordBahvior(
+      //                       behaviorID: behaviorList[0],
+      //                       studentID: behaviorIDAndStudentID[behaviorList[0]],
+      //                     );
+      //                   },
+      //                   child: Container(
+      //                     margin: const EdgeInsets.all(10),
+      //                     height: constraints.maxHeight / 2 - 20,
+      //                     width: constraints.maxWidth / 2 - 20,
+      //                     padding: const EdgeInsets.all(20),
+      //                     decoration: BoxDecoration(
+      //                         borderRadius: const BorderRadius.all(
+      //                           Radius.circular(15),
+      //                         ),
+      //                         color: const Color.fromRGBO(195, 255, 250, 1),
+      //                         boxShadow: [
+      //                           BoxShadow(
+      //                             color: Colors.grey.withOpacity(0.5),
+      //                             spreadRadius: 0,
+      //                             blurRadius: 5,
+      //                             offset: const Offset(
+      //                                 0, 10), // changes position of shadow
+      //                           ),
+      //                         ]),
+      //                     child: Center(
+      //                       child: Column(
+      //                         mainAxisAlignment: MainAxisAlignment.center,
+      //                         children: [
+      //                           Container(
+      //                             child: Row(
+      //                               mainAxisAlignment:
+      //                                   MainAxisAlignment.spaceEvenly,
+      //                               children: [
+      //                                 Container(
+      //                                   height: 40,
+      //                                   width: 40,
+      //                                   decoration: const BoxDecoration(
+      //                                     shape: BoxShape.circle,
+      //                                     color: Colors.white60,
+      //                                   ),
+      //                                   child: Center(
+      //                                     child: Text(mapForBehaviorsData[
+      //                                             behaviorList[0]]!
+      //                                         .values
+      //                                         .first[0]),
+      //                                   ),
+      //                                 ),
+      //                                 Text(
+      //                                   "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
+      //                                   style: const TextStyle(
+      //                                       fontWeight: FontWeight.w300),
+      //                                 ),
+      //                               ],
+      //                             ),
+      //                           ),
+      //                           Container(
+      //                             child: Text(
+      //                               mapForBehaviorsData[behaviorList[0]]!
+      //                                   .keys
+      //                                   .first,
+      //                               style: const TextStyle(
+      //                                   fontWeight: FontWeight.bold),
+      //                             ),
+      //                           ),
+      //                         ],
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 ),
+      //                 //두번째 카드
+      //                 GestureDetector(
+      //                   onTap: () async {
+      //                     recordBahvior(
+      //                       behaviorID: behaviorList[1],
+      //                       studentID: behaviorIDAndStudentID[behaviorList[1]],
+      //                     );
+      //                   },
+      //                   child: Container(
+      //                     margin: const EdgeInsets.all(10),
+      //                     height: constraints.maxHeight / 2 - 20,
+      //                     width: constraints.maxWidth / 2 - 20,
+      //                     padding: const EdgeInsets.all(20),
+      //                     decoration: BoxDecoration(
+      //                         borderRadius: const BorderRadius.all(
+      //                           Radius.circular(15),
+      //                         ),
+      //                         color: const Color.fromRGBO(195, 255, 250, 1),
+      //                         boxShadow: [
+      //                           BoxShadow(
+      //                             color: Colors.grey.withOpacity(0.5),
+      //                             spreadRadius: 0,
+      //                             blurRadius: 5,
+      //                             offset: const Offset(
+      //                                 0, 10), // changes position of shadow
+      //                           ),
+      //                         ]),
+      //                     child: Center(
+      //                       child: Column(
+      //                         mainAxisAlignment: MainAxisAlignment.center,
+      //                         children: [
+      //                           Container(
+      //                             child: Row(
+      //                               mainAxisAlignment:
+      //                                   MainAxisAlignment.spaceEvenly,
+      //                               children: [
+      //                                 Container(
+      //                                   height: 40,
+      //                                   width: 40,
+      //                                   decoration: const BoxDecoration(
+      //                                     shape: BoxShape.circle,
+      //                                     color: Colors.white60,
+      //                                   ),
+      //                                   child: Center(
+      //                                     child: Text(mapForBehaviorsData[
+      //                                             behaviorList[1]]!
+      //                                         .values
+      //                                         .first[0]),
+      //                                   ),
+      //                                 ),
+      //                                 Text(
+      //                                   "  ${mapForBehaviorsData[behaviorList[1]]!.values.first}",
+      //                                   style: const TextStyle(
+      //                                       fontWeight: FontWeight.w300),
+      //                                 ),
+      //                               ],
+      //                             ),
+      //                           ),
+      //                           Container(
+      //                             child: Text(
+      //                               mapForBehaviorsData[behaviorList[1]]!
+      //                                   .keys
+      //                                   .first,
+      //                               style: const TextStyle(
+      //                                   fontWeight: FontWeight.bold),
+      //                             ),
+      //                           ),
+      //                         ],
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //             Row(
+      //               children: [
+      //                 //3번째 행동 카드
+      //                 GestureDetector(
+      //                   onTap: () async {
+      //                     recordBahvior(
+      //                       behaviorID: behaviorList[2],
+      //                       studentID: behaviorIDAndStudentID[behaviorList[2]],
+      //                     );
+      //                   },
+      //                   child: Container(
+      //                     margin: const EdgeInsets.all(10),
+      //                     height: constraints.maxHeight / 2 - 20,
+      //                     width: constraints.maxWidth / 2 - 20,
+      //                     padding: const EdgeInsets.all(20),
+      //                     decoration: BoxDecoration(
+      //                         borderRadius: const BorderRadius.all(
+      //                           Radius.circular(15),
+      //                         ),
+      //                         color: const Color.fromRGBO(195, 255, 250, 1),
+      //                         boxShadow: [
+      //                           BoxShadow(
+      //                             color: Colors.grey.withOpacity(0.5),
+      //                             spreadRadius: 0,
+      //                             blurRadius: 5,
+      //                             offset: const Offset(
+      //                                 0, 10), // changes position of shadow
+      //                           ),
+      //                         ]),
+      //                     child: Center(
+      //                       child: Column(
+      //                         mainAxisAlignment: MainAxisAlignment.center,
+      //                         children: [
+      //                           Container(
+      //                             child: Row(
+      //                               mainAxisAlignment:
+      //                                   MainAxisAlignment.spaceEvenly,
+      //                               children: [
+      //                                 Container(
+      //                                   height: 40,
+      //                                   width: 40,
+      //                                   decoration: const BoxDecoration(
+      //                                     shape: BoxShape.circle,
+      //                                     color: Colors.white60,
+      //                                   ),
+      //                                   child: Center(
+      //                                     child: Text(mapForBehaviorsData[
+      //                                             behaviorList[2]]!
+      //                                         .values
+      //                                         .first[0]),
+      //                                   ),
+      //                                 ),
+      //                                 Text(
+      //                                   "  ${mapForBehaviorsData[behaviorList[2]]!.values.first}",
+      //                                   style: const TextStyle(
+      //                                       fontWeight: FontWeight.w300),
+      //                                 ),
+      //                               ],
+      //                             ),
+      //                           ),
+      //                           Container(
+      //                             child: Text(
+      //                               mapForBehaviorsData[behaviorList[2]]!
+      //                                   .keys
+      //                                   .first,
+      //                               style: const TextStyle(
+      //                                   fontWeight: FontWeight.bold),
+      //                             ),
+      //                           ),
+      //                         ],
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 ),
+      //                 //4번째
+      //                 GestureDetector(
+      //                   onTap: () async {
+      //                     recordBahvior(
+      //                       behaviorID: behaviorList[3],
+      //                       studentID: behaviorIDAndStudentID[behaviorList[3]],
+      //                     );
+      //                   },
+      //                   child: Container(
+      //                     margin: const EdgeInsets.all(10),
+      //                     height: constraints.maxHeight / 2 - 20,
+      //                     width: constraints.maxWidth / 2 - 20,
+      //                     padding: const EdgeInsets.all(20),
+      //                     decoration: BoxDecoration(
+      //                         borderRadius: const BorderRadius.all(
+      //                           Radius.circular(15),
+      //                         ),
+      //                         color: const Color.fromRGBO(195, 255, 250, 1),
+      //                         boxShadow: [
+      //                           BoxShadow(
+      //                             color: Colors.grey.withOpacity(0.5),
+      //                             spreadRadius: 0,
+      //                             blurRadius: 5,
+      //                             offset: const Offset(
+      //                                 0, 10), // changes position of shadow
+      //                           ),
+      //                         ]),
+      //                     child: Center(
+      //                       child: Column(
+      //                         mainAxisAlignment: MainAxisAlignment.center,
+      //                         children: [
+      //                           Container(
+      //                             child: Row(
+      //                               mainAxisAlignment:
+      //                                   MainAxisAlignment.spaceEvenly,
+      //                               children: [
+      //                                 Container(
+      //                                   height: 40,
+      //                                   width: 40,
+      //                                   decoration: const BoxDecoration(
+      //                                     shape: BoxShape.circle,
+      //                                     color: Colors.white60,
+      //                                   ),
+      //                                   child: Center(
+      //                                     child: Text(mapForBehaviorsData[
+      //                                             behaviorList[3]]!
+      //                                         .values
+      //                                         .first[0]),
+      //                                   ),
+      //                                 ),
+      //                                 Text(
+      //                                   "  ${mapForBehaviorsData[behaviorList[3]]!.values.first}",
+      //                                   style: const TextStyle(
+      //                                       fontWeight: FontWeight.w300),
+      //                                 ),
+      //                               ],
+      //                             ),
+      //                           ),
+      //                           Container(
+      //                             child: Text(
+      //                               mapForBehaviorsData[behaviorList[3]]!
+      //                                   .keys
+      //                                   .first,
+      //                               style: const TextStyle(
+      //                                   fontWeight: FontWeight.bold),
+      //                             ),
+      //                           ),
+      //                         ],
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ],
+      //         ),
+      //       );
+      //     },
+      //   );
     }
 
     return Container();
