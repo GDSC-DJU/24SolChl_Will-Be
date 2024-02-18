@@ -10,26 +10,26 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solution/main_feat_screens/behavior_add_screen.dart';
 import 'package:solution/main_feat_screens/behavior_edit_screen.dart';
+import 'package:solution/main_feat_screens/todays_report.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
 import 'package:intl/intl.dart';
 
 class BehavirRecordScreen extends StatefulWidget {
-  BehavirRecordScreen(
-      {super.key,
-      required this.studentDataList,
-      required this.cards,
-      required this.behaviorIDAndStudentID,
-      required this.mapForBehaviorsData,
-      required this.studentList,
-      required this.historyToday});
-  List<dynamic> studentDataList;
+  BehavirRecordScreen({
+    super.key,
+    required this.cards,
+    required this.names,
+    required this.behaviors,
+    required this.studentIDs,
+  });
+
   Widget? cards;
-  Stream<List<Widget>> historyToday;
 
-  Map<String?, String?> behaviorIDAndStudentID = {};
-  List studentList = [];
+  //학생명_행동이름: 학생ID
+  List names = [];
 
-  Map<String, Map<String, String>> mapForBehaviorsData = {};
+  List behaviors = [];
+  List studentIDs = [];
 
   @override
   State<BehavirRecordScreen> createState() => _BehavirRecordScreenState();
@@ -52,98 +52,102 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
 
   Stream<List<Widget>> fetchAndSortRecords({
     required BuildContext context,
-    required String educatorId,
+    required List studentIdList,
+    required List studentNameList,
+    required List behaviorNameList,
   }) {
     StreamController<List<Widget>> controller =
         StreamController<List<Widget>>();
+    List<Map<String, dynamic>> allRecords = [];
 
-    String nowDay = DateTime.now().toString().substring(0, 10); // 오늘 날짜
+    for (int i = 0; i < studentIdList.length; i++) {
+      String studentId = studentIdList[i];
+      String studentName = studentNameList[i];
+      String behaviorName = behaviorNameList[i];
 
-    Stream<QuerySnapshot> snapshotStudents = db
-        .collection('Educator')
-        .doc(educatorId)
-        .collection('Student')
-        .snapshots();
+      db
+          .collection("Record")
+          .doc(studentId)
+          .collection('Behavior')
+          .doc(behaviorName)
+          .collection('BehaviorRecord')
+          .snapshots()
+          .listen((snapshot) {
+        for (var element in snapshot.docs) {
+          DateTime time = DateTime.parse(element.id);
 
-    snapshotStudents.listen((snapshot) async {
-      List<Map<String, dynamic>> allRecords = [];
+          allRecords.add({
+            'name': studentName,
+            'behavior': behaviorName,
+            'time': time,
+            'studentId': studentId,
+          });
+        }
 
-      for (var doc in snapshot.docs) {
-        db
-            .collection("Record")
-            .doc(doc.id)
-            .collection('Behavior')
-            .snapshots()
-            .listen((snapshotBH) {
-          for (var behaviorDoc in snapshotBH.docs) {
-            String behaviorName = behaviorDoc.id;
-            behaviorDoc.reference
-                .collection('BehaviorRecord')
-                .snapshots() // Details 컬렉션의 스냅샷을 구독합니다.
-                .listen((recordSnapshot) {
-              // 스냅샷이 변경될 때마다 코드 블록이 실행됩니다.
-              for (var element in recordSnapshot.docs) {
-                DateTime time = DateTime.parse(element.id);
+        allRecords.sort((a, b) => b['time'].compareTo(a['time']));
 
-                allRecords.add({
-                  'name': behaviorDoc.get('name'),
-                  'behavior': behaviorName,
-                  'time': time,
-                });
+        List<Widget> tiles = allRecords.map((record) {
+          String formattedTime =
+              "${record['time'].hour.toString().padLeft(2, '0')}:${record['time'].minute.toString().padLeft(2, '0')}:${record['time'].second.toString().padLeft(2, '0')}";
 
-                // 시간 내림차순으로 정렬
-                allRecords.sort((a, b) => b['time'].compareTo(a['time']));
-
-                // 정렬된 결과를 바탕으로 ListTile 생성
-                List<Widget> tiles = allRecords.map((record) {
-                  String formattedTime =
-                      "${record['time'].hour.toString().padLeft(2, '0')}:${record['time'].minute.toString().padLeft(2, '0')}:${record['time'].second.toString().padLeft(2, '0')}";
-
-                  return ListTile(
-                    key: Key(
-                        record['time'].toString()), // 각 ListTile에 고유한 Key를 할당
-
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          record['name'],
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        Text(
-                          record['behavior'],
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        Text(
-                          formattedTime,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.cancel),
-                          onPressed: () async {
-                            await db
-                                .collection("Record")
-                                .doc(doc.id)
-                                .collection('Behavior')
-                                .doc(behaviorName)
-                                .collection('BehaviorRecord')
-                                .doc(element.id)
-                                .delete();
-                            setState(() {});
-                          },
-                        ),
-                      ],
+          return ListTile(
+            key: Key(record['time'].toString()),
+            title: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    record['name'],
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    record['behavior'],
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    formattedTime,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: IconButton(
+                      icon: const Icon(Icons.cancel),
+                      onPressed: () async {
+                        print(
+                            'record["time"] = [${record['time'].toString()}]');
+                        print('record["name"] = ${record['name']}');
+                        print('record["behavior"] = ${record['behavior']}');
+                        //print studentID and behaviorName
+                        print('studentId = $studentId');
+                        print('behaviorName = $behaviorName');
+                        await db
+                            .collection("Record")
+                            .doc(record['studentId'])
+                            .collection('Behavior')
+                            .doc(record['behavior'])
+                            .collection('BehaviorRecord')
+                            .doc(record['time'].toString())
+                            .delete();
+                        setState(() {});
+                      },
                     ),
-                  );
-                }).toList();
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList();
 
-                controller.add(tiles);
-              }
-            });
-          }
-        });
-      }
-    });
+        controller.add(tiles);
+      });
+    }
 
     return controller.stream;
   }
@@ -169,7 +173,18 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TodaysReportPage(
+                            studentIDs: widget.studentIDs,
+                            behaviors: widget.behaviors,
+                            names: widget.names,
+                          ),
+                        ),
+                      );
+                    },
                     child: const Text("오늘의 기록하기"),
                   ),
                 ],
@@ -183,20 +198,45 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               ],
             ),
             Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
                       color: Color.fromARGB(128, 158, 158, 158), width: 2),
                 ),
               ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [Text("이름"), Text("행동명"), Text("시간")],
-              ),
+              child: const Row(children: [
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    "이름",
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    "행동명",
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    "시간",
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    "취소",
+                  ),
+                ),
+              ]),
             ),
             StreamBuilder<List<Widget>>(
-              stream:
-                  fetchAndSortRecords(context: context, educatorId: user.uid),
+              stream: fetchAndSortRecords(
+                  context: context,
+                  studentIdList: widget.studentIDs,
+                  behaviorNameList: widget.behaviors,
+                  studentNameList: widget.names),
               builder:
                   (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -223,21 +263,10 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               "버튼 눌러서 기록하기",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            Expanded(child: widget.cards!)
+            Expanded(child: widget.cards ?? const SizedBox())
           ],
         ),
       ),
     );
   }
-}
-
-class Record {
-  final String time;
-  final String behaviorKey;
-  final String behaviorValue;
-
-  Record(
-      {required this.time,
-      required this.behaviorKey,
-      required this.behaviorValue});
 }
