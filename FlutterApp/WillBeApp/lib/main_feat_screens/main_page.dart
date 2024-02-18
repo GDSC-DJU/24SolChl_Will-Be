@@ -1,5 +1,5 @@
-///이 파일은 사용자가 로그인 후 최초 보여지는 화면입니다.
 ///로그아웃 버튼을 클릭 시 자동로그인이 풀리며 사용자의 계정 정보는 앱에서 지워지게 됩니다.
+///이 파일은 사용자가 로그인 후 최초 보여지는 화면입니다.
 ///따라서 다시 로그인을 해야합니다.
 import 'dart:async';
 
@@ -41,8 +41,6 @@ class _Main_PageState extends State<Main_Page> {
   Widget? cards;
   Map<String?, String?> behaviorIDAndStudentID = {}; //행동ID : 아동ID의 형태로 저장
   List<Widget> widgetOptions = [];
-  Map<String, Map<String, String>> mapForBehaviorsData =
-      {}; //행동ID : <행동이름 : 아동이름> 의 형태로 저장
 
   Stream<List<Widget>> historyWidgetList = const Stream.empty();
 
@@ -247,7 +245,6 @@ class _Main_PageState extends State<Main_Page> {
     return valuesList;
   }
 
-  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -285,81 +282,11 @@ class _Main_PageState extends State<Main_Page> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    ///바텀 네비게이션
-    widgetOptions = <Widget>[
-      HomeScreen(
-          studentDataList: studentDataList,
-          studentIdList: studentList,
-          itemContentList: itemContentList),
-      const CalendarManageScreen(),
-      BehavirRecordScreen(
-        studentIDs: studentIDs,
-        names: names,
-        behaviors: behaviors,
-        cards: buildBehaviorCards(behaviorList: itemContentList),
-      ),
-      const DashBoardScreen(),
-    ];
-
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            widgetOptions.elementAt(_selected_screen),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomBarItems,
-        currentIndex: _selected_screen,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        onTap: _onItemTapped,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-      ),
-    );
-  }
-
-  ///학생의 이름, 행동, 행동유형을 기반으로 행동 카드를 생성해주는 메서드
-  ///아래부터의 코드는 behavior_record.dart에서 작동하는 파일임.
-  ///
-  ///
-  ///
-  Future<void> recordBahvior({
-    required String? behaivorName,
-    required String? studentID,
-  }) async {
-    // 현재 시간을 가져오기
-    DateTime now = DateTime.now();
-    // 도큐먼트 ID로 사용할 문자열을 생성
-
-    try {
-      await db
-          .collection('Record')
-          .doc(studentID)
-          .collection('Behavior')
-          .doc(behaivorName)
-          .collection('BehaviorRecord')
-          .doc(now.toString())
-          .set({}, SetOptions(merge: true));
-    } catch (e) {
-      print('Failed to add document: $e');
-    }
-  }
-
   Widget buildBehaviorCards({required List behaviorList}) {
     ///내 계정에 등록된 아이의 ID를 가져오는 스냅샷
-    QuerySnapshot? snapshotStudents;
-
-    DocumentSnapshot? snapshotTempBehavior;
-    DocumentSnapshot? snapshotTempStudent;
 
     //행동의 개수에 따라 다른 화면을 보여주기 위한 swtich 문
-    switch (numOfCards) {
+    switch (behaviorList.length) {
       case 0:
         return const Expanded(
           child: Center(
@@ -367,246 +294,235 @@ class _Main_PageState extends State<Main_Page> {
           ),
         );
 
-      // case 1:
-      //   return LayoutBuilder(
-      //     builder: (BuildContext context, BoxConstraints constraints) {
-      //       print(
-      //           'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
-      //       return Container(
-      //         child: Column(
-      //           children: [
-      //             Row(
-      //               children: [
-      //                 //first bahavior
-      //                 GestureDetector(
-      //                   onTap: () async {
-      //                     await recordBahvior(
-      //                       behaviorID: behaviorList[0],
-      //                       studentID: behaviorIDAndStudentID[behaviorList[0]],
-      //                     );
-      //                     setState(() {});
-      //                   },
-      //                   child: Container(
-      //                     margin: const EdgeInsets.all(10),
-      //                     height: constraints.maxHeight - 20,
-      //                     width: constraints.maxWidth - 20,
-      //                     padding: const EdgeInsets.all(20),
-      //                     decoration: BoxDecoration(
-      //                         borderRadius: const BorderRadius.all(
-      //                           Radius.circular(15),
-      //                         ),
-      //                         color: const Color.fromRGBO(195, 255, 250, 1),
-      //                         boxShadow: [
-      //                           BoxShadow(
-      //                             color: Colors.grey.withOpacity(0.5),
-      //                             spreadRadius: 0,
-      //                             blurRadius: 5,
-      //                             offset: const Offset(
-      //                                 0, 10), // changes position of shadow
-      //                           ),
-      //                         ]),
-      //                     child: Center(
-      //                       child: Column(
-      //                         mainAxisAlignment: MainAxisAlignment.center,
-      //                         children: [
-      //                           Container(
-      //                             child: Row(
-      //                               mainAxisAlignment: MainAxisAlignment.center,
-      //                               children: [
-      //                                 Container(
-      //                                   height: 40,
-      //                                   width: 40,
-      //                                   decoration: const BoxDecoration(
-      //                                     shape: BoxShape.circle,
-      //                                     color: Colors.white60,
-      //                                   ),
-      //                                   child: Center(
-      //                                     child: Text(
-      //                                         "${stdNamebhvNameTostdID[0].keys.first.split('_')[0]}"),
-      //                                   ),
-      //                                 ),
-      //                                 Text(
-      //                                   "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
-      //                                   style: const TextStyle(
-      //                                       fontWeight: FontWeight.w300),
-      //                                 ),
-      //                               ],
-      //                             ),
-      //                           ),
-      //                           Container(
-      //                             child: Text(
-      //                               mapForBehaviorsData[behaviorList[0]]!
-      //                                   .keys
-      //                                   .first,
-      //                               style: const TextStyle(
-      //                                   fontWeight: FontWeight.bold),
-      //                             ),
-      //                           ),
-      //                         ],
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ],
-      //         ),
-      //       );
-      //     },
-      //   );
-      // case 2:
-      //   return LayoutBuilder(
-      //     builder: (BuildContext context, BoxConstraints constraints) {
-      //       print(
-      //           'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
-      //       return Container(
-      //         child: Column(
-      //           children: [
-      //             GestureDetector(
-      //               onTap: () async {
-      //                 await recordBahvior(
-      //                   behaviorID: behaviorList[0],
-      //                   studentID: behaviorIDAndStudentID[behaviorList[0]],
-      //                 );
-      //                 setState(() {});
-      //               },
-      //               child: Container(
-      //                 margin: const EdgeInsets.all(10),
-      //                 height: constraints.maxHeight / 2 - 20,
-      //                 width: constraints.maxWidth - 20,
-      //                 padding: const EdgeInsets.all(20),
-      //                 decoration: BoxDecoration(
-      //                     borderRadius: const BorderRadius.all(
-      //                       Radius.circular(15),
-      //                     ),
-      //                     color: const Color.fromRGBO(195, 255, 250, 1),
-      //                     boxShadow: [
-      //                       BoxShadow(
-      //                         color: Colors.grey.withOpacity(0.5),
-      //                         spreadRadius: 0,
-      //                         blurRadius: 5,
-      //                         offset: const Offset(
-      //                             0, 10), // changes position of shadow
-      //                       ),
-      //                     ]),
-      //                 child: Center(
-      //                   child: Column(
-      //                     mainAxisAlignment: MainAxisAlignment.center,
-      //                     children: [
-      //                       Container(
-      //                         child: Row(
-      //                           mainAxisAlignment: MainAxisAlignment.center,
-      //                           children: [
-      //                             Container(
-      //                               height: 40,
-      //                               width: 40,
-      //                               decoration: const BoxDecoration(
-      //                                 shape: BoxShape.circle,
-      //                                 color: Colors.white60,
-      //                               ),
-      //                               child: Center(
-      //                                 child: Text(
-      //                                     "${stdNamebhvNameTostdID[0].keys.first.split('_')[0]}"),
-      //                               ),
-      //                             ),
-      //                             Text(
-      //                               "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
-      //                               style: const TextStyle(
-      //                                   fontWeight: FontWeight.w300),
-      //                             ),
-      //                           ],
-      //                         ),
-      //                       ),
-      //                       Container(
-      //                         child: Text(
-      //                           stdNamebhvNameTostdID[0]
-      //                               .keys
-      //                               .first
-      //                               .split('_')[1],
-      //                           style: const TextStyle(
-      //                               fontWeight: FontWeight.bold),
-      //                         ),
-      //                       ),
-      //                     ],
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //             //두번째 카드
-      //             GestureDetector(
-      //               onTap: () async {
-      //                 await recordBahvior(
-      //                   behaviorID: behaviorList[1],
-      //                   studentID: behaviorIDAndStudentID[behaviorList[1]],
-      //                 );
-      //                 setState(() {});
-      //               },
-      //               child: Container(
-      //                 margin: const EdgeInsets.all(10),
-      //                 height: constraints.maxHeight / 2 - 20,
-      //                 width: constraints.maxWidth - 20,
-      //                 padding: const EdgeInsets.all(20),
-      //                 decoration: BoxDecoration(
-      //                     borderRadius: const BorderRadius.all(
-      //                       Radius.circular(15),
-      //                     ),
-      //                     color: const Color.fromRGBO(195, 255, 250, 1),
-      //                     boxShadow: [
-      //                       BoxShadow(
-      //                         color: Colors.grey.withOpacity(0.5),
-      //                         spreadRadius: 0,
-      //                         blurRadius: 5,
-      //                         offset: const Offset(
-      //                             0, 10), // changes position of shadow
-      //                       ),
-      //                     ]),
-      //                 child: Center(
-      //                   child: Column(
-      //                     mainAxisAlignment: MainAxisAlignment.center,
-      //                     children: [
-      //                       Container(
-      //                         child: Row(
-      //                           mainAxisAlignment: MainAxisAlignment.center,
-      //                           children: [
-      //                             Container(
-      //                               height: 40,
-      //                               width: 40,
-      //                               decoration: const BoxDecoration(
-      //                                 shape: BoxShape.circle,
-      //                                 color: Colors.white60,
-      //                               ),
-      //                               child: Center(
-      //                                 child: Text(
-      //                                     mapForBehaviorsData[behaviorList[1]]!
-      //                                         .values
-      //                                         .first[0]),
-      //                               ),
-      //                             ),
-      //                             Text(
-      //                                 "${stdNamebhvNameTostdID[1].keys.first.split('_')[0]}"),
-      //                           ],
-      //                         ),
-      //                       ),
-      //                       Container(
-      //                         child: Text(
-      //                           stdNamebhvNameTostdID[1]
-      //                               .keys
-      //                               .first
-      //                               .split('_')[1],
-      //                           style: const TextStyle(
-      //                               fontWeight: FontWeight.bold),
-      //                         ),
-      //                       ),
-      //                     ],
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //       );
-      //     },
-      //   );
+      //행동카드의 수가 1개
+      case 1:
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            print(
+                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+            return Container(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      //first bahavior
+                      GestureDetector(
+                        onTap: () async {
+                          await recordBahvior(
+                            behaivorName: behaviors[0],
+                            studentID: studentIDs[0],
+                          );
+                          setState(() {});
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight - 20,
+                          width: constraints.maxWidth - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            LastNames[0],
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        names[0],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    behaviors[0],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      case 2:
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            print(
+                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+            return Container(
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      await recordBahvior(
+                        behaivorName: behaviors[0],
+                        studentID: studentIDs[0],
+                      );
+                      setState(() {});
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      height: constraints.maxHeight / 2 - 20,
+                      width: constraints.maxWidth - 20,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                          color: const Color.fromRGBO(195, 255, 250, 1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: const Offset(
+                                  0, 10), // changes position of shadow
+                            ),
+                          ]),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white60,
+                                    ),
+                                    child: Center(
+                                      child: Text(LastNames[0]),
+                                    ),
+                                  ),
+                                  Text(
+                                    names[0],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                behaviors[0],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  //두번째 카드
+                  GestureDetector(
+                    onTap: () async {
+                      await recordBahvior(
+                        behaivorName: behaviors[1],
+                        studentID: studentIDs[1],
+                      );
+                      setState(() {});
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      height: constraints.maxHeight / 2 - 20,
+                      width: constraints.maxWidth - 20,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                          color: const Color.fromRGBO(195, 255, 250, 1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: const Offset(
+                                  0, 10), // changes position of shadow
+                            ),
+                          ]),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white60,
+                                    ),
+                                    child: Center(
+                                      child: Text(LastNames[1]),
+                                    ),
+                                  ),
+                                  Text(names[1]),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                behaviors[1],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
       case 3:
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -823,318 +739,368 @@ class _Main_PageState extends State<Main_Page> {
         );
 
       //행동 4개일 때
-      // case 4:
-      //   // key를 사용하여 behaviorIDAndStudentID에서 value를 가져옴
-      //   return LayoutBuilder(
-      //     builder: (BuildContext context, BoxConstraints constraints) {
-      //       print(
-      //           'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
-      //       return Container(
-      //         child: Column(
-      //           children: [
-      //             Row(
-      //               children: [
-      //                 // 첫번째 카드
-      //                 GestureDetector(
-      //                   onTap: () async {
-      //                     recordBahvior(
-      //                       behaviorID: behaviorList[0],
-      //                       studentID: behaviorIDAndStudentID[behaviorList[0]],
-      //                     );
-      //                   },
-      //                   child: Container(
-      //                     margin: const EdgeInsets.all(10),
-      //                     height: constraints.maxHeight / 2 - 20,
-      //                     width: constraints.maxWidth / 2 - 20,
-      //                     padding: const EdgeInsets.all(20),
-      //                     decoration: BoxDecoration(
-      //                         borderRadius: const BorderRadius.all(
-      //                           Radius.circular(15),
-      //                         ),
-      //                         color: const Color.fromRGBO(195, 255, 250, 1),
-      //                         boxShadow: [
-      //                           BoxShadow(
-      //                             color: Colors.grey.withOpacity(0.5),
-      //                             spreadRadius: 0,
-      //                             blurRadius: 5,
-      //                             offset: const Offset(
-      //                                 0, 10), // changes position of shadow
-      //                           ),
-      //                         ]),
-      //                     child: Center(
-      //                       child: Column(
-      //                         mainAxisAlignment: MainAxisAlignment.center,
-      //                         children: [
-      //                           Container(
-      //                             child: Row(
-      //                               mainAxisAlignment:
-      //                                   MainAxisAlignment.spaceEvenly,
-      //                               children: [
-      //                                 Container(
-      //                                   height: 40,
-      //                                   width: 40,
-      //                                   decoration: const BoxDecoration(
-      //                                     shape: BoxShape.circle,
-      //                                     color: Colors.white60,
-      //                                   ),
-      //                                   child: Center(
-      //                                     child: Text(mapForBehaviorsData[
-      //                                             behaviorList[0]]!
-      //                                         .values
-      //                                         .first[0]),
-      //                                   ),
-      //                                 ),
-      //                                 Text(
-      //                                   "  ${mapForBehaviorsData[behaviorList[0]]!.values.first}",
-      //                                   style: const TextStyle(
-      //                                       fontWeight: FontWeight.w300),
-      //                                 ),
-      //                               ],
-      //                             ),
-      //                           ),
-      //                           Container(
-      //                             child: Text(
-      //                               mapForBehaviorsData[behaviorList[0]]!
-      //                                   .keys
-      //                                   .first,
-      //                               style: const TextStyle(
-      //                                   fontWeight: FontWeight.bold),
-      //                             ),
-      //                           ),
-      //                         ],
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 //두번째 카드
-      //                 GestureDetector(
-      //                   onTap: () async {
-      //                     recordBahvior(
-      //                       behaviorID: behaviorList[1],
-      //                       studentID: behaviorIDAndStudentID[behaviorList[1]],
-      //                     );
-      //                   },
-      //                   child: Container(
-      //                     margin: const EdgeInsets.all(10),
-      //                     height: constraints.maxHeight / 2 - 20,
-      //                     width: constraints.maxWidth / 2 - 20,
-      //                     padding: const EdgeInsets.all(20),
-      //                     decoration: BoxDecoration(
-      //                         borderRadius: const BorderRadius.all(
-      //                           Radius.circular(15),
-      //                         ),
-      //                         color: const Color.fromRGBO(195, 255, 250, 1),
-      //                         boxShadow: [
-      //                           BoxShadow(
-      //                             color: Colors.grey.withOpacity(0.5),
-      //                             spreadRadius: 0,
-      //                             blurRadius: 5,
-      //                             offset: const Offset(
-      //                                 0, 10), // changes position of shadow
-      //                           ),
-      //                         ]),
-      //                     child: Center(
-      //                       child: Column(
-      //                         mainAxisAlignment: MainAxisAlignment.center,
-      //                         children: [
-      //                           Container(
-      //                             child: Row(
-      //                               mainAxisAlignment:
-      //                                   MainAxisAlignment.spaceEvenly,
-      //                               children: [
-      //                                 Container(
-      //                                   height: 40,
-      //                                   width: 40,
-      //                                   decoration: const BoxDecoration(
-      //                                     shape: BoxShape.circle,
-      //                                     color: Colors.white60,
-      //                                   ),
-      //                                   child: Center(
-      //                                     child: Text(mapForBehaviorsData[
-      //                                             behaviorList[1]]!
-      //                                         .values
-      //                                         .first[0]),
-      //                                   ),
-      //                                 ),
-      //                                 Text(
-      //                                   "  ${mapForBehaviorsData[behaviorList[1]]!.values.first}",
-      //                                   style: const TextStyle(
-      //                                       fontWeight: FontWeight.w300),
-      //                                 ),
-      //                               ],
-      //                             ),
-      //                           ),
-      //                           Container(
-      //                             child: Text(
-      //                               mapForBehaviorsData[behaviorList[1]]!
-      //                                   .keys
-      //                                   .first,
-      //                               style: const TextStyle(
-      //                                   fontWeight: FontWeight.bold),
-      //                             ),
-      //                           ),
-      //                         ],
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //             Row(
-      //               children: [
-      //                 //3번째 행동 카드
-      //                 GestureDetector(
-      //                   onTap: () async {
-      //                     recordBahvior(
-      //                       behaviorID: behaviorList[2],
-      //                       studentID: behaviorIDAndStudentID[behaviorList[2]],
-      //                     );
-      //                   },
-      //                   child: Container(
-      //                     margin: const EdgeInsets.all(10),
-      //                     height: constraints.maxHeight / 2 - 20,
-      //                     width: constraints.maxWidth / 2 - 20,
-      //                     padding: const EdgeInsets.all(20),
-      //                     decoration: BoxDecoration(
-      //                         borderRadius: const BorderRadius.all(
-      //                           Radius.circular(15),
-      //                         ),
-      //                         color: const Color.fromRGBO(195, 255, 250, 1),
-      //                         boxShadow: [
-      //                           BoxShadow(
-      //                             color: Colors.grey.withOpacity(0.5),
-      //                             spreadRadius: 0,
-      //                             blurRadius: 5,
-      //                             offset: const Offset(
-      //                                 0, 10), // changes position of shadow
-      //                           ),
-      //                         ]),
-      //                     child: Center(
-      //                       child: Column(
-      //                         mainAxisAlignment: MainAxisAlignment.center,
-      //                         children: [
-      //                           Container(
-      //                             child: Row(
-      //                               mainAxisAlignment:
-      //                                   MainAxisAlignment.spaceEvenly,
-      //                               children: [
-      //                                 Container(
-      //                                   height: 40,
-      //                                   width: 40,
-      //                                   decoration: const BoxDecoration(
-      //                                     shape: BoxShape.circle,
-      //                                     color: Colors.white60,
-      //                                   ),
-      //                                   child: Center(
-      //                                     child: Text(mapForBehaviorsData[
-      //                                             behaviorList[2]]!
-      //                                         .values
-      //                                         .first[0]),
-      //                                   ),
-      //                                 ),
-      //                                 Text(
-      //                                   "  ${mapForBehaviorsData[behaviorList[2]]!.values.first}",
-      //                                   style: const TextStyle(
-      //                                       fontWeight: FontWeight.w300),
-      //                                 ),
-      //                               ],
-      //                             ),
-      //                           ),
-      //                           Container(
-      //                             child: Text(
-      //                               mapForBehaviorsData[behaviorList[2]]!
-      //                                   .keys
-      //                                   .first,
-      //                               style: const TextStyle(
-      //                                   fontWeight: FontWeight.bold),
-      //                             ),
-      //                           ),
-      //                         ],
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 //4번째
-      //                 GestureDetector(
-      //                   onTap: () async {
-      //                     recordBahvior(
-      //                       behaviorID: behaviorList[3],
-      //                       studentID: behaviorIDAndStudentID[behaviorList[3]],
-      //                     );
-      //                   },
-      //                   child: Container(
-      //                     margin: const EdgeInsets.all(10),
-      //                     height: constraints.maxHeight / 2 - 20,
-      //                     width: constraints.maxWidth / 2 - 20,
-      //                     padding: const EdgeInsets.all(20),
-      //                     decoration: BoxDecoration(
-      //                         borderRadius: const BorderRadius.all(
-      //                           Radius.circular(15),
-      //                         ),
-      //                         color: const Color.fromRGBO(195, 255, 250, 1),
-      //                         boxShadow: [
-      //                           BoxShadow(
-      //                             color: Colors.grey.withOpacity(0.5),
-      //                             spreadRadius: 0,
-      //                             blurRadius: 5,
-      //                             offset: const Offset(
-      //                                 0, 10), // changes position of shadow
-      //                           ),
-      //                         ]),
-      //                     child: Center(
-      //                       child: Column(
-      //                         mainAxisAlignment: MainAxisAlignment.center,
-      //                         children: [
-      //                           Container(
-      //                             child: Row(
-      //                               mainAxisAlignment:
-      //                                   MainAxisAlignment.spaceEvenly,
-      //                               children: [
-      //                                 Container(
-      //                                   height: 40,
-      //                                   width: 40,
-      //                                   decoration: const BoxDecoration(
-      //                                     shape: BoxShape.circle,
-      //                                     color: Colors.white60,
-      //                                   ),
-      //                                   child: Center(
-      //                                     child: Text(mapForBehaviorsData[
-      //                                             behaviorList[3]]!
-      //                                         .values
-      //                                         .first[0]),
-      //                                   ),
-      //                                 ),
-      //                                 Text(
-      //                                   "  ${mapForBehaviorsData[behaviorList[3]]!.values.first}",
-      //                                   style: const TextStyle(
-      //                                       fontWeight: FontWeight.w300),
-      //                                 ),
-      //                               ],
-      //                             ),
-      //                           ),
-      //                           Container(
-      //                             child: Text(
-      //                               mapForBehaviorsData[behaviorList[3]]!
-      //                                   .keys
-      //                                   .first,
-      //                               style: const TextStyle(
-      //                                   fontWeight: FontWeight.bold),
-      //                             ),
-      //                           ),
-      //                         ],
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ],
-      //         ),
-      //       );
-      //     },
-      //   );
+      case 4:
+        // key를 사용하여 behaviorIDAndStudentID에서 value를 가져옴
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            print(
+                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+            return Container(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      // 첫번째 카드
+                      GestureDetector(
+                        onTap: () async {
+                          await recordBahvior(
+                            behaivorName: behaviors[0],
+                            studentID: studentIDs[0],
+                          );
+                          setState(() {});
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight / 2 - 20,
+                          width: constraints.maxWidth / 2 - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(LastNames[0]),
+                                        ),
+                                      ),
+                                      Text(
+                                        names[0],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    behaviors[0],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      //두번째 카드
+                      GestureDetector(
+                        onTap: () async {
+                          await recordBahvior(
+                            behaivorName: behaviors[1],
+                            studentID: studentIDs[1],
+                          );
+                          setState(() {});
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight / 2 - 20,
+                          width: constraints.maxWidth / 2 - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(LastNames[1]),
+                                        ),
+                                      ),
+                                      Text(
+                                        names[1],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    behaviors[1],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      //3번째 행동 카드
+                      GestureDetector(
+                        onTap: () async {
+                          await recordBahvior(
+                            behaivorName: behaviors[2],
+                            studentID: studentIDs[2],
+                          );
+                          setState(() {});
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight / 2 - 20,
+                          width: constraints.maxWidth / 2 - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(LastNames[2]),
+                                        ),
+                                      ),
+                                      Text(
+                                        names[2],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    behaviors[2],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      //4번째
+                      GestureDetector(
+                        onTap: () async {
+                          await recordBahvior(
+                            behaivorName: behaviors[3],
+                            studentID: studentIDs[3],
+                          );
+                          setState(() {});
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          height: constraints.maxHeight / 2 - 20,
+                          width: constraints.maxWidth / 2 - 20,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white60,
+                                        ),
+                                        child: Center(
+                                          child: Text(LastNames[3]),
+                                        ),
+                                      ),
+                                      Text(
+                                        names[3],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    behaviors[3],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
     }
 
     return Container();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ///바텀 네비게이션
+    widgetOptions = <Widget>[
+      HomeScreen(
+          studentDataList: studentDataList,
+          studentIdList: studentList,
+          itemContentList: itemContentList),
+      const CalendarManageScreen(),
+      BehavirRecordScreen(
+        studentIDs: studentIDs,
+        names: names,
+        behaviors: behaviors,
+        cards: buildBehaviorCards(behaviorList: itemContentList),
+      ),
+      const DashBoardScreen(),
+    ];
+
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            widgetOptions.elementAt(_selected_screen),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: bottomBarItems,
+        currentIndex: _selected_screen,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        onTap: _onItemTapped,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
+      ),
+    );
+  }
+
+  ///학생의 이름, 행동, 행동유형을 기반으로 행동 카드를 생성해주는 메서드
+  ///아래부터의 코드는 behavior_record.dart에서 작동하는 파일임.
+  ///
+  ///
+  ///
+  Future<void> recordBahvior({
+    required String? behaivorName,
+    required String? studentID,
+  }) async {
+    // 현재 시간을 가져오기
+    DateTime now = DateTime.now();
+    // 도큐먼트 ID로 사용할 문자열을 생성
+
+    try {
+      await db
+          .collection('Record')
+          .doc(studentID)
+          .collection('Behavior')
+          .doc(behaivorName)
+          .collection('BehaviorRecord')
+          .doc(now.toString())
+          .set({}, SetOptions(merge: true));
+    } catch (e) {
+      print('Failed to add document: $e');
+    }
   }
 }
