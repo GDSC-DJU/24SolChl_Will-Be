@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
+import 'package:provider/provider.dart';
+import 'package:solution/assets/pallet.dart';
 import 'package:solution/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
@@ -14,8 +16,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MyModel(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -108,5 +114,34 @@ class _MyAppState extends State<MyApp> {
       home:
           (_currentUserExist ? const Main_Page() : const PrimaryLoginScreen()),
     );
+  }
+}
+
+class MyModel with ChangeNotifier {
+  BtnColors btnColors = BtnColors();
+
+  Color get btnColor1 => btnColors.btn1;
+  Color get btnColor2 => btnColors.btn2;
+  Color get btnColor3 => btnColors.btn3;
+  Color get btnColor4 => btnColors.btn4;
+  Color get btnColor5 => btnColors.btn5;
+  Color get btnColor6 => btnColors.btn6;
+
+  void changeColor(int btnNum, Color newColor) {
+    if (btnNum == 1) {
+      btnColors.btn1 = newColor;
+    } else if (btnNum == 2) {
+      btnColors.btn2 = newColor;
+    } else if (btnNum == 3) {
+      btnColors.btn3 = newColor;
+    } else if (btnNum == 4) {
+      btnColors.btn4 = newColor;
+    } else if (btnNum == 5) {
+      btnColors.btn5 = newColor;
+    } else if (btnNum == 6) {
+      btnColors.btn6 = newColor;
+    }
+
+    notifyListeners();
   }
 }
