@@ -34,6 +34,9 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
           // height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
+              SizedBox(
+                height: 10,
+              ),
               Container(
                 alignment: Alignment.center,
                 child: Padding(
@@ -161,7 +164,7 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
               SingleChildScrollView(
                 child: Container(
                   width: MediaQuery.sizeOf(context).width - 32,
-                  height: MediaQuery.sizeOf(context).height - 203,
+                  height: MediaQuery.sizeOf(context).height - 213,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
