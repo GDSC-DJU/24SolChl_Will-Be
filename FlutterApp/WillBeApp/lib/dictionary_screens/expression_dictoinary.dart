@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:solution/dictionary_screens/expression_dictionary_edit.dart';
 
 class Expression_Dictionary extends StatefulWidget {
   Expression_Dictionary({Key? key, required this.name});
@@ -10,6 +11,8 @@ class Expression_Dictionary extends StatefulWidget {
 class _Expression_Dictionary_State extends State<Expression_Dictionary> {
   Map<String, TextEditingController> textControllers = {
     "name": TextEditingController(),
+    "behavior": TextEditingController(),
+    "meaning": TextEditingController(),
   };
 
   @override
@@ -86,7 +89,16 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                     SizedBox(
                       height: 35,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Expression_Dictionary_Edit(
+                                name: widget.name,
+                              ),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           side: BorderSide(color: Colors.black),
                           shape: RoundedRectangleBorder(
@@ -166,69 +178,52 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                   width: MediaQuery.sizeOf(context).width - 32,
                   height: MediaQuery.sizeOf(context).height - 213,
                   child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: MediaQuery.sizeOf(context).width - 32,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.keyboard_arrow_down_sharp,
-                                size: 40,
-                              ),
-                              Text("교실을 나가는 행동은"),
-                            ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 의사소통 builder
+                      Theme(
+                        data: ThemeData()
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          title: new Text(
+                            '교실을 나가는 행동은',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                                color: Colors.black),
                           ),
-                        ),
-                        Container(
-                          width: MediaQuery.sizeOf(context).width - 32,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.keyboard_arrow_up_sharp,
-                                size: 40,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          initiallyExpanded: true,
+                          backgroundColor: Colors.white,
+                          children: <Widget>[
+                            SingleChildScrollView(
+                              child: Container(
+                                // height: 200,
+                                width: MediaQuery.sizeOf(context).width - 32,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.sizeOf(context).width -
+                                                60,
+                                        //textController 반복 생성
+                                        child: _buildTextField("보이는 행동",
+                                            textControllers["name"], 0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              Text("사람에게 다가가서 만지거나 건드리면"),
-                            ],
-                          ),
+                            )
+                          ],
                         ),
-                      ]),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              // Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 16),
-              //   child: TextField(
-              //     style: TextStyle(
-              //       height: 1.5,
-              //       fontSize: 25,
-              //       fontWeight: FontWeight.bold,
-              //     ),
-              //     decoration: const InputDecoration(
-              //       border: UnderlineInputBorder(),
-              //       floatingLabelStyle: TextStyle(
-              //         color: Color.fromARGB(255, 102, 108, 255),
-              //         fontWeight: FontWeight.w500,
-              //         fontSize: 23,
-              //       ),
-              //       floatingLabelBehavior: FloatingLabelBehavior.auto,
-              //       labelText: '아이 이름',
-              //       isDense: true,
-              //       contentPadding: EdgeInsets.only(top: -20, bottom: 4),
-              //       focusColor: Color.fromARGB(255, 102, 108, 255),
-              //       labelStyle: TextStyle(
-              //         fontSize: 25,
-              //         color: Colors.black26,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     ),
-              //     controller: textControllers["name"],
-              //     onChanged: (value) {
-              //       setState(() {
-              //         // widget.name = value;
-              //       });
-              //     },
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -237,112 +232,30 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
   }
 }
 
-class CustomRadioButton extends StatelessWidget {
-  final bool isSelected;
-  final VoidCallback onTap;
-  final String text;
-
-  CustomRadioButton({
-    required this.isSelected,
-    required this.onTap,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          vertical: 4,
-          horizontal: 12,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(40)),
-          color:
-              isSelected ? Color.fromARGB(255, 102, 108, 255) : Colors.black12,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                color: isSelected ? Colors.white : Colors.black,
-              ),
-            ),
-          ],
+Widget _buildTextField(
+    String label, TextEditingController? controller, int index) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      TextFormField(
+        controller: controller,
+        maxLines: null,
+        style: TextStyle(fontSize: 15),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Colors.blue),
+          ),
+          hintText: "입력하세요",
         ),
       ),
-    );
-  }
-}
-
-class AppSliderShape extends SliderComponentShape {
-  final double thumbRadius;
-  final String thumbValue;
-
-  const AppSliderShape({required this.thumbRadius, required this.thumbValue});
-
-  @override
-  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size.fromRadius(thumbRadius);
-  }
-
-  @override
-  void paint(
-    PaintingContext context,
-    Offset center, {
-    required Animation<double> activationAnimation,
-    required Animation<double> enableAnimation,
-    required bool isDiscrete,
-    required TextPainter labelPainter,
-    required RenderBox parentBox,
-    required SliderThemeData sliderTheme,
-    required TextDirection textDirection,
-    required double value,
-    required double textScaleFactor,
-    required Size sizeWithOverflow,
-  }) {
-    final Canvas canvas = context.canvas;
-
-    TextSpan span = new TextSpan(
-      style: new TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w700,
-        color: Colors.black,
+      SizedBox(
+        height: 20,
       ),
-      text: thumbValue,
-    );
-
-    TextPainter textPainter = new TextPainter(
-      text: span,
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.ltr,
-    );
-
-    textPainter.layout();
-
-    Offset textCenter = Offset(
-      center.dx - (textPainter.width / 2),
-      center.dy - (textPainter.height / 2),
-    );
-
-    canvas.drawCircle(
-      center,
-      20,
-      Paint()
-        ..style = PaintingStyle.fill
-        ..color = Color.fromARGB(255, 102, 108, 255),
-    );
-    canvas.drawCircle(
-      center,
-      15,
-      Paint()
-        ..style = PaintingStyle.fill
-        ..color = Colors.white,
-    );
-    textPainter.paint(canvas, textCenter);
-  }
+    ],
+  );
 }
