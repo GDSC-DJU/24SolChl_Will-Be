@@ -175,7 +175,7 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Colors.blue),
+              borderSide: BorderSide(color: Color.fromARGB(255, 102, 108, 255)),
             ),
             hintText: "입력하세요",
           ),
