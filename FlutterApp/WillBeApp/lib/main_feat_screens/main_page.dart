@@ -6,8 +6,12 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:solution/assets/pallet.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
+import 'package:solution/main.dart';
 import 'package:solution/main_feat_screens/behavior_record.dart';
 import 'package:solution/main_feat_screens/calendar_manage_screen.dart';
 import 'package:solution/main_feat_screens/dashboard_screen.dart';
@@ -286,6 +290,18 @@ class _Main_PageState extends State<Main_Page> {
   Widget buildBehaviorCards({required List behaviorList}) {
     ///내 계정에 등록된 아이의 ID를 가져오는 스냅샷
     ///
+    BtnColors btnColors = BtnColors();
+
+    List<Color> btnColorList = [];
+    btnColorList.add(BtnColors().btn1);
+    btnColorList.add(BtnColors().btn2);
+    btnColorList.add(BtnColors().btn3);
+    btnColorList.add(BtnColors().btn4);
+    btnColorList.add(BtnColors().btn5);
+    btnColorList.add(BtnColors().btn6);
+
+    bool isButtonEnabled = true;
+    String noticForTooFastClicks = '너무 빨리 눌렀어요 다시 눌러주세요!';
 
     print("behaviorList");
     print(behaviorList);
@@ -300,34 +316,63 @@ class _Main_PageState extends State<Main_Page> {
 
       //행동카드의 수가 1개
       case 1:
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            print(
-                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
-            return Container(
+        // return LayoutBuilder(
+        //   builder: (BuildContext context, BoxConstraints constraints) {
+        //     print(
+        //         'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+        return Consumer<MyModel>(
+          builder: (
+            context,
+            myModel,
+            child,
+          ) {
+            return Center(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       //first bahavior
                       GestureDetector(
-                        onTap: () async {
-                          await recordBahvior(
-                            behaivorName: behaviors[0],
-                            studentID: studentIDs[0],
-                          );
-                          setState(() {});
-                        },
+                        onTap: isButtonEnabled
+                            ? () async {
+                                isButtonEnabled = false;
+                                myModel.changeColor(1, btnColors.btnPressed1);
+
+                                await recordBahvior(
+                                  behaivorName: behaviors[0],
+                                  studentID: studentIDs[0],
+                                );
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  setState(() {
+                                    myModel.changeColor(1, btnColors.btn1);
+                                  });
+                                });
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  isButtonEnabled = true;
+                                });
+                              }
+                            : () {
+                                var snackBar = SnackBar(
+                                    content: Text(noticForTooFastClicks));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              },
                         child: Container(
                           margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight - 20,
-                          width: constraints.maxWidth - 20,
+                          height:
+                              MediaQuery.of(context).size.height * 0.54 - 20,
+                          width: MediaQuery.of(context).size.width - 0,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(15),
                               ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              color: myModel.btnColor1,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.5),
@@ -339,6 +384,7 @@ class _Main_PageState extends State<Main_Page> {
                               ]),
                           child: Center(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
@@ -386,31 +432,58 @@ class _Main_PageState extends State<Main_Page> {
           },
         );
       case 2:
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            print(
-                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+        //return LayoutBuilder(
+        // builder: (BuildContext context, BoxConstraints constraints) {
+        //   print(
+        //       'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+        //   return
+        return Consumer<MyModel>(
+          builder: (
+            context,
+            myModel,
+            child,
+          ) {
             return Container(
               child: Column(
                 children: [
                   GestureDetector(
-                    onTap: () async {
-                      await recordBahvior(
-                        behaivorName: behaviors[0],
-                        studentID: studentIDs[0],
-                      );
-                      setState(() {});
-                    },
+                    onTap: isButtonEnabled
+                        ? () async {
+                            isButtonEnabled = false;
+                            myModel.changeColor(1, btnColors.btnPressed1);
+
+                            await recordBahvior(
+                              behaivorName: behaviors[0],
+                              studentID: studentIDs[0],
+                            );
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
+                              setState(() {
+                                myModel.changeColor(1, btnColors.btn1);
+                              });
+                            });
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
+                              isButtonEnabled = true;
+                            });
+                          }
+                        : () {
+                            var snackBar =
+                                SnackBar(content: Text(noticForTooFastClicks));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          },
                     child: Container(
                       margin: const EdgeInsets.all(10),
-                      height: constraints.maxHeight / 2 - 20,
-                      width: constraints.maxWidth - 20,
+                      height:
+                          MediaQuery.of(context).size.height * 0.54 / 2 - 20,
+                      width: MediaQuery.of(context).size.width - 20,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(
                             Radius.circular(15),
                           ),
-                          color: const Color.fromRGBO(195, 255, 250, 1),
+                          color: myModel.btnColor1,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.grey.withOpacity(0.5),
@@ -461,23 +534,43 @@ class _Main_PageState extends State<Main_Page> {
                   ),
                   //두번째 카드
                   GestureDetector(
-                    onTap: () async {
-                      await recordBahvior(
-                        behaivorName: behaviors[1],
-                        studentID: studentIDs[1],
-                      );
-                      setState(() {});
-                    },
+                    onTap: isButtonEnabled
+                        ? () async {
+                            isButtonEnabled = false;
+                            myModel.changeColor(2, btnColors.btnPressed2);
+
+                            await recordBahvior(
+                              behaivorName: behaviors[1],
+                              studentID: studentIDs[1],
+                            );
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
+                              setState(() {
+                                myModel.changeColor(2, btnColors.btn2);
+                              });
+                            });
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
+                              isButtonEnabled = true;
+                            });
+                          }
+                        : () {
+                            var snackBar =
+                                SnackBar(content: Text(noticForTooFastClicks));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          },
                     child: Container(
                       margin: const EdgeInsets.all(10),
-                      height: constraints.maxHeight / 2 - 20,
-                      width: constraints.maxWidth - 20,
+                      height:
+                          MediaQuery.of(context).size.height * 0.54 / 2 - 20,
+                      width: MediaQuery.of(context).size.width - 20,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(
                             Radius.circular(15),
                           ),
-                          color: const Color.fromRGBO(195, 255, 250, 1),
+                          color: myModel.btnColor2,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.grey.withOpacity(0.5),
@@ -528,31 +621,139 @@ class _Main_PageState extends State<Main_Page> {
           },
         );
       case 3:
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            print(
-                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
-            return Container(
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      await recordBahvior(
-                        behaivorName: behaviors[0],
-                        studentID: studentIDs[0],
-                      );
-                      setState(() {});
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      height: constraints.maxHeight / 3 - 20,
-                      width: constraints.maxWidth - 20,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
+        // return LayoutBuilder(
+        //   builder: (BuildContext context, BoxConstraints constraints) {
+        //     print(
+        //         'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+        return Consumer<MyModel>(builder: (
+          context,
+          myModel,
+          child,
+        ) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: isButtonEnabled
+                      ? () async {
+                          isButtonEnabled = false;
+                          myModel.changeColor(1, btnColors.btnPressed1);
+
+                          await recordBahvior(
+                            behaivorName: behaviors[0],
+                            studentID: studentIDs[0],
+                          );
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            setState(() {
+                              myModel.changeColor(1, btnColors.btn1);
+                            });
+                          });
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            isButtonEnabled = true;
+                          });
+                        }
+                      : () {
+                          var snackBar =
+                              SnackBar(content: Text(noticForTooFastClicks));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    margin: const EdgeInsets.all(10),
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
+                    width: MediaQuery.of(context).size.width - 20,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                      color: myModel.btnColor1,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 0,
+                          blurRadius: 5,
+                          offset:
+                              const Offset(0, 10), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white60,
+                                  ),
+                                  child: Center(
+                                    child: Text(LastNames[0]),
+                                  ),
+                                ),
+                                Text(
+                                  names[0],
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                              behaviors[0],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                //두번째 카드
+                GestureDetector(
+                  onTap: isButtonEnabled
+                      ? () async {
+                          isButtonEnabled = false;
+                          myModel.changeColor(2, btnColors.btnPressed2);
+
+                          await recordBahvior(
+                            behaivorName: behaviors[1],
+                            studentID: studentIDs[1],
+                          );
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            setState(() {
+                              myModel.changeColor(2, btnColors.btn2);
+                            });
+                          });
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            isButtonEnabled = true;
+                          });
+                        }
+                      : () {
+                          var snackBar =
+                              SnackBar(content: Text(noticForTooFastClicks));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    margin: const EdgeInsets.all(10),
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
+                    width: MediaQuery.of(context).size.width - 20,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(
                           Radius.circular(15),
                         ),
-                        color: const Color.fromRGBO(195, 255, 250, 1),
+                        color: myModel.btnColor2,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -561,218 +762,198 @@ class _Main_PageState extends State<Main_Page> {
                             offset: const Offset(
                                 0, 10), // changes position of shadow
                           ),
+                        ]),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 500),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white60,
+                                  ),
+                                  child: Center(
+                                    child: Text(LastNames[1]),
+                                  ),
+                                ),
+                                Text(
+                                  names[1],
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                              behaviors[1],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ],
                       ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white60,
-                                    ),
-                                    child: Center(
-                                      child: Text(LastNames[0]),
-                                    ),
-                                  ),
-                                  Text(
-                                    names[0],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: Text(
-                                behaviors[0],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
                   ),
-                  //두번째 카드
-                  GestureDetector(
-                    onTap: () async {
-                      await recordBahvior(
-                        behaivorName: behaviors[1],
-                        studentID: studentIDs[1],
-                      );
-                      setState(() {});
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      height: constraints.maxHeight / 3 - 20,
-                      width: constraints.maxWidth - 20,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(15),
+                ),
+                //3번째 코드
+                GestureDetector(
+                  onTap: isButtonEnabled
+                      ? () async {
+                          isButtonEnabled = false;
+                          myModel.changeColor(3, btnColors.btnPressed3);
+
+                          await recordBahvior(
+                            behaivorName: behaviors[2],
+                            studentID: studentIDs[2],
+                          );
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            setState(() {
+                              myModel.changeColor(3, btnColors.btn3);
+                            });
+                          });
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            isButtonEnabled = true;
+                          });
+                        }
+                      : () {
+                          var snackBar =
+                              SnackBar(content: Text(noticForTooFastClicks));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    margin: const EdgeInsets.all(10),
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
+                    width: MediaQuery.of(context).size.width - 20,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(15),
+                        ),
+                        color: myModel.btnColor3,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0,
+                            blurRadius: 5,
+                            offset: const Offset(
+                                0, 10), // changes position of shadow
                           ),
-                          color: const Color.fromRGBO(195, 255, 250, 1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 5,
-                              offset: const Offset(
-                                  0, 10), // changes position of shadow
-                            ),
-                          ]),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white60,
-                                    ),
-                                    child: Center(
-                                      child: Text(LastNames[1]),
-                                    ),
+                        ]),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 500),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white60,
                                   ),
-                                  Text(
-                                    names[1],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
+                                  child: Center(
+                                    child: Text(LastNames[2]),
                                   ),
-                                ],
-                              ),
+                                ),
+                                Text(
+                                  names[2],
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ],
                             ),
-                            Container(
-                              child: Text(
-                                behaviors[1],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  //3번째 코드
-                  GestureDetector(
-                    onTap: () async {
-                      await recordBahvior(
-                        behaivorName: behaviors[2],
-                        studentID: studentIDs[2],
-                      );
-                      setState(() {});
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      height: constraints.maxHeight / 3 - 20,
-                      width: constraints.maxWidth - 20,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(15),
                           ),
-                          color: const Color.fromRGBO(195, 255, 250, 1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 5,
-                              offset: const Offset(
-                                  0, 10), // changes position of shadow
+                          Container(
+                            child: Text(
+                              behaviors[2],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
-                          ]),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white60,
-                                    ),
-                                    child: Center(
-                                      child: Text(LastNames[2]),
-                                    ),
-                                  ),
-                                  Text(
-                                    names[2],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: Text(
-                                behaviors[2],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
-            );
-          },
-        );
+                ),
+              ],
+            ),
+          );
+        });
+      //   },
+      // );
 
       //행동 4개일 때
       case 4:
         // key를 사용하여 behaviorIDAndStudentID에서 value를 가져옴
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            print(
-                'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
-            return Container(
+        // return LayoutBuilder(
+        //   builder: (BuildContext context, BoxConstraints constraints) {
+        //     print(
+        //         'Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}');
+        return Consumer<MyModel>(
+          builder: (
+            context,
+            myModel,
+            child,
+          ) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
               child: Column(
                 children: [
                   Row(
                     children: [
                       // 첫번째 카드
                       GestureDetector(
-                        onTap: () async {
-                          await recordBahvior(
-                            behaivorName: behaviors[0],
-                            studentID: studentIDs[0],
-                          );
-                          setState(() {});
-                        },
+                        onTap: isButtonEnabled
+                            ? () async {
+                                isButtonEnabled = false;
+                                myModel.changeColor(1, btnColors.btnPressed1);
+
+                                await recordBahvior(
+                                  behaivorName: behaviors[0],
+                                  studentID: studentIDs[0],
+                                );
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  setState(() {
+                                    myModel.changeColor(1, btnColors.btn1);
+                                  });
+                                });
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  isButtonEnabled = true;
+                                });
+                              }
+                            : () {
+                                var snackBar = SnackBar(
+                                    content: Text(noticForTooFastClicks));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              },
                         child: Container(
                           margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight / 2 - 20,
-                          width: constraints.maxWidth / 2 - 20,
+                          height:
+                              MediaQuery.of(context).size.height * 0.54 / 2 -
+                                  20,
+                          width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(15),
                               ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              color: myModel.btnColor1,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.5),
@@ -824,23 +1005,44 @@ class _Main_PageState extends State<Main_Page> {
                       ),
                       //두번째 카드
                       GestureDetector(
-                        onTap: () async {
-                          await recordBahvior(
-                            behaivorName: behaviors[1],
-                            studentID: studentIDs[1],
-                          );
-                          setState(() {});
-                        },
+                        onTap: isButtonEnabled
+                            ? () async {
+                                isButtonEnabled = false;
+                                myModel.changeColor(2, btnColors.btnPressed2);
+
+                                await recordBahvior(
+                                  behaivorName: behaviors[1],
+                                  studentID: studentIDs[1],
+                                );
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  setState(() {
+                                    myModel.changeColor(2, btnColors.btn2);
+                                  });
+                                });
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  isButtonEnabled = true;
+                                });
+                              }
+                            : () {
+                                var snackBar = SnackBar(
+                                    content: Text(noticForTooFastClicks));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              },
                         child: Container(
                           margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight / 2 - 20,
-                          width: constraints.maxWidth / 2 - 20,
+                          height:
+                              MediaQuery.of(context).size.height * 0.54 / 2 -
+                                  20,
+                          width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(15),
                               ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              color: myModel.btnColor2,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.5),
@@ -896,23 +1098,44 @@ class _Main_PageState extends State<Main_Page> {
                     children: [
                       //3번째 행동 카드
                       GestureDetector(
-                        onTap: () async {
-                          await recordBahvior(
-                            behaivorName: behaviors[2],
-                            studentID: studentIDs[2],
-                          );
-                          setState(() {});
-                        },
+                        onTap: isButtonEnabled
+                            ? () async {
+                                isButtonEnabled = false;
+                                myModel.changeColor(3, btnColors.btnPressed3);
+
+                                await recordBahvior(
+                                  behaivorName: behaviors[2],
+                                  studentID: studentIDs[2],
+                                );
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  setState(() {
+                                    myModel.changeColor(3, btnColors.btn3);
+                                  });
+                                });
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  isButtonEnabled = true;
+                                });
+                              }
+                            : () {
+                                var snackBar = SnackBar(
+                                    content: Text(noticForTooFastClicks));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              },
                         child: Container(
                           margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight / 2 - 20,
-                          width: constraints.maxWidth / 2 - 20,
+                          height:
+                              MediaQuery.of(context).size.height * 0.54 / 2 -
+                                  20,
+                          width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(15),
                               ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              color: myModel.btnColor3,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.5),
@@ -964,23 +1187,44 @@ class _Main_PageState extends State<Main_Page> {
                       ),
                       //4번째
                       GestureDetector(
-                        onTap: () async {
-                          await recordBahvior(
-                            behaivorName: behaviors[3],
-                            studentID: studentIDs[3],
-                          );
-                          setState(() {});
-                        },
+                        onTap: isButtonEnabled
+                            ? () async {
+                                isButtonEnabled = false;
+                                myModel.changeColor(4, btnColors.btnPressed4);
+
+                                await recordBahvior(
+                                  behaivorName: behaviors[3],
+                                  studentID: studentIDs[3],
+                                );
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  setState(() {
+                                    myModel.changeColor(4, btnColors.btn4);
+                                  });
+                                });
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  isButtonEnabled = true;
+                                });
+                              }
+                            : () {
+                                var snackBar = SnackBar(
+                                    content: Text(noticForTooFastClicks));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              },
                         child: Container(
                           margin: const EdgeInsets.all(10),
-                          height: constraints.maxHeight / 2 - 20,
-                          width: constraints.maxWidth / 2 - 20,
+                          height:
+                              MediaQuery.of(context).size.height * 0.54 / 2 -
+                                  20,
+                          width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(15),
                               ),
-                              color: const Color.fromRGBO(195, 255, 250, 1),
+                              color: myModel.btnColor4,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.5),
@@ -1055,7 +1299,9 @@ class _Main_PageState extends State<Main_Page> {
         studentIDs: studentIDs,
         names: names,
         behaviors: behaviors,
-        cards: buildBehaviorCards(behaviorList: itemContentList),
+        cards: buildBehaviorCards(
+          behaviorList: itemContentList,
+        ),
       ),
       const DashBoardScreen(),
     ];
