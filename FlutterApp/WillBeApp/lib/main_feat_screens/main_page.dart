@@ -366,7 +366,7 @@ class _Main_PageState extends State<Main_Page> {
                           margin: const EdgeInsets.all(10),
                           height:
                               MediaQuery.of(context).size.height * 0.54 - 20,
-                          width: MediaQuery.of(context).size.width - 0,
+                          width: MediaQuery.of(context).size.width - 40,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
@@ -407,7 +407,8 @@ class _Main_PageState extends State<Main_Page> {
                                       Text(
                                         names[0],
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white),
                                       ),
                                     ],
                                   ),
@@ -416,7 +417,8 @@ class _Main_PageState extends State<Main_Page> {
                                   child: Text(
                                     behaviors[0],
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -515,7 +517,8 @@ class _Main_PageState extends State<Main_Page> {
                                   Text(
                                     names[0],
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.white),
                                   ),
                                 ],
                               ),
@@ -524,7 +527,8 @@ class _Main_PageState extends State<Main_Page> {
                               child: Text(
                                 behaviors[0],
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
                               ),
                             ),
                           ],
@@ -599,7 +603,12 @@ class _Main_PageState extends State<Main_Page> {
                                       child: Text(LastNames[1]),
                                     ),
                                   ),
-                                  Text(names[1]),
+                                  Text(
+                                    names[1],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.white),
+                                  ),
                                 ],
                               ),
                             ),
@@ -607,7 +616,8 @@ class _Main_PageState extends State<Main_Page> {
                               child: Text(
                                 behaviors[1],
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
                               ),
                             ),
                           ],
@@ -701,7 +711,8 @@ class _Main_PageState extends State<Main_Page> {
                                 Text(
                                   names[0],
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.w300),
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.white),
                                 ),
                               ],
                             ),
@@ -709,8 +720,9 @@ class _Main_PageState extends State<Main_Page> {
                           Container(
                             child: Text(
                               behaviors[0],
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
                             ),
                           ),
                         ],
@@ -786,7 +798,8 @@ class _Main_PageState extends State<Main_Page> {
                                 Text(
                                   names[1],
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.w300),
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.white),
                                 ),
                               ],
                             ),
@@ -794,8 +807,9 @@ class _Main_PageState extends State<Main_Page> {
                           Container(
                             child: Text(
                               behaviors[1],
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
                             ),
                           ),
                         ],
@@ -871,7 +885,8 @@ class _Main_PageState extends State<Main_Page> {
                                 Text(
                                   names[2],
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.w300),
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.white),
                                 ),
                               ],
                             ),
@@ -879,8 +894,9 @@ class _Main_PageState extends State<Main_Page> {
                           Container(
                             child: Text(
                               behaviors[2],
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
                             ),
                           ),
                         ],
@@ -986,7 +1002,8 @@ class _Main_PageState extends State<Main_Page> {
                                       Text(
                                         names[0],
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white),
                                       ),
                                     ],
                                   ),
@@ -995,7 +1012,8 @@ class _Main_PageState extends State<Main_Page> {
                                   child: Text(
                                     behaviors[0],
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -1075,7 +1093,8 @@ class _Main_PageState extends State<Main_Page> {
                                       Text(
                                         names[1],
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white),
                                       ),
                                     ],
                                   ),
@@ -1084,7 +1103,8 @@ class _Main_PageState extends State<Main_Page> {
                                   child: Text(
                                     behaviors[1],
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -1168,7 +1188,8 @@ class _Main_PageState extends State<Main_Page> {
                                       Text(
                                         names[2],
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white),
                                       ),
                                     ],
                                   ),
@@ -1177,7 +1198,8 @@ class _Main_PageState extends State<Main_Page> {
                                   child: Text(
                                     behaviors[2],
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -1257,7 +1279,8 @@ class _Main_PageState extends State<Main_Page> {
                                       Text(
                                         names[3],
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.w300),
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white),
                                       ),
                                     ],
                                   ),
@@ -1266,7 +1289,8 @@ class _Main_PageState extends State<Main_Page> {
                                   child: Text(
                                     behaviors[3],
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
                                   ),
                                 ),
                               ],
