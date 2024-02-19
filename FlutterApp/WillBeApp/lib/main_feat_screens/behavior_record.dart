@@ -76,12 +76,15 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
         for (var element in snapshot.docs) {
           DateTime time = DateTime.parse(element.id);
 
-          allRecords.add({
-            'name': studentName,
-            'behavior': behaviorName,
-            'time': time,
-            'studentId': studentId,
-          });
+          if (time.day == DateTime.now().day &&
+              time.month == DateTime.now().month &&
+              time.year == DateTime.now().year)
+            allRecords.add({
+              'name': studentName,
+              'behavior': behaviorName,
+              'time': time,
+              'studentId': studentId,
+            });
         }
 
         allRecords.sort((a, b) => b['time'].compareTo(a['time']));
