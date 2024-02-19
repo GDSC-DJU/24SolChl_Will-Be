@@ -28,7 +28,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 20,
+              height: MediaQuery.of(context).size.height * 0.01 * 2,
             ),
             SizedBox(
               width: MediaQuery.sizeOf(context).width - 32,
@@ -92,8 +92,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 50.0,
-                      height: 50.0,
+                      width: MediaQuery.of(context).size.height * 0.01 * 5,
+                      height: MediaQuery.of(context).size.height * 0.01 * 5,
                       child: Card(
                         clipBehavior: Clip.antiAlias,
                         elevation: 0,
@@ -117,12 +117,53 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             const TextStyle(color: Colors.black, fontSize: 30),
                       ),
                     ),
+                    Spacer(),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Expression_Dictionary(
+                              name: name,
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Color.fromARGB(255, 246, 100, 92),
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.025 * 10.5,
+                        height: MediaQuery.of(context).size.height * 0.01 * 5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.book,
+                              color: Colors.white,
+                              size: 15,
+                            ),
+                            Text(
+                              " 의사소통사전",
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01 * 1.6),
               Container(
-                height: 300,
+                height: MediaQuery.of(context).size.height * 0.01 * 30,
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -137,7 +178,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ),
               ),
               Container(
-                height: 100,
+                height: MediaQuery.of(context).size.height * 0.01 * 10,
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -145,31 +186,18 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "행동 별 자세히보기",
-                      style: const TextStyle(color: Colors.black, fontSize: 22),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Expression_Dictionary(
-                              name: name,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "의사소통사전 바로가기 >",
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 15,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "행동 별 자세히 기록",
                         style:
-                            const TextStyle(color: Colors.black, fontSize: 13),
+                            const TextStyle(color: Colors.black, fontSize: 22),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               Column(
@@ -177,7 +205,47 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 children: [
                   ...widget.itemContentList[index]
                       .map((item) => Container(
-                            child: TextButton(
+                            child:
+                                // ElevatedButton(
+                                //   onPressed: () {
+                                //     Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             Behavior_Detail_Screen(
+                                //           name: name,
+                                //           behaviorName: item,
+                                //         ),
+                                //       ),
+                                //     );
+                                //   },
+                                //   style: ElevatedButton.styleFrom(
+                                //     shape: RoundedRectangleBorder(
+                                //         borderRadius:
+                                //             BorderRadius.all(Radius.circular(10))),
+                                //     padding: EdgeInsets.zero,
+                                //     backgroundColor:
+                                //         Color.fromARGB(255, 102, 108, 255),
+                                //   ),
+                                //   child: Container(
+                                //     width: MediaQuery.of(context).size.width *
+                                //         0.025 *
+                                //         8.5,
+                                //     height: MediaQuery.of(context).size.height *
+                                //         0.01 *
+                                //         5,
+                                //     child: Center(
+                                //       child: Text(
+                                //         '$item >',
+                                //         style: const TextStyle(
+                                //             color: Colors.black,
+                                //             fontSize: 22,
+                                //             fontWeight: FontWeight.w500),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                TextButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -190,18 +258,26 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   ),
                                 );
                               },
+                              style: ButtonStyle(
+                                  padding: MaterialStatePropertyAll(
+                                      EdgeInsets.symmetric(
+                                          vertical: 4, horizontal: 16)),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 102, 108, 255))),
                               child: Text(
                                 '$item >',
                                 style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 22,
+                                    color: Colors.white,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.w500),
                               ),
                             ),
                           ))
                       .toList(),
                   SizedBox(
-                    height: 30, // Icon의 높이와 동일하게 설정
+                    height: MediaQuery.of(context).size.height *
+                        0.01 *
+                        3, // Icon의 높이와 동일하게 설정
                   ),
                 ],
               ),

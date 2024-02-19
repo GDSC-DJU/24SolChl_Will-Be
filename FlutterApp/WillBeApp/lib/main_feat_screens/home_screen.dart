@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.025 * 10,
+                          width: MediaQuery.of(context).size.height * 0.01 * 10,
                           height:
                               MediaQuery.of(context).size.height * 0.01 * 10,
                           child: Card(
@@ -333,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text(
                             '도전행동 추가하기 +',
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 18,
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500),
                           ),
@@ -368,3 +368,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+// 10px MediaQuery.of(context).size.height * 0.01
+// 10px MediaQuery.of(context).size.width * 0.025

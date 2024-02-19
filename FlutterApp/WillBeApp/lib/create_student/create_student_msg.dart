@@ -28,10 +28,8 @@ class _Create_student_Msg_State extends State<Create_student_Msg> {
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(),
-        body: Container(
+      child: SingleChildScrollView(
+        child: Container(
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
