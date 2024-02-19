@@ -171,9 +171,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
               // 필요한 정보들을 추가
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
+                padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  "데일리리포트",
+                  "데일리 리포트",
                   style: const TextStyle(color: Colors.black, fontSize: 22),
                 ),
               ),
@@ -183,6 +183,70 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 child: Center(child: Text("리포트 슬라이드")),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  "주간 리포트",
+                  style: const TextStyle(color: Colors.black, fontSize: 22),
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.01 * 10,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    // DB로 받은 리포트 수
+                    itemCount: 10,
+                    itemBuilder: (BuildContext ctx, int idx) {
+                      return Container(
+                        margin: EdgeInsets.only(right: 12),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Expression_Dictionary(
+                                  name: name,
+                                ),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            padding: EdgeInsets.zero,
+                            backgroundColor: Colors.black12,
+                          ),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width *
+                                0.025 *
+                                10.5,
+                            height:
+                                MediaQuery.of(context).size.height * 0.01 * 5,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.menu_book_sharp,
+                                  color: Colors.white,
+                                  size: 15,
+                                ),
+                                Text(
+                                  "  $idx",
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
