@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            height: 20,
+            height: MediaQuery.of(context).size.height * 0.02, //20
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width - 16,
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: MediaQuery.of(context).size.height * 0.02,
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width - 32,
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: EdgeInsets.only(top: 20),
             child: SizedBox(
-              height: 50,
+              height: MediaQuery.of(context).size.height * 0.01 * 5,
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Container(
                   width: double.infinity,
-                  height: 50,
+                  height: MediaQuery.of(context).size.height * 0.05,
                   child: Center(
                     child: Text(
                       '아이 추가하기',
@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 160.0,
+                  height: MediaQuery.of(context).size.height * 0.01 * 16,
                   alignment: Alignment.center,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -158,8 +158,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: 100.0,
-                          height: 100.0,
+                          width: MediaQuery.of(context).size.height * 0.01 * 10,
+                          height:
+                              MediaQuery.of(context).size.height * 0.01 * 10,
                           child: Card(
                             clipBehavior: Clip.antiAlias,
                             elevation: 0,
@@ -191,8 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     SizedBox(
-                      width: 125,
-                      height: 50,
+                      width: MediaQuery.of(context).size.width * 0.025 * 12.5,
+                      height: MediaQuery.of(context).size.height * 0.01 * 5,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
@@ -211,8 +212,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           backgroundColor: Color.fromARGB(255, 102, 108, 255),
                         ),
                         child: Container(
-                          width: 150,
-                          height: 50,
+                          width:
+                              MediaQuery.of(context).size.width * 0.025 * 12.5,
+                          height: MediaQuery.of(context).size.height * 0.01 * 5,
                           child: Center(
                             child: Text(
                               '의사소통사전',
@@ -226,8 +228,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     SizedBox(
-                      width: 125,
-                      height: 50,
+                      width: MediaQuery.of(context).size.width * 0.025 * 12.5,
+                      height: MediaQuery.of(context).size.height * 0.01 * 5,
                       child: ElevatedButton(
                         onPressed: () async {},
                         style: ElevatedButton.styleFrom(
@@ -238,8 +240,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           backgroundColor: Color.fromARGB(255, 102, 108, 255),
                         ),
                         child: Container(
-                          width: 150,
-                          height: 50,
+                          width:
+                              MediaQuery.of(context).size.width * 0.025 * 12.5,
+                          height: MediaQuery.of(context).size.height * 0.01 * 5,
                           child: Center(
                             child: Text(
                               '측정 기록',
@@ -255,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 SizedBox(
-                  height: 20,
+                  height: MediaQuery.of(context).size.height * 0.01 * 2,
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 32,
@@ -265,7 +268,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width - 32,
-                          height: 100,
+                          height:
+                              MediaQuery.of(context).size.height * 0.01 * 10,
                           // color: Colors.black,
                         ),
                         Padding(
@@ -284,7 +288,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ))
                                   .toList(),
                               SizedBox(
-                                height: 30, // Icon의 높이와 동일하게 설정
+                                height: MediaQuery.of(context).size.height *
+                                    0.01 *
+                                    3,
                               ),
                             ],
                           ),
@@ -297,8 +303,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                   child: SizedBox(
-                    width: 180,
-                    height: 40,
+                    width: MediaQuery.of(context).size.width * 0.025 * 18,
+                    height: MediaQuery.of(context).size.height * 0.01 * 4,
                     child: ElevatedButton(
                       onPressed: () {
                         // 학생 ID : widget.studentIdList[index]
@@ -327,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text(
                             '도전행동 추가하기 +',
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 18,
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500),
                           ),
@@ -348,8 +354,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: () => _controller.animateToPage(index),
       child: Container(
-        width: 12.0,
-        height: 12.0,
+        width: MediaQuery.of(context).size.height * 0.01 * 1.2,
+        height: MediaQuery.of(context).size.height * 0.01 * 1.2,
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -362,3 +368,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+// 10px MediaQuery.of(context).size.height * 0.01
+// 10px MediaQuery.of(context).size.width * 0.025
