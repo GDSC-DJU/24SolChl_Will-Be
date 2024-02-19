@@ -365,8 +365,8 @@ class _Main_PageState extends State<Main_Page> {
                         child: Container(
                           margin: const EdgeInsets.all(10),
                           height:
-                              MediaQuery.of(context).size.height * 0.54 - 20,
-                          width: MediaQuery.of(context).size.width - 40,
+                              MediaQuery.of(context).size.height * 0.54 * 0.9,
+                          width: MediaQuery.of(context).size.width * 0.8,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
@@ -479,7 +479,7 @@ class _Main_PageState extends State<Main_Page> {
                       margin: const EdgeInsets.all(10),
                       height:
                           MediaQuery.of(context).size.height * 0.54 / 2 - 20,
-                      width: MediaQuery.of(context).size.width - 20,
+                      width: MediaQuery.of(context).size.width * 0.8,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(
@@ -568,7 +568,7 @@ class _Main_PageState extends State<Main_Page> {
                       margin: const EdgeInsets.all(10),
                       height:
                           MediaQuery.of(context).size.height * 0.54 / 2 - 20,
-                      width: MediaQuery.of(context).size.width - 20,
+                      width: MediaQuery.of(context).size.width * 0.8,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(
@@ -672,7 +672,7 @@ class _Main_PageState extends State<Main_Page> {
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
                     height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
-                    width: MediaQuery.of(context).size.width - 20,
+                    width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(
@@ -759,7 +759,7 @@ class _Main_PageState extends State<Main_Page> {
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
                     height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
-                    width: MediaQuery.of(context).size.width - 20,
+                    width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(
@@ -846,7 +846,7 @@ class _Main_PageState extends State<Main_Page> {
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
                     height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
-                    width: MediaQuery.of(context).size.width - 20,
+                    width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(
