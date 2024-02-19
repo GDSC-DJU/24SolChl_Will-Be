@@ -263,7 +263,13 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               "버튼 눌러서 기록하기",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            Expanded(child: widget.cards ?? const SizedBox())
+            Expanded(
+              child: Center(
+                child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.54,
+                    child: widget.cards ?? const SizedBox()),
+              ),
+            )
           ],
         ),
       ),
