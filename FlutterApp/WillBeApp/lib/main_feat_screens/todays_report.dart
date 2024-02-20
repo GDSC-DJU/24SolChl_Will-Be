@@ -41,7 +41,6 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
 
   ChartService chartService = ChartService();
   LineChart? chart;
-  LineChart? chart2;
   Future<void> _loadReportAndChart() async {
     DocumentSnapshot documentSnapshot = await db
         .collection("Record")
@@ -70,7 +69,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
       _etcController.clear();
     }
 
-    LineChart chart = await chartService.monthChartData(
+    LineChart chart = await chartService.yearChartData(
         context: context,
         lastDateOfMonth: DateTime.now(),
         studentID: widget.studentIDs[_isSelected.indexOf(true)],
