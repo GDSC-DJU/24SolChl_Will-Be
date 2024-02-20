@@ -70,7 +70,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
     }
 
     //차트 작성.
-    LineChart chart = await chartService.fetchChartData(
+    LineChart chart = await chartService.dayChartData(
         date: nowDay,
         studentID: widget.studentIDs[_isSelected.indexOf(true)],
         behavior: widget.behaviors[_isSelected.indexOf(true)]);
