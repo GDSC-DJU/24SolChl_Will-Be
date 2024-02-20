@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:solution/calender_screens/timetable_example.dart';
+import 'package:solution/calender_screens/timetable_calendar.dart';
 import 'package:solution/calender_screens/set_routine_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,12 +14,6 @@ class CalendarManageScreen extends StatefulWidget {
 
 class _CalendarManageScreenState extends State<CalendarManageScreen> {
   User? _user = FirebaseAuth.instance.currentUser;
-  @override
-  void initState() {
-    super.initState();
-    print("intinetet");
-    print(widget.cellMap);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +87,7 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
               width: MediaQuery.sizeOf(context).width - 16,
               height: MediaQuery.sizeOf(context).height - 220,
               child: Container(
-                child: TimeTableCalendar(),
+                child: TimeTableCalendar(cellMap:widget.cellMap),
               ),
             )
           ],
