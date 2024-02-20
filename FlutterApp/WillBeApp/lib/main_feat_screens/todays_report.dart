@@ -54,9 +54,9 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
       if (data != null) {
         print("도큐몬트 가져오기 ${data.toString()}");
 
-        _precedingEventController.text = data['precedingEvent'] ?? '';
-        _subsequentResultsController.text = data['subsequentResults'] ?? '';
-        _specialNoteController.text = data['specialNote'] ?? '';
+        _precedingEventController.text = data['situation'] ?? '';
+        _subsequentResultsController.text = data['action'] ?? '';
+        _specialNoteController.text = data['etc'] ?? '';
         setState(() {});
       }
     } catch (e) {
