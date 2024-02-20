@@ -1367,7 +1367,10 @@ class _Main_PageState extends State<Main_Page> {
     // 현재 시간을 가져오기
     DateTime now = DateTime.now();
     // 도큐먼트 ID로 사용할 문자열을 생성
+    Timestamp timestamp = Timestamp.fromDate(now);
+    print('timestamp');
 
+    print(timestamp);
     try {
       await db
           .collection('Record')
@@ -1376,7 +1379,7 @@ class _Main_PageState extends State<Main_Page> {
           .doc(behaivorName)
           .collection('BehaviorRecord')
           .doc(now.toString())
-          .set({}, SetOptions(merge: true));
+          .set({'time': timestamp}, SetOptions(merge: true));
     } catch (e) {
       print('Failed to add document: $e');
     }

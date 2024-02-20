@@ -16,7 +16,7 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             SizedBox(
@@ -28,7 +28,7 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 20),
               child: SizedBox(
                 height: 50,
                 child: ElevatedButton(
@@ -36,17 +36,17 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SetRoutinePage(),
+                        builder: (context) => const SetRoutinePage(),
                       ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     padding: EdgeInsets.zero,
-                    backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                    backgroundColor: const Color.fromARGB(255, 102, 108, 255),
                   ),
-                  child: Container(
+                  child: const SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: Center(
@@ -66,7 +66,7 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
               width: MediaQuery.sizeOf(context).width - 16,
               height: MediaQuery.sizeOf(context).height - 220,
               child: Container(
-                child: TimeTableCalendar(),
+                child: const TimeTableCalendar(),
               ),
             )
           ],
