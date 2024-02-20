@@ -5,7 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class CalendarManageScreen extends StatefulWidget {
-  const CalendarManageScreen({super.key});
+  CalendarManageScreen({super.key, required this.cellMap});
+  Map<String, dynamic> cellMap;
 
   @override
   State<CalendarManageScreen> createState() => _CalendarManageScreenState();
@@ -13,6 +14,12 @@ class CalendarManageScreen extends StatefulWidget {
 
 class _CalendarManageScreenState extends State<CalendarManageScreen> {
   User? _user = FirebaseAuth.instance.currentUser;
+  @override
+  void initState() {
+    super.initState();
+    print("intinetet");
+    print(widget.cellMap);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,20 +44,28 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () async {
-                    DocumentReference timetableRef = FirebaseFirestore.instance
-                        .collection('Educator')
-                        .doc(_user!.uid)
-                        .collection('Schedule')
-                        .doc('Timetable');
-                    timetableRef.get().then((value) {
-                      dynamic a = value.data();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SetRoutinePage(cellMap: a),
-                        ),
-                      );
-                    });
+                    // DocumentReference timetableRef = FirebaseFirestore.instance
+                    //     .collection('Educator')
+                    //     .doc(_user!.uid)
+                    //     .collection('Schedule')
+                    //     .doc('Timetable');
+                    // timetableRef.get().then((value) {
+                    //   dynamic tCellMap = value.data();
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           SetRoutinePage(cellMap: tCellMap),
+                    //     ),
+                    //   );
+                    // });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            SetRoutinePage(cellMap: widget.cellMap),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
