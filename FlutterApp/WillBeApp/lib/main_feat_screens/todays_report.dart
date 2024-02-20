@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:solution/main_feat_screens/chart_builder.dart';
 
 class TodaysReportPage extends StatefulWidget {
   TodaysReportPage({
@@ -37,7 +39,9 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
 
   String behaviorName = "";
 
-  Future<void> _loadReport() async {
+  ChartService chartService = ChartService();
+  LineChart? chart;
+  Future<void> _loadReportAndChart() async {
     DocumentSnapshot documentSnapshot = await db
         .collection("Record")
         .doc(widget.studentIDs[_isSelected.indexOf(true)])
@@ -64,6 +68,16 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
       _subsequentResultsController.clear();
       _specialNoteController.clear();
     }
+
+    //차트 작성.
+    LineChart chart = await chartService.fetchChartData(
+        date: nowDay,
+        studentID: widget.studentIDs[_isSelected.indexOf(true)],
+        behavior: widget.behaviors[_isSelected.indexOf(true)]);
+
+    setState(() {
+      this.chart = chart;
+    });
   }
 
   Future<void> _saveReport() async {
@@ -134,7 +148,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
 
     print("lenghtof _isSelected : ${_isSelected.length}");
 
-    _loadReport();
+    _loadReportAndChart();
   }
 
   @override
@@ -185,7 +199,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                                 _isSelected[i] = i == index;
                               }
                               print('_iselected : $_isSelected');
-                              _loadReport();
+                              _loadReportAndChart();
                             });
                           },
                           selectedColor: Colors.white,
@@ -203,11 +217,10 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                       ),
                       Row(
                         children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.4,
-                            width: MediaQuery.of(context).size.width - 40,
-                            color: const Color.fromARGB(255, 169, 200, 206),
-                          )
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: chart)
                         ],
                       ),
                       const SizedBox(
