@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:solution/assets/pallet.dart';
 import 'package:solution/main_feat_screens/chart_builder.dart';
 
 class TodaysReportPage extends StatefulWidget {
@@ -70,12 +69,11 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
       _etcController.clear();
     }
 
-    LineChart chart = await chartService.weekChartData(
+    LineChart chart = await chartService.dayChartData(
         context: context,
-        lastDateOfWeek: DateTime.now(),
+        date: DateTime.now(),
         studentID: widget.studentIDs[_isSelected.indexOf(true)],
-        behaviors: [widget.behaviors[2], widget.behaviors[3]],
-        colors: [BtnColors().btn3, BtnColors().btn4]);
+        behavior: widget.behaviors[_isSelected.indexOf(true)]);
 
     setState(() {
       this.chart = chart;
