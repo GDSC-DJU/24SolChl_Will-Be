@@ -64,8 +64,8 @@ class ChartService {
         .collection('Behavior')
         .doc(behavior)
         .collection('BehaviorRecord')
-        .where('time', isGreaterThanOrEqualTo: tomorrow)
-        .where('time', isLessThan: today)
+        .where('time', isGreaterThanOrEqualTo: today)
+        .where('time', isLessThan: tomorrow)
         .get();
 
     for (var element in snapshot.docs) {
@@ -143,84 +143,68 @@ class ChartService {
   }
 
   ///입력받은 날을 기준으로 일주일 전부터 기준날까지의
+  ///리스트에
   Future<LineChart> weekChartData(
       {required String studentID,
-      required String behavior,
+      required List<String> behaviors,
       required BuildContext context,
-
-      ///주를 입력해줘야 함
+      required List<Color> colors,
       required DateTime lastDateOfWeek}) async {
     DateTime today = Timestamp.fromDate(lastDateOfWeek).toDate();
     DateTime weekAgo = Timestamp.fromDate(
       lastDateOfWeek.subtract(const Duration(days: 6)),
     ).toDate();
 
-    print('today : $today');
-
-    /// 데이터를 FlSpot 리스트로 변환
-    List<FlSpot> dataPoints = [];
-
-    List<DateTime> datesOfWeek = getDatesOfWeek(weekAgo, today);
     var weekDays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
 
-    ///날짜를 리스트의 아래 레이블로 보여주기 위한 리스트.
     List<String> weekDaysInKoreanUsage = [];
-
-    //전 7일간의 날짜를 저장 예) 22, 23, 24, 25, 26, 27, 28
     List<int> daysInWeek = [];
-
-    ///7일간의 날짜들의 월을 저장 예) 8,8,8,9,9,9,9 = 8월 3개 9월 4개
     List<int> monthsInWeek = [];
+    List<LineChartBarData> lines = [];
 
-    /// 0~7 : 월요일~일요일까지 각 요일의 저장된 횟수를 각 원소에 저장
-    List<int> numsOfList = [0, 0, 0, 0, 0, 0, 0];
+    List<DateTime> datesOfWeek = getDatesOfWeek(weekAgo, today);
     for (var element in datesOfWeek) {
       weekDaysInKoreanUsage.add(weekDays[element.weekday - 1]);
       daysInWeek.add(element.day);
       monthsInWeek.add(element.month);
-      //print
     }
+    List<int> numsOfList = [0, 0, 0, 0, 0, 0, 0];
+    for (var i = 0; i < behaviors.length; i++) {
+      List<FlSpot> dataPoints = [];
+      var behavior = behaviors[i];
+      var color = colors[i];
+      QuerySnapshot snapshot = await _firestore
+          .collection('Record')
+          .doc(studentID)
+          .collection('Behavior')
+          .doc(behavior)
+          .collection('BehaviorRecord')
+          .where('time', isGreaterThanOrEqualTo: weekAgo)
+          .where('time', isLessThan: today)
+          .get();
 
-    QuerySnapshot snapshot = await _firestore
-        .collection('Record')
-        .doc(studentID)
-        .collection('Behavior')
-        .doc(behavior)
-        .collection('BehaviorRecord')
-        .where('time', isGreaterThanOrEqualTo: weekAgo)
-        .where('time', isLessThan: today)
-        .get();
+      for (var element in snapshot.docs) {
+        DateTime datetime = element.get('time').toDate();
+        numsOfList[daysInWeek.indexOf(datetime.day)]++;
+      }
 
-    //각 원소 0~6까지에 그날의 횟수를 저장.
-    for (var element in snapshot.docs) {
-      //여기에서 각 원소에 들어갈
-      DateTime datetime = element.get('time').toDate();
-      print('datetime : $datetime');
+      for (int i = 0; i < 7; i++) {
+        dataPoints.add(FlSpot(i.toDouble(), numsOfList[i].toDouble()));
+      }
 
-      numsOfList[daysInWeek.indexOf(datetime.day)]++;
-
-      //numsOfList[datetime.weekday - 1]]++;
+      lines.add(LineChartBarData(
+        spots: dataPoints,
+        isCurved: false,
+        barWidth: 2.5,
+        isStrokeCapRound: true,
+        color: color, // 각 라인마다 다른 색을 사용
+        belowBarData: BarAreaData(show: false),
+        dotData: const FlDotData(show: true),
+      ));
     }
-
-    for (int i = 0; i < 7; i++) {
-      dataPoints.add(FlSpot(i.toDouble(), numsOfList[i].toDouble()));
-    }
-
-    ///)
-
-    LineChartBarData lineChartBarData = LineChartBarData(
-      spots: dataPoints,
-      isCurved: false,
-      barWidth: 2.5,
-      isStrokeCapRound: true,
-      color: BtnColors().btn1,
-      belowBarData: BarAreaData(show: false),
-      dotData: const FlDotData(show: true),
-    );
 
     LineChartData lineChartData = LineChartData(
-      lineBarsData: [lineChartBarData],
-      // 제목, 그리드 등의 설정
+      lineBarsData: lines,
       titlesData: FlTitlesData(
           rightTitles:
               const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -246,7 +230,6 @@ class ChartService {
                 return SizedBox(
                   height: 60,
                   child: Text(
-                    ///월/일 로 출력
                     "${weekDaysInKoreanUsage[value.toInt()]}\n${monthsInWeek[value.toInt()]}/${daysInWeek[value.toInt()]}",
                     style: const TextStyle(fontSize: 12),
                   ),
@@ -254,10 +237,9 @@ class ChartService {
               },
             ),
           )),
-
-      maxY: (numsOfList.reduce(max).toDouble() +
-              numsOfList.reduce(max).toDouble() / 10)
-          .ceilToDouble(),
+      // maxY: (numsOfList.reduce(max).toDouble() +
+      //         numsOfList.reduce(max).toDouble() / 10)
+      // .ceilToDouble(),
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -606,6 +588,10 @@ class ChartService {
     );
 
     return LineChart(lineChartData);
+  }
+
+  Color getRandomColor() {
+    return Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
   }
 
   List<DateTime> getDatesOfWeek(DateTime start, DateTime end) {
