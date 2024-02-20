@@ -166,20 +166,13 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .doc(user.uid)
           .collection('Schedule')
           .doc('Timetable')
-          .set({});
-
-      List weekList = ['Mon', 'Tue', "Wed", "Thu", "Fri"];
-      // 교사 컬렉션 내 Schedule 등록
-      for (var day in weekList) {
-        await FirebaseFirestore.instance
-            .collection('Educator')
-            .doc(user.uid)
-            .collection('Schedule')
-            .doc('Timetable')
-            .collection("Routine")
-            .doc(day)
-            .set({});
-      }
+          .set({
+        "Mon": {},
+        "Tue": {},
+        "Wed": {},
+        "Thu": {},
+        "Fri": {},
+      });
 
       // 교사 내 학생 id 등록
       await FirebaseFirestore.instance

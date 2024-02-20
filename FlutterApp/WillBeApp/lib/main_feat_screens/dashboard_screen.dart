@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/dictionary_screens/expression_dictoinary.dart';
 import 'package:solution/behavior_detail_screens/behavior_detail_screen.dart';
+import 'package:solution/main_feat_screens/chart_builder.dart';
+import 'package:solution/reports_screens/weekly_report_screen.dart';
 
 class DashBoardScreen extends StatefulWidget {
   List<dynamic> studentDataList;
@@ -38,17 +40,20 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 textAlign: TextAlign.left,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             SizedBox(
               width: MediaQuery.sizeOf(context).width - 32,
               height: MediaQuery.sizeOf(context).height - 170,
               child: ListView.builder(
-                padding: EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
                 itemCount: widget.studentDataList.length,
                 itemBuilder: (context, index) {
-                  return buildSummaryCard(widget.studentDataList[index], index);
+                  return buildSummaryCard(
+                      data: widget.studentDataList[index],
+                      index: index,
+                      studentId: widget.studentIdList[index]);
                 },
               ),
             ),
@@ -58,16 +63,21 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  Widget buildSummaryCard(Object data, int index) {
+  Widget buildSummaryCard(
+      {required Object data, required int index, required Object studentId}) {
     Map<String, dynamic> studentData = (data as Map<String, dynamic>);
+
     String name = studentData['name'];
+
+    print('name : $name');
+    print('studentId : $studentId');
 
     return GestureDetector(
       onTap: () {
         // 탭 시 처리 로직 추가
       },
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 5),
+        margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 5),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
@@ -76,7 +86,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 1),
+              offset: const Offset(0, 1),
             ),
           ],
         ),
@@ -98,9 +108,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         clipBehavior: Clip.antiAlias,
                         elevation: 0,
                         color: Theme.of(context).colorScheme.surfaceVariant,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100)),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
                         ),
                         child: Image.network(
                           // 이미지 DB 구축 시 대치
@@ -110,14 +119,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 10),
                       child: Text(
                         name,
                         style:
                             const TextStyle(color: Colors.black, fontSize: 30),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -130,16 +139,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         padding: EdgeInsets.zero,
-                        backgroundColor: Color.fromARGB(255, 246, 100, 92),
+                        backgroundColor:
+                            const Color.fromARGB(255, 246, 100, 92),
                       ),
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.025 * 10.5,
                         height: MediaQuery.of(context).size.height * 0.01 * 5,
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
@@ -149,7 +159,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             ),
                             Text(
                               " 의사소통사전",
-                              style: const TextStyle(
+                              style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold),
@@ -166,34 +176,34 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 height: MediaQuery.of(context).size.height * 0.01 * 30,
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: Center(child: Text("그래프")),
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
+                //   child: Container(child: ),
               ),
               // 필요한 정보들을 추가
-              Padding(
+              const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   "데일리 리포트",
-                  style: const TextStyle(color: Colors.black, fontSize: 22),
+                  style: TextStyle(color: Colors.black, fontSize: 22),
                 ),
               ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.01 * 10,
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: Center(child: Text("리포트 슬라이드")),
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
+                child: const Center(child: Text("리포트 슬라이드")),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   "주간 리포트",
-                  style: const TextStyle(color: Colors.black, fontSize: 22),
+                  style: TextStyle(color: Colors.black, fontSize: 22),
                 ),
               ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.01 * 10,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -201,26 +211,28 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     itemCount: 10,
                     itemBuilder: (BuildContext ctx, int idx) {
                       return Container(
-                        margin: EdgeInsets.only(right: 12),
+                        margin: const EdgeInsets.only(right: 12),
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Expression_Dictionary(
-                                  name: name,
-                                ),
+                                builder: (context) => Weekly_Report_Screen(
+                                    name: name,
+                                    id: widget.studentIdList[index],
+                                    behaviorList:
+                                        widget.itemContentList[index]),
                               ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
                             padding: EdgeInsets.zero,
                             backgroundColor: Colors.black12,
                           ),
-                          child: Container(
+                          child: SizedBox(
                             width: MediaQuery.of(context).size.width *
                                 0.025 *
                                 10.5,
@@ -229,7 +241,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.menu_book_sharp,
                                   color: Colors.white,
                                   size: 15,
@@ -249,16 +261,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     }),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: SizedBox(
                   width: MediaQuery.of(context).size.width - 15,
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         "행동 별 자세히 기록",
-                        style:
-                            const TextStyle(color: Colors.black, fontSize: 22),
+                        style: TextStyle(color: Colors.black, fontSize: 22),
                       ),
                     ],
                   ),
@@ -323,11 +334,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 );
                               },
                               style: ButtonStyle(
-                                  padding: MaterialStatePropertyAll(
+                                  padding: const MaterialStatePropertyAll(
                                       EdgeInsets.symmetric(
                                           vertical: 4, horizontal: 16)),
                                   backgroundColor: MaterialStateProperty.all(
-                                      Color.fromARGB(255, 102, 108, 255))),
+                                      const Color.fromARGB(
+                                          255, 102, 108, 255))),
                               child: Text(
                                 '$item >',
                                 style: const TextStyle(

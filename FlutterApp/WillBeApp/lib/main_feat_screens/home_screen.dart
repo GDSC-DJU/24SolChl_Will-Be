@@ -26,7 +26,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final CarouselController _controller = CarouselController();
   int _current = 0;
-
   bool isLoading = true;
 
   @override

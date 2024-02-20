@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:solution/calender_screens/timetable_example.dart';
 import 'package:solution/calender_screens/set_routine_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CalendarManageScreen extends StatefulWidget {
-  const CalendarManageScreen({super.key});
+  CalendarManageScreen({super.key, required this.cellMap});
+  Map<String, dynamic> cellMap;
 
   @override
   State<CalendarManageScreen> createState() => _CalendarManageScreenState();
 }
 
 class _CalendarManageScreenState extends State<CalendarManageScreen> {
+  User? _user = FirebaseAuth.instance.currentUser;
+  @override
+  void initState() {
+    super.initState();
+    print("intinetet");
+    print(widget.cellMap);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -32,11 +43,27 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
               child: SizedBox(
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    // DocumentReference timetableRef = FirebaseFirestore.instance
+                    //     .collection('Educator')
+                    //     .doc(_user!.uid)
+                    //     .collection('Schedule')
+                    //     .doc('Timetable');
+                    // timetableRef.get().then((value) {
+                    //   dynamic tCellMap = value.data();
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           SetRoutinePage(cellMap: tCellMap),
+                    //     ),
+                    //   );
+                    // });
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SetRoutinePage(),
+                        builder: (context) =>
+                            SetRoutinePage(cellMap: widget.cellMap),
                       ),
                     );
                   },

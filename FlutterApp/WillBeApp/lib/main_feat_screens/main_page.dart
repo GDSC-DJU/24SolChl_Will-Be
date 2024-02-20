@@ -38,6 +38,7 @@ class _Main_PageState extends State<Main_Page> {
   List LastNames = [];
   List behaviors = [];
   List studentIDs = [];
+  Map<String, dynamic> cellMap = {};
   //여기까지
 
   List<String> valuesList = [];
@@ -126,8 +127,24 @@ class _Main_PageState extends State<Main_Page> {
       },
       onError: (e) => print("Error completing: $e"),
     );
-    await Future.wait(
-        [getStudentData(studentList), getBehaviorList(studentList)]);
+    await Future.wait([
+      getStudentData(studentList),
+      getBehaviorList(studentList),
+      getTimetable()
+    ]);
+  }
+
+  Future<void> getTimetable() async {
+    DocumentReference timetableRef = FirebaseFirestore.instance
+        .collection('Educator')
+        .doc(uid)
+        .collection('Schedule')
+        .doc('Timetable');
+    await timetableRef.get().then((value) {
+      dynamic tCellMap = value.data();
+      cellMap = tCellMap;
+      print(cellMap);
+    });
   }
 
   Future<void> getBehavior(String? userUid) async {
@@ -671,7 +688,7 @@ class _Main_PageState extends State<Main_Page> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 40,
                     width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -758,7 +775,7 @@ class _Main_PageState extends State<Main_Page> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 40,
                     width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -845,7 +862,7 @@ class _Main_PageState extends State<Main_Page> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 40,
                     width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -1318,7 +1335,7 @@ class _Main_PageState extends State<Main_Page> {
           studentDataList: studentDataList,
           studentIdList: studentList,
           itemContentList: itemContentList),
-      const CalendarManageScreen(),
+      CalendarManageScreen(cellMap: cellMap),
       BehavirRecordScreen(
         studentIDs: studentIDs,
         names: names,

@@ -142,8 +142,8 @@ class ChartService {
     return LineChart(lineChartData);
   }
 
-  ///입력받은 날을 기준으로 일주일 전부터 기준날까지의
-  ///리스트에
+  ///입력받은 날을 기준으로 7일전의 데이터부터 일별로 출력.
+  ///행동을 리스트형으로 보내주면 컬러 리스트와 맞춰서 출력해줌.
   Future<LineChart> weekChartData(
       {required String studentID,
       required List<String> behaviors,
