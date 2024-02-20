@@ -197,6 +197,7 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
               children: [
                 Text(
                   getCurrentDate(),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               ],
             ),
