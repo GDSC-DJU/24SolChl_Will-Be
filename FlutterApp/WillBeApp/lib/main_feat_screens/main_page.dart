@@ -688,7 +688,7 @@ class _Main_PageState extends State<Main_Page> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 40,
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 30,
                     width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -775,7 +775,7 @@ class _Main_PageState extends State<Main_Page> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 40,
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 30,
                     width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -862,7 +862,7 @@ class _Main_PageState extends State<Main_Page> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 40,
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 30,
                     width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(

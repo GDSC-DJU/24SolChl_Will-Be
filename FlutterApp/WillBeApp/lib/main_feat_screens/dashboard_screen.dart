@@ -51,6 +51,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 itemCount: widget.studentDataList.length,
                 itemBuilder: (context, index) {
                   return buildSummaryCard(
+                      itemContentList: widget.itemContentList[index],
                       data: widget.studentDataList[index],
                       index: index,
                       studentId: widget.studentIdList[index]);
@@ -64,13 +65,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   }
 
   Widget buildSummaryCard(
-      {required Object data, required int index, required Object studentId}) {
+      {required Object data,
+      required int index,
+      required Object studentId,
+      required Object itemContentList}) {
     Map<String, dynamic> studentData = (data as Map<String, dynamic>);
 
     String name = studentData['name'];
 
     print('name : $name');
     print('studentId : $studentId');
+    print('itemContentList : $itemContentList'); //이 부분은 리스트
 
     return GestureDetector(
       onTap: () {
