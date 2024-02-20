@@ -16,6 +16,7 @@ class Add_Behavior extends StatefulWidget {
 }
 
 class _Add_Behavior_State extends State<Add_Behavior> {
+
   // 입력값을 추적하기 위한 controllers
   List<String> schoolOptions = [
     '언어적 공격(욕설, 고함)',
@@ -55,7 +56,6 @@ class _Add_Behavior_State extends State<Add_Behavior> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.id);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();

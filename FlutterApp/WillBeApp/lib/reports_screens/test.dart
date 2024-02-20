@@ -244,7 +244,17 @@ void getStamp(
     });
   });
 }
-
+/**
+ *     QuerySnapshot snapshot = await _firestore
+        .collection('Record')
+        .doc(studentID)
+        .collection('Behavior')
+        .doc(behavior)
+        .collection('BehaviorRecord')
+        .where('time', isGreaterThanOrEqualTo: ago7days)
+        .where('time', isLessThan: today)
+        .get();
+ */
 
 // // reportCollectionRef.doc('daily_reports');   // -- 이하 주요 코드
 // final dailyReports = reportCollectionRef.get().where('date', isGreaterThanOrEqualTo: DateTime.now().subtract(const Duration(days: 5)))

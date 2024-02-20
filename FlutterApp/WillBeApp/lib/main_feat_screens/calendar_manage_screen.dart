@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:solution/calender_screens/timetable_example.dart';
 import 'package:solution/calender_screens/set_routine_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CalendarManageScreen extends StatefulWidget {
   const CalendarManageScreen({super.key});
@@ -10,6 +12,8 @@ class CalendarManageScreen extends StatefulWidget {
 }
 
 class _CalendarManageScreenState extends State<CalendarManageScreen> {
+  User? _user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -32,13 +36,21 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
               child: SizedBox(
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SetRoutinePage(),
-                      ),
-                    );
+                  onPressed: () async {
+                    DocumentReference timetableRef = FirebaseFirestore.instance
+                        .collection('Educator')
+                        .doc(_user!.uid)
+                        .collection('Schedule')
+                        .doc('Timetable');
+                    timetableRef.get().then((value) {
+                      dynamic a = value.data();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SetRoutinePage(cellMap: a),
+                        ),
+                      );
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

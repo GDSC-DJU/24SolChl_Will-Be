@@ -1,13 +1,59 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class Timetable extends StatelessWidget {
+import 'package:solution/calender_screens/set_routine_page.dart';
+
+class Timetable extends StatefulWidget {
+  Timetable(
+      {Key? key, required this.subjectValue, required this.changeSubject});
+  final int subjectValue;
+  final Function(int) changeSubject;
+
+  // final int subjectValue;
+  Map cellList = {
+    "Mon": {},
+    "Tue": {},
+    "Wed": {},
+    "Thu": {},
+    "Fri": {},
+  };
+  @override
+  State<Timetable> createState() => _TimetableState();
+}
+
+class _TimetableState extends State<Timetable> {
   @override
   Widget build(BuildContext context) {
     double cellWidth = (MediaQuery.of(context).size.width - 16) / 6.25;
     double cellHeight = MediaQuery.of(context).size.width / 10;
 
+    List subjectList = ['수학', '체육', '말듣쓰 ', '음악', '실과'];
     List<String> daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+    List colorList = [
+      Color.fromRGBO(255, 44, 75, 1),
+      Color.fromRGBO(92, 182, 50, 1),
+      Color.fromRGBO(60, 153, 225, 1),
+      Color.fromRGBO(252, 183, 14, 1),
+      Color.fromRGBO(123, 67, 183, 1),
+      Color.fromRGBO(253, 151, 54, 1),
+      Color.fromRGBO(45, 197, 197, 1),
+    ];
+
+    //  {
+    //    교시(int): {color:"", subject:""}
+    //  },
+    @override
+    void initState() {
+      super.initState();
+    }
+
+    void setSubject(String day, int idx) {
+      widget.cellList[day][idx] = {
+        "color": widget.subjectValue,
+        "subject": subjectList[widget.subjectValue]
+      };
+    }
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -42,11 +88,24 @@ class Timetable extends StatelessWidget {
                           width: cellWidth / 4, height: cellHeight),
                       for (String day in daysOfWeek)
                         _buildEmptyCellWithButton(
+                            text: widget.cellList[day][i] != null
+                                ? widget.cellList[day][i]['subject']
+                                : "",
                             id: '$day$i',
                             width: cellWidth,
                             height: cellHeight,
+                            bgColor: widget.cellList[day][i] != null
+                                ? colorList[widget.cellList[day][i]['color']]
+                                : Colors.white,
                             onPressed: () {
-                              _showButtonIdSnackBar(context, '$day$i');
+                              _showButtonIdSnackBar(
+                                  context, '$day$i - ${widget.subjectValue}');
+                              setSubject(day, i);
+                              print(widget.cellList);
+                              print(widget.cellList[day][i]['color']);
+                              setState(() {
+                                widget.cellList = widget.cellList;
+                              });
                             }),
                     ],
                   ),
@@ -97,6 +156,8 @@ class Timetable extends StatelessWidget {
       {required String id,
       double? width,
       double? height,
+      String text = "",
+      Color? bgColor,
       required VoidCallback onPressed}) {
     return Container(
       width: width,
@@ -115,26 +176,27 @@ class Timetable extends StatelessWidget {
               borderRadius: BorderRadius.circular(0),
             ),
           ),
-          backgroundColor: MaterialStateProperty.all(
-            _generateRandomColor(),
-          ),
+          backgroundColor: MaterialStatePropertyAll(bgColor),
         ),
         child: Center(
-          child: Text(''),
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );
   }
 
-  Color _generateRandomColor() {
-    final Random random = Random();
-    return Color.fromRGBO(
-      random.nextInt(255),
-      random.nextInt(255),
-      random.nextInt(255),
-      .5,
-    );
-  }
+  // Color _generateRandomColor() {
+  //   final Random random = Random();
+  //   return Color.fromRGBO(
+  //     random.nextInt(255),
+  //     random.nextInt(255),
+  //     random.nextInt(255),
+  //     .5,
+  //   );
+  // }
 
   void _showButtonIdSnackBar(BuildContext context, String id) {
     ScaffoldMessenger.of(context).showSnackBar(
