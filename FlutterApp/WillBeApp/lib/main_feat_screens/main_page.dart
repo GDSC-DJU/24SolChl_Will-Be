@@ -688,7 +688,7 @@ class _Main_PageState extends State<Main_Page> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 30,
                     width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -775,7 +775,7 @@ class _Main_PageState extends State<Main_Page> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 30,
                     width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -862,7 +862,7 @@ class _Main_PageState extends State<Main_Page> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 20,
+                    height: MediaQuery.of(context).size.height * 0.54 / 3 - 30,
                     width: MediaQuery.of(context).size.width * 0.8,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -978,7 +978,7 @@ class _Main_PageState extends State<Main_Page> {
                         child: Container(
                           margin: const EdgeInsets.all(10),
                           height:
-                              MediaQuery.of(context).size.height * 0.54 / 2 -
+                              MediaQuery.of(context).size.height * 0.50 / 2 -
                                   20,
                           width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
@@ -1069,7 +1069,7 @@ class _Main_PageState extends State<Main_Page> {
                         child: Container(
                           margin: const EdgeInsets.all(10),
                           height:
-                              MediaQuery.of(context).size.height * 0.54 / 2 -
+                              MediaQuery.of(context).size.height * 0.50 / 2 -
                                   20,
                           width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
@@ -1164,7 +1164,7 @@ class _Main_PageState extends State<Main_Page> {
                         child: Container(
                           margin: const EdgeInsets.all(10),
                           height:
-                              MediaQuery.of(context).size.height * 0.54 / 2 -
+                              MediaQuery.of(context).size.height * 0.50 / 2 -
                                   20,
                           width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
@@ -1255,7 +1255,7 @@ class _Main_PageState extends State<Main_Page> {
                         child: Container(
                           margin: const EdgeInsets.all(10),
                           height:
-                              MediaQuery.of(context).size.height * 0.54 / 2 -
+                              MediaQuery.of(context).size.height * 0.50 / 2 -
                                   20,
                           width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
@@ -1384,7 +1384,10 @@ class _Main_PageState extends State<Main_Page> {
     // 현재 시간을 가져오기
     DateTime now = DateTime.now();
     // 도큐먼트 ID로 사용할 문자열을 생성
+    Timestamp timestamp = Timestamp.fromDate(now);
+    print('timestamp');
 
+    print(timestamp);
     try {
       await db
           .collection('Record')
@@ -1393,7 +1396,7 @@ class _Main_PageState extends State<Main_Page> {
           .doc(behaivorName)
           .collection('BehaviorRecord')
           .doc(now.toString())
-          .set({}, SetOptions(merge: true));
+          .set({'time': timestamp}, SetOptions(merge: true));
     } catch (e) {
       print('Failed to add document: $e');
     }

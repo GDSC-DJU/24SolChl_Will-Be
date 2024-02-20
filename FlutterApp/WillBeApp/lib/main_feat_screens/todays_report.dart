@@ -26,9 +26,9 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
   String? _selectedStdID;
   String? _selectedBehaviorName;
   final _formKey = GlobalKey<FormState>();
-  final _precedingEventController = TextEditingController();
-  final _subsequentResultsController = TextEditingController();
-  final _specialNoteController = TextEditingController();
+  final _situationController = TextEditingController();
+  final _actionController = TextEditingController();
+  final _etcController = TextEditingController();
   List<Widget> behaviorBtn = <Widget>[];
   User user = FirebaseAuth.instance.currentUser!;
   final List<String> _listedBehaviorIDStudentID = [];
@@ -58,20 +58,20 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
       if (data != null) {
         print("도큐몬트 가져오기 ${data.toString()}");
 
-        _precedingEventController.text = data['situation'] ?? '';
-        _subsequentResultsController.text = data['action'] ?? '';
-        _specialNoteController.text = data['etc'] ?? '';
+        _situationController.text = data['situation'] ?? '';
+        _actionController.text = data['action'] ?? '';
+        _etcController.text = data['etc'] ?? '';
         setState(() {});
       }
     } catch (e) {
-      _precedingEventController.clear();
-      _subsequentResultsController.clear();
-      _specialNoteController.clear();
+      _situationController.clear();
+      _actionController.clear();
+      _etcController.clear();
     }
 
-    //차트 작성.
     LineChart chart = await chartService.dayChartData(
-        date: nowDay,
+        context: context,
+        date: DateTime.now(),
         studentID: widget.studentIDs[_isSelected.indexOf(true)],
         behavior: widget.behaviors[_isSelected.indexOf(true)]);
 
@@ -95,24 +95,11 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
           .get();
       doc.reference.update({
         nowDay: {
-          'precedingEvent': _precedingEventController.text,
-          'subsequentResults': _subsequentResultsController.text,
-          'specialNote': _specialNoteController.text,
+          'situation': _situationController.text,
+          'action': _actionController.text,
+          'etc': _etcController.text,
         }
       });
-
-      // _firestore
-
-      print("procced : ${_precedingEventController.text}");
-      print("_sub : ${_subsequentResultsController.text}");
-      print("special : ${_specialNoteController.text}");
-
-      // _firestore}");
-
-      //// 저장 후 입력 필드 초기화
-      // _precedingEventController.clear();
-      // _subsequentResultsController.clear();
-      // _specialNoteController.clear();
 
       // 사용자에게 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
@@ -159,6 +146,10 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
       },
       child: Scaffold(
         appBar: AppBar(
+          title: Text(
+            '오늘 기록하기',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
           surfaceTintColor: Colors.white,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
@@ -178,10 +169,6 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '오늘 기록하기',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
                       Text(
                         "${DateTime.now().year}년 ${DateTime.now().month}월 ${DateTime.now().day}일",
                         style: const TextStyle(color: Colors.grey),
@@ -215,12 +202,12 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Row(
+                      Column(
                         children: [
                           SizedBox(
                               height: MediaQuery.of(context).size.height * 0.3,
                               width: MediaQuery.of(context).size.width - 40,
-                              child: chart)
+                              child: chart),
                         ],
                       ),
                       const SizedBox(
@@ -247,7 +234,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                       Container(
                         color: const Color.fromARGB(255, 240, 240, 240),
                         child: TextFormField(
-                          controller: _precedingEventController,
+                          controller: _situationController,
 
                           decoration: InputDecoration(
                             labelStyle: Theme.of(context).textTheme.bodySmall,
@@ -285,7 +272,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                           decoration: InputDecoration(
                             labelStyle: Theme.of(context).textTheme.bodySmall,
                           ),
-                          controller: _subsequentResultsController,
+                          controller: _actionController,
 
                           maxLines: null, // 줄 수에 제한이 없습니다.
                           autofillHints: const [AutofillHints.givenName],
@@ -315,7 +302,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                           decoration: InputDecoration(
                             labelStyle: Theme.of(context).textTheme.bodySmall,
                           ),
-                          controller: _specialNoteController,
+                          controller: _etcController,
 
                           maxLines: null, // 줄 수에 제한이 없습니다.
                           autofillHints: const [AutofillHints.givenName],
