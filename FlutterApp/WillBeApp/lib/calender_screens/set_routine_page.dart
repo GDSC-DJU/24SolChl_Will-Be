@@ -139,7 +139,13 @@ class _SetRoutinePageState extends State<SetRoutinePage> {
                   style: TextStyle(fontSize: 15),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Main_Page(),
+                    ),
+                    (route) => false,
+                  );
                 },
               ),
               ClipRRect(

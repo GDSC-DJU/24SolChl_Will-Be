@@ -6,7 +6,9 @@ class Weekly_Report_Screen extends StatefulWidget {
       {Key? key,
       required this.name,
       required this.id,
-      required this.behaviorList});
+      required this.behaviorList,
+      required this.iconColor});
+  Color iconColor;
   final String name;
   final String id;
   final List behaviorList;
@@ -65,10 +67,15 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(100)),
                           ),
-                          child: Image.network(
-                            "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                            fit: BoxFit.cover,
+                          child: Icon(
+                            Icons.person,
+                            color: widget.iconColor,
+                            size: 30,
                           ),
+                          // Image.network(
+                          //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                          //   fit: BoxFit.cover,
+                          // ),
                         ),
                       ),
                       Padding(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Expression_Dictionary_Edit extends StatefulWidget {
-  Expression_Dictionary_Edit({Key? key, required this.name});
+  Expression_Dictionary_Edit(
+      {Key? key, required this.name, required this.iconColor});
+  Color iconColor;
   final String name;
   String behavior = "";
   String meaning = "";
@@ -63,11 +65,16 @@ class _Expression_Dictionary_Edit_State
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(100)),
                           ),
-                          child: Image.network(
-                            // 이미지 DB 구축 시 대치
-                            "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                            fit: BoxFit.cover,
+                          child: Icon(
+                            Icons.person,
+                            color: widget.iconColor,
+                            size: 30,
                           ),
+                          // Image.network(
+                          //   // 이미지 DB 구축 시 대치
+                          //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                          //   fit: BoxFit.cover,
+                          // ),
                         ),
                       ),
                       Padding(
