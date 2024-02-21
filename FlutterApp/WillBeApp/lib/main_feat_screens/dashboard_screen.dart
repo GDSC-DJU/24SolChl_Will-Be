@@ -7,6 +7,7 @@ import 'package:solution/assets/pallet.dart';
 import 'package:solution/dictionary_screens/expression_dictoinary.dart';
 import 'package:solution/behavior_detail_screens/behavior_detail_screen.dart';
 import 'package:solution/main_feat_screens/chart_builder.dart';
+import 'package:solution/reports_screens/test.dart';
 import 'package:solution/reports_screens/weekly_report_screen.dart';
 
 class DashBoardScreen extends StatefulWidget {
@@ -26,6 +27,8 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
   List<List<bool>> isSelectedList = [];
+
+  List<List<bool>> isSelectedPeriod = []; // 기본값은 주별로 설정
 
   @override
   Widget build(BuildContext context) {
@@ -83,11 +86,19 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     for (var i = 0; i < widget.studentDataList.length; i++) {
-      isSelectedList.add(List.generate(
-          widget.itemContentList[i].length, (index) => index == 0));
+      isSelectedList.add(
+          List.generate(widget.itemContentList[i].length, (index) => true));
+      isSelectedPeriod.add([true, false, false]);
+    }
+
+    for (int i = 0; i < isSelectedList.length; i++) {
+      for (int l = 0; l < isSelectedList[l].length; l++) {
+        print("i =$i");
+        print("l = $l");
+        print("${isSelectedList[i][l]}");
+      }
     }
   }
 
@@ -100,7 +111,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
     var itemContentListOfList = (itemContentList as List<dynamic>);
     ChartService chartService = ChartService();
-    LineChart? chart;
+    LineChart chart;
     String name = studentData['name'];
     List<String> selectedBehaviors = [];
     List<Color> lineColors = [];
@@ -108,62 +119,122 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     for (var element in itemContentListOfList) {
       lineColors.add(chartService.getRandomColor());
     }
-
     List<String> add = [];
-
-    for (var element in itemContentListOfList) {
-      add.add('$element');
+    if (isSelectedList[index][0] == true) {
+      add.add(itemContentListOfList[0]);
     }
 
-    chart = await chartService.weekChartData(
-      colors: lineColors,
-      context: context,
-      lastDateOfWeek: DateTime.now(),
-      studentID: studentId.toString(),
-      behaviors: add,
-    );
-    print(studentId);
-    print(add);
-
-    Future<void> loadChart() async {
-      LineChart weekChart = await chartService.weekChartData(
-          colors: lineColors,
-          context: context,
-          lastDateOfWeek: DateTime.now(),
-          studentID: studentId.toString(),
-          behaviors: selectedBehaviors);
-
-      setState(() {
-        chart = weekChart;
-      });
-    }
-
-    for (var element in selectedBehaviors) {
-      lineColors.add(chartService.getRandomColor());
-    }
-
-    Widget toggleButton = ToggleButtons(
+    Widget periodToggleButton = ToggleButtons(
       borderRadius: const BorderRadius.all(Radius.circular(40)),
       selectedColor: Colors.white,
       fillColor: Colors.redAccent,
       color: Colors.black,
       onPressed: (int selectedIndex) {
         setState(() {
+          for (int i = 0; i < isSelectedPeriod[index].length; i++) {
+            if (i == selectedIndex) {
+              isSelectedPeriod[index][i] = true;
+            } else {
+              isSelectedPeriod[index][i] = false;
+            }
+          }
+        });
+      },
+      isSelected: isSelectedPeriod[index],
+      children: const <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          child: Text(
+            '주별',
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          child: Text(
+            '월별',
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          child: Text(
+            '년별',
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+      ],
+    );
+    Future<LineChart> loadChart(List<String> behaviors) async {
+      int chartPeriod = isSelectedPeriod[index].indexOf(true);
+
+      switch (chartPeriod) {
+        case 0:
+          LineChart weekChart = await chartService.weekChartData(
+              colors: lineColors,
+              context: context,
+              lastDateOfWeek: DateTime.now(),
+              studentID: studentId.toString(),
+              behaviors: behaviors);
+          return weekChart;
+        case 1:
+          LineChart monthlyChart = await chartService.MonthlyChartData(
+              colors: lineColors,
+              context: context,
+              lastDateOfWeek: DateTime.now(),
+              studentID: studentId.toString(),
+              behaviors: behaviors);
+          return monthlyChart;
+
+        case 2:
+          LineChart yearChart = await chartService.yearChartData(
+              colors: lineColors,
+              context: context,
+              lastDateOfMonth: DateTime.now(),
+              studentID: studentId.toString(),
+              behaviors: behaviors);
+          return yearChart;
+      }
+      LineChart weekChart = await chartService.weekChartData(
+          colors: lineColors,
+          context: context,
+          lastDateOfWeek: DateTime.now(),
+          studentID: studentId.toString(),
+          behaviors: behaviors);
+      return weekChart;
+    }
+
+    print('object');
+    print(add);
+    chart = await loadChart(add);
+
+    Widget toggleButton = ToggleButtons(
+      borderRadius: const BorderRadius.all(Radius.circular(40)),
+      selectedColor: Colors.white,
+      fillColor: Colors.redAccent,
+      color: Colors.black,
+      onPressed: (int selectedIndex) async {
+        setState(() {
           for (int i = 0; i < isSelectedList[index].length; i++) {
             if (i == selectedIndex) {
               isSelectedList[index][i] = !isSelectedList[index][i];
             }
           }
-          selectedBehaviors = [];
+          add.clear();
+          add = [];
           for (int i = 0; i < isSelectedList[index].length; i++) {
             if (isSelectedList[index][i]) {
-              selectedBehaviors.add(itemContentList[i]);
+              add.add(itemContentListOfList[i]);
             }
           }
+        });
+        print('아이템 컨텐트 리스트의리스트 $itemContentListOfList');
 
-          loadChart();
-
-          // `selectedBehaviors` 리스트 업데이트 후, 그래프를 그립니다.
+        print('add : $add');
+        LineChart newChart = await loadChart(add);
+        print('isSelected List :%');
+        setState(() {
+          chart = newChart;
         });
       },
       isSelected: isSelectedList[index],
@@ -179,7 +250,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       ],
     );
 
-    // _itemContentList)
     return GestureDetector(
       onTap: () {
         // 탭 시 처리 로직 추가
@@ -280,6 +350,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01 * 1.6),
+
               Container(
                 height: MediaQuery.of(context).size.height * 0.01 * 30,
                 decoration: BoxDecoration(
@@ -287,7 +358,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: chart,
               ),
-              // 필요한 정보들을 추가
+              periodToggleButton, // 필요한 정보들을 추가
               toggleButton,
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
