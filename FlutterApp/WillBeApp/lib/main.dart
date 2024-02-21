@@ -19,7 +19,7 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => MyModel(),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
