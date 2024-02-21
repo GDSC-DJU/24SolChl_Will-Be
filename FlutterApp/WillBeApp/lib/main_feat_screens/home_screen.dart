@@ -226,6 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               MaterialPageRoute(
                                 builder: (context) => Expression_Dictionary(
                                   name: name,
+                                  id: widget.studentIdList[index],
                                   iconColor: colorList[index].withOpacity(0.5),
                                 ),
                               ),
