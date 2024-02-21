@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -123,8 +125,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     List<String> add = [];
 
     for (int i = 0; i < isSelectedList[index].length; i++) {
-      if (isSelectedList[index][0] == true) {
-        add.add(itemContentListOfList[0]);
+      if (isSelectedList[index][i] == true) {
+        add.add(itemContentListOfList[i]);
         colorList.add(chartService.getRandomColor());
       }
     }
@@ -229,6 +231,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               isSelectedList[index][i] = !isSelectedList[index][i];
             }
           }
+          print("isSelectedList: $isSelectedList");
           add.clear();
           add = [];
           colorList.clear();
@@ -241,11 +244,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         });
         print('아이템 컨텐트 리스트의리스트 $itemContentListOfList');
         print('add : $add');
-        LineChart newChart = await loadChart(add);
-
-        setState(() {
-          chart = newChart;
-        });
       },
       isSelected: isSelectedList[index],
       children: <Widget>[
@@ -265,6 +263,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         // 탭 시 처리 로직 추가
       },
       child: Container(
+        height: MediaQuery.of(context).size.height,
         margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 5),
         decoration: BoxDecoration(
           color: Colors.white,
