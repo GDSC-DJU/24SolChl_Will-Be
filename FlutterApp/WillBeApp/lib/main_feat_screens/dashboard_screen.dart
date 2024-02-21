@@ -331,6 +331,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                           MaterialPageRoute(
                             builder: (context) => Expression_Dictionary(
                               name: name,
+                              id: widget.studentIdList[index],
                               iconColor:
                                   widget.colorList[index].withOpacity(0.5),
                             ),

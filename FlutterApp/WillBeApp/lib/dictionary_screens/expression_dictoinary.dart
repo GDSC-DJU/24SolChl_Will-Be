@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:solution/dictionary_screens/expression_dictionary_edit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:solution/main_feat_screens/main_page.dart';
 
 class Expression_Dictionary extends StatefulWidget {
   Expression_Dictionary(
-      {Key? key, required this.name, required this.iconColor});
+      {Key? key,
+      required this.name,
+      required this.id,
+      required this.iconColor});
   final String name;
+  final String id;
   Color iconColor;
   @override
   State<Expression_Dictionary> createState() => _Expression_Dictionary_State();
 }
+
+User? _user = FirebaseAuth.instance.currentUser;
 
 class _Expression_Dictionary_State extends State<Expression_Dictionary> {
   Map<String, TextEditingController> textControllers = {
@@ -137,8 +147,30 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                       width: 110,
                       height: 35,
                       child: ElevatedButton(
-                        onPressed: () {
-                          
+                        onPressed: () async {
+                          // Record 컬렉션 내 Report 세팅 (Daily)
+                          await FirebaseFirestore.instance
+                              .collection('Record')
+                              .doc(widget.id)
+                              .collection('Report')
+                              .doc(_user!.uid)
+                              .collection("Daily")
+                              .doc('0000-00-00')
+                              .set({});
+                          DateTime MonDay = DateTime.now().subtract(
+                              Duration(days: DateTime.now().weekday - 1));
+                          DateTime FriDay = DateTime.now().subtract(
+                              Duration(days: DateTime.now().weekday - 5));
+                          // Record 컬렉션 내 Report 세팅 (Weekly)
+                          await FirebaseFirestore.instance
+                              .collection('Record')
+                              .doc(widget.id)
+                              .collection('Report')
+                              .doc(_user!.uid)
+                              .collection("Weekly")
+                              .doc(
+                                  '${MonDay.year}-${MonDay.month}-${MonDay.day}_${FriDay.year}-${FriDay.month}-${FriDay.day}')
+                              .set({});
                         },
                         style: ElevatedButton.styleFrom(
                           side: BorderSide(color: Colors.black),
