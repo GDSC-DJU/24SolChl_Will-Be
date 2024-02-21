@@ -978,7 +978,7 @@ class _Main_PageState extends State<Main_Page> {
                         child: Container(
                           margin: const EdgeInsets.all(10),
                           height:
-                              MediaQuery.of(context).size.height * 0.50 / 2 -
+                              MediaQuery.of(context).size.height * 0.54 / 2 -
                                   20,
                           width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
@@ -1069,7 +1069,7 @@ class _Main_PageState extends State<Main_Page> {
                         child: Container(
                           margin: const EdgeInsets.all(10),
                           height:
-                              MediaQuery.of(context).size.height * 0.50 / 2 -
+                              MediaQuery.of(context).size.height * 0.54 / 2 -
                                   20,
                           width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
@@ -1164,7 +1164,7 @@ class _Main_PageState extends State<Main_Page> {
                         child: Container(
                           margin: const EdgeInsets.all(10),
                           height:
-                              MediaQuery.of(context).size.height * 0.50 / 2 -
+                              MediaQuery.of(context).size.height * 0.54 / 2 -
                                   20,
                           width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),
@@ -1255,7 +1255,7 @@ class _Main_PageState extends State<Main_Page> {
                         child: Container(
                           margin: const EdgeInsets.all(10),
                           height:
-                              MediaQuery.of(context).size.height * 0.50 / 2 -
+                              MediaQuery.of(context).size.height * 0.54 / 2 -
                                   20,
                           width: MediaQuery.of(context).size.width * 0.4,
                           padding: const EdgeInsets.all(20),

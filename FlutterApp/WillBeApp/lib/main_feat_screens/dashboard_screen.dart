@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 import 'package:flutter/material.dart';
+import 'package:solution/assets/pallet.dart';
 import 'package:solution/dictionary_screens/expression_dictoinary.dart';
 import 'package:solution/behavior_detail_screens/behavior_detail_screen.dart';
 import 'package:solution/main_feat_screens/chart_builder.dart';
@@ -23,6 +25,8 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
+  List<List<bool>> isSelectedList = [];
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -47,16 +51,29 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               width: MediaQuery.sizeOf(context).width - 32,
               height: MediaQuery.sizeOf(context).height - 170,
               child: ListView.builder(
-                padding: const EdgeInsets.all(0),
-                itemCount: widget.studentDataList.length,
-                itemBuilder: (context, index) {
-                  return buildSummaryCard(
-                      itemContentList: widget.itemContentList[index],
-                      data: widget.studentDataList[index],
-                      index: index,
-                      studentId: widget.studentIdList[index]);
-                },
-              ),
+                  padding: const EdgeInsets.all(0),
+                  itemCount: widget.studentDataList.length,
+                  itemBuilder: (context, index) {
+                    return FutureBuilder(
+                      future: buildSummaryCard(
+                        itemContentList: widget.itemContentList[index],
+                        data: widget.studentDataList[index],
+                        index: index,
+                        studentId: widget.studentIdList[index],
+                      ),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator(); // 데이터를 기다리는 동안 보여줄 위젯
+                        } else if (snapshot.hasError) {
+                          return Text(
+                              'Error: ${snapshot.error}'); // 에러가 발생한 경우 보여줄 위젯
+                        } else {
+                          return snapshot.data; // 데이터가 로드된 경우 보여줄 위젯
+                        }
+                      },
+                    );
+                  }),
             ),
           ],
         ),
@@ -64,19 +81,105 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  Widget buildSummaryCard(
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    for (var i = 0; i < widget.studentDataList.length; i++) {
+      isSelectedList.add(List.generate(
+          widget.itemContentList[i].length, (index) => index == 0));
+    }
+  }
+
+  Future<Widget> buildSummaryCard(
       {required Object data,
       required int index,
       required Object studentId,
-      required Object itemContentList}) {
+      required Object itemContentList}) async {
     Map<String, dynamic> studentData = (data as Map<String, dynamic>);
 
+    var itemContentListOfList = (itemContentList as List<dynamic>);
+    ChartService chartService = ChartService();
+    LineChart? chart;
     String name = studentData['name'];
+    List<String> selectedBehaviors = [];
+    List<Color> lineColors = [];
 
-    print('name : $name');
-    print('studentId : $studentId');
-    print('itemContentList : $itemContentList'); //이 부분은 리스트
+    for (var element in itemContentListOfList) {
+      lineColors.add(chartService.getRandomColor());
+    }
 
+    List<String> add = [];
+
+    for (var element in itemContentListOfList) {
+      add.add('$element');
+    }
+
+    chart = await chartService.weekChartData(
+      colors: lineColors,
+      context: context,
+      lastDateOfWeek: DateTime.now(),
+      studentID: studentId.toString(),
+      behaviors: add,
+    );
+    print(studentId);
+    print(add);
+
+    Future<void> loadChart() async {
+      LineChart weekChart = await chartService.weekChartData(
+          colors: lineColors,
+          context: context,
+          lastDateOfWeek: DateTime.now(),
+          studentID: studentId.toString(),
+          behaviors: selectedBehaviors);
+
+      setState(() {
+        chart = weekChart;
+      });
+    }
+
+    for (var element in selectedBehaviors) {
+      lineColors.add(chartService.getRandomColor());
+    }
+
+    Widget toggleButton = ToggleButtons(
+      borderRadius: const BorderRadius.all(Radius.circular(40)),
+      selectedColor: Colors.white,
+      fillColor: Colors.redAccent,
+      color: Colors.black,
+      onPressed: (int selectedIndex) {
+        setState(() {
+          for (int i = 0; i < isSelectedList[index].length; i++) {
+            if (i == selectedIndex) {
+              isSelectedList[index][i] = !isSelectedList[index][i];
+            }
+          }
+          selectedBehaviors = [];
+          for (int i = 0; i < isSelectedList[index].length; i++) {
+            if (isSelectedList[index][i]) {
+              selectedBehaviors.add(itemContentList[i]);
+            }
+          }
+
+          loadChart();
+
+          // `selectedBehaviors` 리스트 업데이트 후, 그래프를 그립니다.
+        });
+      },
+      isSelected: isSelectedList[index],
+      children: <Widget>[
+        for (int i = 0; i < itemContentList.length; i++)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Text(
+              itemContentList[i],
+              style: const TextStyle(fontSize: 14.0),
+            ),
+          ),
+      ],
+    );
+
+    // _itemContentList)
     return GestureDetector(
       onTap: () {
         // 탭 시 처리 로직 추가
@@ -182,9 +285,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
                     borderRadius: const BorderRadius.all(Radius.circular(10))),
-                //   child: Container(child: ),
+                child: chart,
               ),
               // 필요한 정보들을 추가
+              toggleButton,
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(
@@ -192,6 +296,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   style: TextStyle(color: Colors.black, fontSize: 22),
                 ),
               ),
+
               Container(
                 height: MediaQuery.of(context).size.height * 0.01 * 10,
                 decoration: BoxDecoration(

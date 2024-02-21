@@ -18,10 +18,9 @@ class ChartService {
       /// 예) 2022-08-01 또는
       /// 2022-08-01 00:00:00 과 같이 넣어준다.
       required DateTime date}) async {
-    DateTime today = Timestamp.fromDate(date).toDate();
-    DateTime tomorrow = Timestamp.fromDate(
-      date.subtract(const Duration(days: 1)),
-    ).toDate();
+    DateTime today = DateTime(date.year, date.month, date.day);
+
+    DateTime tomorrow = today.add(const Duration(days: 1));
 
     print('today : $today');
     print('tomorrow : $tomorrow');
@@ -237,9 +236,9 @@ class ChartService {
               },
             ),
           )),
-      // maxY: (numsOfList.reduce(max).toDouble() +
-      //         numsOfList.reduce(max).toDouble() / 10)
-      // .ceilToDouble(),
+      maxY: (numsOfList.reduce(max).toDouble() +
+              numsOfList.reduce(max).toDouble() / 10)
+          .ceilToDouble(),
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -254,7 +253,8 @@ class ChartService {
   ///입력받은 날을 기준으로 한달전부터 받아오기
   Future<LineChart> monthChartData(
       {required String studentID,
-      required String behavior,
+      required List<String> behaviors,
+      required List<Color> colors,
       required BuildContext context,
       required DateTime lastDateOfMonth}) async {
     DateTime today = Timestamp.fromDate(lastDateOfMonth).toDate();
@@ -264,15 +264,12 @@ class ChartService {
 
     print('today : $today');
 
-    List<FlSpot> dataPoints = [];
-
     List<DateTime> datesOfMonth = getDatesOfWeek(monthAgo, today);
     var weekDays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
 
     List<String> weekDaysInKoreanUsage = List.filled(30, '');
     List<int> daysInMonth = List.filled(30, 0);
     List<int> monthsInMonth = List.filled(30, 0);
-    List<int> numsOfList = List.filled(30, 0);
 
     for (var i = 0; i < 30; i++) {
       DateTime element = datesOfMonth[i];
@@ -281,42 +278,64 @@ class ChartService {
       monthsInMonth[i] = element.month;
     }
 
-    QuerySnapshot snapshot = await _firestore
-        .collection('Record')
-        .doc(studentID)
-        .collection('Behavior')
-        .doc(behavior)
-        .collection('BehaviorRecord')
-        .where('time', isGreaterThanOrEqualTo: monthAgo)
-        .where('time', isLessThan: today)
-        .get();
+    List<LineChartBarData> lines = [];
+    List<List<int>> allNumsOfList = []; // 모든 행동에 대한 numsOfList를 저장하는 리스트
 
-    for (var element in snapshot.docs) {
-      DateTime datetime = element.get('time').toDate();
-      print('datetime : $datetime');
+    for (int i = 0; i < behaviors.length; i++) {
+      String behavior = behaviors[i];
+      Color color = colors[i];
 
-      numsOfList[daysInMonth.indexOf(datetime.day)]++;
+      List<int> numsOfList = List.filled(30, 0);
+      List<FlSpot> dataPoints = [];
+
+      QuerySnapshot snapshot = await _firestore
+          .collection('Record')
+          .doc(studentID)
+          .collection('Behavior')
+          .doc(behavior)
+          .collection('BehaviorRecord')
+          .where('time', isGreaterThanOrEqualTo: monthAgo)
+          .where('time', isLessThan: today)
+          .get();
+
+      for (var element in snapshot.docs) {
+        DateTime datetime = element.get('time').toDate();
+        print('datetime : $datetime');
+
+        numsOfList[daysInMonth.indexOf(datetime.day)]++;
+      }
+
+      allNumsOfList.add(numsOfList); // 각 행동에 대한 numsOfList를 allNumsOfList에 추가
+
+      for (int i = 0; i < 30; i++) {
+        dataPoints.add(FlSpot(i.toDouble(), numsOfList[i].toDouble()));
+      }
+
+      LineChartBarData lineChartBarData = LineChartBarData(
+        spots: dataPoints,
+        isCurved: false,
+        barWidth: 2.5,
+        isStrokeCapRound: true,
+        color: color,
+        belowBarData: BarAreaData(show: false),
+        dotData: const FlDotData(show: true),
+      );
+
+      lines.add(lineChartBarData);
     }
 
-    for (int i = 0; i < 30; i++) {
-      dataPoints.add(FlSpot(i.toDouble(), numsOfList[i].toDouble()));
+    // 모든 행동에 대한 numsOfList의 최대값을 찾아서 maxY 계산
+    double maxY = 0.0;
+    for (var numsOfList in allNumsOfList) {
+      double currentMaxY = numsOfList.reduce(max).toDouble();
+      if (currentMaxY > maxY) {
+        maxY = currentMaxY;
+      }
     }
-
-    ///)
-
-    LineChartBarData lineChartBarData = LineChartBarData(
-      spots: dataPoints,
-      isCurved: false,
-      barWidth: 2.5,
-      isStrokeCapRound: true,
-      color: BtnColors().btn1,
-      belowBarData: BarAreaData(show: false),
-      dotData: const FlDotData(show: true),
-    );
+    maxY = (maxY + maxY / 10).ceilToDouble();
 
     LineChartData lineChartData = LineChartData(
-      lineBarsData: [lineChartBarData],
-      // 제목, 그리드 등의 설정
+      lineBarsData: lines,
       titlesData: FlTitlesData(
           rightTitles:
               const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -342,7 +361,6 @@ class ChartService {
                 return SizedBox(
                   height: 60,
                   child: Text(
-                    ///월/일 로 출력
                     "${monthsInMonth[value.toInt()]}\n${daysInMonth[value.toInt()]}",
                     style: const TextStyle(fontSize: 8),
                   ),
@@ -350,10 +368,7 @@ class ChartService {
               },
             ),
           )),
-
-      maxY: (numsOfList.reduce(max).toDouble() +
-              numsOfList.reduce(max).toDouble() / 10)
-          .ceilToDouble(),
+      maxY: maxY,
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -368,9 +383,14 @@ class ChartService {
   ///7주간 주별로 보여주는 차트.
   Future<LineChart> MonthlyChartData(
       {required String studentID,
-      required String behavior,
+      required List<String> behaviors,
+      required List<Color> colors,
       required BuildContext context,
       required DateTime lastDateOfWeek}) async {
+    if (behaviors.length != colors.length) {
+      throw Exception("The length of behaviors and colors must be the same.");
+    }
+
     DateTime today = Timestamp.fromDate(lastDateOfWeek).toDate();
     DateTime sevenWeeksAgo = Timestamp.fromDate(
       lastDateOfWeek.subtract(const Duration(days: 7 * 7)), // 7주 전
@@ -378,56 +398,63 @@ class ChartService {
 
     print('today : $today');
 
-    List<FlSpot> dataPoints = [];
-
     List<DateTime> datesOfWeek = getDatesOfWeek(sevenWeeksAgo, today);
 
     List<String> weekPeriods = List.filled(7, ''); // 주간 기간을 저장할 리스트
-    List<int> numsOfWeek = List.filled(7, 0); // 주간 데이터를 저장할 리스트
 
-    for (var i = 0; i < 7; i++) {
-      // 7주 동안의 데이터를 처리
-      DateTime startOfWeek = datesOfWeek[i * 7];
-      DateTime endOfWeek = (i < 6)
-          ? datesOfWeek[i * 7 + 6]
-          : DateTime.now()
-              .add(const Duration(days: 1)); // 마지막 주의 경우 '내일'을 endOfWeek로 설정
-      weekPeriods[i] =
-          '${startOfWeek.month}/${startOfWeek.day}~${endOfWeek.month - 1}/${endOfWeek.day - 1}'; // 주간 기간 설정
+    List<LineChartBarData> lineChartBarsData = [];
 
-      QuerySnapshot snapshot = await _firestore
-          .collection('Record')
-          .doc(studentID)
-          .collection('Behavior')
-          .doc(behavior)
-          .collection('BehaviorRecord')
-          .where('time', isGreaterThanOrEqualTo: startOfWeek)
-          .where('time', isLessThan: endOfWeek) // 'time' 필드 값이 '내일'보다 작은 문서를 선택
-          .get();
+    for (var behaviorIndex = 0;
+        behaviorIndex < behaviors.length;
+        behaviorIndex++) {
+      List<int> numsOfWeek = List.filled(7, 0); // 주간 데이터를 저장할 리스트
 
-      numsOfWeek[i] = snapshot.docs.length; // 해당 주의 데이터 개수를 저장
+      for (var i = 0; i < 7; i++) {
+        // 7주 동안의 데이터를 처리
+        DateTime startOfWeek = datesOfWeek[i * 7];
+        DateTime endOfWeek = (i < 6)
+            ? datesOfWeek[i * 7 + 6]
+            : DateTime.now()
+                .add(const Duration(days: 1)); // 마지막 주의 경우 '내일'을 endOfWeek로 설정
+        weekPeriods[i] =
+            '${startOfWeek.month}/${startOfWeek.day}~${endOfWeek.month - 1}/${endOfWeek.day - 1}'; // 주간 기간 설정
+
+        QuerySnapshot snapshot = await _firestore
+            .collection('Record')
+            .doc(studentID)
+            .collection('Behavior')
+            .doc(behaviors[behaviorIndex])
+            .collection('BehaviorRecord')
+            .where('time', isGreaterThanOrEqualTo: startOfWeek)
+            .where('time',
+                isLessThan: endOfWeek) // 'time' 필드 값이 '내일'보다 작은 문서를 선택
+            .get();
+
+        numsOfWeek[i] = snapshot.docs.length; // 해당 주의 데이터 개수를 저장
+      }
+
+      print('numsOfWeek : $numsOfWeek');
+
+      List<FlSpot> dataPoints = [];
+      for (int i = 0; i < 7; i++) {
+        dataPoints.add(FlSpot(i.toDouble(), numsOfWeek[i].toDouble()));
+      }
+
+      LineChartBarData lineChartBarData = LineChartBarData(
+        spots: dataPoints,
+        isCurved: false,
+        barWidth: 2.5,
+        isStrokeCapRound: true,
+        color: colors[behaviorIndex],
+        belowBarData: BarAreaData(show: false),
+        dotData: const FlDotData(show: true),
+      );
+
+      lineChartBarsData.add(lineChartBarData);
     }
-
-    print('numsOfWeek : $numsOfWeek');
-
-    for (int i = 0; i < 7; i++) {
-      dataPoints.add(FlSpot(i.toDouble(), numsOfWeek[i].toDouble()));
-    }
-
-    ///)
-
-    LineChartBarData lineChartBarData = LineChartBarData(
-      spots: dataPoints,
-      isCurved: false,
-      barWidth: 2.5,
-      isStrokeCapRound: true,
-      color: BtnColors().btn1,
-      belowBarData: BarAreaData(show: false),
-      dotData: const FlDotData(show: true),
-    );
 
     LineChartData lineChartData = LineChartData(
-      lineBarsData: [lineChartBarData],
+      lineBarsData: lineChartBarsData,
       // 제목, 그리드 등의 설정
       titlesData: FlTitlesData(
         rightTitles:
@@ -463,9 +490,6 @@ class ChartService {
         ),
       ),
 
-      // maxY: (numsOfList.reduce(max).toDouble() +
-      //         numsOfList.reduce(max).toDouble() / 10)
-      //     .ceilToDouble(),
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -480,9 +504,14 @@ class ChartService {
   ///1년을 보여주는 차트
   Future<LineChart> yearChartData(
       {required String studentID,
-      required String behavior,
+      required List<String> behaviors,
+      required List<Color> colors,
       required BuildContext context,
       required DateTime lastDateOfMonth}) async {
+    if (behaviors.length != colors.length) {
+      throw Exception("The length of behaviors and colors must be the same.");
+    }
+
     DateTime today = Timestamp.fromDate(lastDateOfMonth).toDate();
     DateTime oneYearAgo = Timestamp.fromDate(
       lastDateOfMonth.subtract(const Duration(days: 365)), // 1년 전
@@ -490,57 +519,64 @@ class ChartService {
 
     print('today : $today');
 
-    List<FlSpot> dataPoints = [];
-
     List<String> monthLabels = List.filled(12, ''); // 월별 레이블을 저장할 리스트
-    List<int> numsOfMonth = List.filled(12, 0); // 월별 데이터를 저장할 리스트
 
-    for (var i = 0; i < 12; i++) {
-      // 1년 동안의 데이터를 처리
-      DateTime startOfMonth = DateTime(today.year - 1, today.month + i + 1, 1);
-      DateTime endOfMonth = DateTime(today.year - 1, today.month + i + 2, 1);
+    List<LineChartBarData> lineChartBarsData = [];
 
-      int labelMonth = startOfMonth.month;
-      String labelYear = "";
+    for (var behaviorIndex = 0;
+        behaviorIndex < behaviors.length;
+        behaviorIndex++) {
+      List<int> numsOfMonth = List.filled(12, 0); // 월별 데이터를 저장할 리스트
 
-      if (labelMonth == 1) {
-        labelYear = ("${today.year.toString()}년");
+      for (var i = 0; i < 12; i++) {
+        // 1년 동안의 데이터를 처리
+        DateTime startOfMonth =
+            DateTime(today.year - 1, today.month + i + 1, 1);
+        DateTime endOfMonth = DateTime(today.year - 1, today.month + i + 2, 1);
+
+        int labelMonth = startOfMonth.month;
+        String labelYear = "";
+
+        if (labelMonth == 1) {
+          labelYear = ("${today.year.toString()}년");
+        }
+
+        monthLabels[i] = '$labelMonth월 \n$labelYear'; // 월별 레이블 설정
+
+        QuerySnapshot snapshot = await _firestore
+            .collection('Record')
+            .doc(studentID)
+            .collection('Behavior')
+            .doc(behaviors[behaviorIndex])
+            .collection('BehaviorRecord')
+            .where('time', isGreaterThanOrEqualTo: startOfMonth)
+            .where('time', isLessThan: endOfMonth)
+            .get();
+
+        numsOfMonth[i] = snapshot.docs.length; // 해당 월의 데이터 개수를 저장
+      }
+      print('numsOfMonth : $numsOfMonth');
+
+      List<FlSpot> dataPoints = [];
+      for (int i = 0; i < 12; i++) {
+        dataPoints.add(FlSpot(i.toDouble(), numsOfMonth[i].toDouble()));
       }
 
-      monthLabels[i] = '$labelMonth월 \n$labelYear'; // 월별 레이블 설정
+      LineChartBarData lineChartBarData = LineChartBarData(
+        spots: dataPoints,
+        isCurved: false,
+        barWidth: 2.5,
+        isStrokeCapRound: true,
+        color: colors[behaviorIndex],
+        belowBarData: BarAreaData(show: false),
+        dotData: const FlDotData(show: true),
+      );
 
-      QuerySnapshot snapshot = await _firestore
-          .collection('Record')
-          .doc(studentID)
-          .collection('Behavior')
-          .doc(behavior)
-          .collection('BehaviorRecord')
-          .where('time', isGreaterThanOrEqualTo: startOfMonth)
-          .where('time', isLessThan: endOfMonth)
-          .get();
-
-      numsOfMonth[i] = snapshot.docs.length; // 해당 월의 데이터 개수를 저장
+      lineChartBarsData.add(lineChartBarData);
     }
-    print('numsOfMonth : $numsOfMonth');
-
-    for (int i = 0; i < 12; i++) {
-      dataPoints.add(FlSpot(i.toDouble(), numsOfMonth[i].toDouble()));
-    }
-
-    ///)
-
-    LineChartBarData lineChartBarData = LineChartBarData(
-      spots: dataPoints,
-      isCurved: false,
-      barWidth: 2.5,
-      isStrokeCapRound: true,
-      color: BtnColors().btn1,
-      belowBarData: BarAreaData(show: false),
-      dotData: const FlDotData(show: true),
-    );
 
     LineChartData lineChartData = LineChartData(
-      lineBarsData: [lineChartBarData],
+      lineBarsData: lineChartBarsData,
       // 제목, 그리드 등의 설정
       titlesData: FlTitlesData(
         rightTitles:
@@ -576,9 +612,6 @@ class ChartService {
         ),
       ),
 
-      // maxY: (numsOfList.reduce(max).toDouble() +
-      //         numsOfList.reduce(max).toDouble() / 10)
-      //     .ceilToDouble(),
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
