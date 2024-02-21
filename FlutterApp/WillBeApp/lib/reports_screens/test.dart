@@ -138,6 +138,7 @@ final CollectionReference dailyReportCollectionRef = FirebaseFirestore.instance
 // Record / 학생ID / Behavior / 행동명 / 행동기록 / 시간 / {특이사항 / 변인}
 User? user = FirebaseAuth.instance.currentUser;
 List result = [];
+
 void helpFunc(
   String studentId,
   List behaviorList,
@@ -200,7 +201,7 @@ void getReports(
   });
 }
 
-void getStamp(
+Future<List<dynamic>> getStamp(
   String studentId,
   List behaviorList,
   String start,
@@ -238,11 +239,12 @@ void getStamp(
       data.keys.toList().forEach((day) {
         result[idx]['records'][int.parse(day) - startDate.day.toInt()]
             ['stamps'] = data[day];
-        print(result);
       });
       idx += 1;
     });
   });
+  print(result);
+  return result;
 }
 /**
  *     QuerySnapshot snapshot = await _firestore
