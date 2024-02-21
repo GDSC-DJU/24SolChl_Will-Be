@@ -513,8 +513,18 @@ class CalendarAppointment extends State<TimeTableCalendar> {
               DateTime selectedDateTime = DateTime.now()
                   .subtract(Duration(days: 7))
                   .add(Duration(days: _getDayOffset(day)));
+              selectedDateTime = DateTime(
+                selectedDateTime.year,
+                selectedDateTime.month,
+                selectedDateTime.day,
+                0,
+                0,
+                0,
+                0,
+                0,
+              );
               selectedDateTime =
-                  selectedDateTime.add(Duration(hours: i + 6)); // 9시부터 시작
+                  selectedDateTime.add(Duration(hours: i + 8)); // 9시부터 시작
               // 분과 초를 0으로 설정하여 정각으로 만듦
               selectedDateTime = DateTime(
                 selectedDateTime.year,
