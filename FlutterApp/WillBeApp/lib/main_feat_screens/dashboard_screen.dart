@@ -102,7 +102,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     }
 
     for (int i = 0; i < isSelectedList.length; i++) {
-      for (int l = 0; l < isSelectedList[l].length; l++) {
+      for (int l = 0; l < isSelectedList[i].length; l++) {
         print("i =$i");
         print("l = $l");
         print("${isSelectedList[i][l]}");
