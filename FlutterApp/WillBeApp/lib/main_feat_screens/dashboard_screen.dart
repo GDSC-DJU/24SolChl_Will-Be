@@ -35,8 +35,11 @@ class DashBoardScreen extends StatefulWidget {
   State<DashBoardScreen> createState() => _DashBoardScreenState();
 }
 
-class _DashBoardScreenState extends State<DashBoardScreen> {
+class _DashBoardScreenState extends State<DashBoardScreen>
+    with AutomaticKeepAliveClientMixin {
   List<List<bool>> isSelectedList = [];
+  @override
+  bool get wantKeepAlive => true;
 
   List<List<bool>> isSelectedPeriod = []; // 기본값은 주별로 설정
   @override
@@ -76,7 +79,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const CircularProgressIndicator(); // 데이터를 기다리는 동안 보여줄 위젯
+                          return SizedBox(
+                              height: MediaQuery.of(context).size.height,
+                              width: MediaQuery.of(context).size.width,
+                              child: const Center(
+                                  child:
+                                      CircularProgressIndicator())); // 데이터를 기다리는 동안 보여줄 위젯
                         } else if (snapshot.hasError) {
                           return Text(
                               'Error: ${snapshot.error}'); // 에러가 발생한 경우 보여줄 위젯
@@ -263,7 +271,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         // 탭 시 처리 로직 추가
       },
       child: Container(
-        height: MediaQuery.of(context).size.height,
         margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 5),
         decoration: BoxDecoration(
           color: Colors.white,
