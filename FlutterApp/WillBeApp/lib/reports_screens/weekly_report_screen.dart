@@ -88,12 +88,13 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                       Spacer(),
                       ElevatedButton(
                         onPressed: () {
-                          // _sendPostRequest(,);
-                          helpFunc(widget.id, widget.behaviorList, '2024-02-19',
-                              '2024-02-23');
+                          // SendRequest temp = SendRequest(
+                          //     inputBody: helpFunc(
+                          //         widget.id,
+                          //         widget.behaviorList,
+                          //         '2024-02-19',
+                          //         '2024-02-23'));
                           // helpFunc(widget.id, widget.behaviorList, '2024-02-19',
-                          //     '2024-02-23');
-                          // getStamp(widget.id, widget.behaviorList, '2024-02-19',
                           //     '2024-02-23');
                         },
                         style: ElevatedButton.styleFrom(

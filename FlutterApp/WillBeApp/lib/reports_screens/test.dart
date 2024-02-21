@@ -139,7 +139,7 @@ final CollectionReference dailyReportCollectionRef = FirebaseFirestore.instance
 User? user = FirebaseAuth.instance.currentUser;
 List result = [];
 
-void helpFunc(
+Future<List<dynamic>> helpFunc(
   String studentId,
   List behaviorList,
   String start,
@@ -153,10 +153,10 @@ void helpFunc(
     });
   });
   print(result);
-  getReports(studentId, behaviorList, start, end);
+  return getReports(studentId, behaviorList, start, end);
 }
 
-void getReports(
+Future<List<dynamic>> getReports(
   String studentId,
   List behaviorList,
   String start,
@@ -197,8 +197,8 @@ void getReports(
     });
     // print(data); // 필드값 출력
     // print(result);
-    getStamp(studentId, behaviorList, start, end);
   });
+  return getStamp(studentId, behaviorList, start, end);
 }
 
 Future<List<dynamic>> getStamp(

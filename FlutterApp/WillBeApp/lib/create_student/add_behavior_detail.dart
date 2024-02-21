@@ -123,9 +123,14 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .collection('Report')
           .doc(user.uid)
           .collection("Daily")
-          .doc(widget.behaviorName)
+          .doc('0000-00-00')
           .set({});
-
+      DateTime MonDay =
+          DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
+      DateTime FriDay =
+          DateTime.now().subtract(Duration(days: DateTime.now().weekday - 5));
+      print(
+          '${MonDay.year}-${MonDay.month}-${MonDay.day}_${FriDay.year}-${FriDay.month}-${FriDay.day}');
       // Record 컬렉션 내 Report 세팅 (Weekly)
       await FirebaseFirestore.instance
           .collection('Record')
@@ -133,7 +138,8 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .collection('Report')
           .doc(user.uid)
           .collection("Weekly")
-          .doc(widget.behaviorName)
+          .doc(
+              '${MonDay.year}-${MonDay.month}-${MonDay.day}_${FriDay.year}-${FriDay.month}-${FriDay.day}')
           .set({});
 
       await FirebaseFirestore.instance
@@ -210,28 +216,32 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
         .set({'method': methodValue}); // (0: 횟수 / 1: 지속시간 / 2: 지연시간)
 
     // Record 컬렉션 내 Report 세팅 (Daily)
-    await FirebaseFirestore.instance
-        .collection('Record')
-        .doc(widget.id)
-        .collection('Report')
-        .doc(user!.uid)
-        .collection("Daily")
-        .doc(widget.behaviorName)
-        .set({});
-
+    // await FirebaseFirestore.instance
+    //     .collection('Record')
+    //     .doc(widget.id)
+    //     .collection('Report')
+    //     .doc(user!.uid)
+    //     .collection("Daily")
+    //     .doc('0000-00-00')
+    //     .set({});
+    // DateTime MonDay =
+    //     DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
+    // DateTime FriDay =
+    //     DateTime.now().subtract(Duration(days: DateTime.now().weekday - 5));
     // Record 컬렉션 내 Report 세팅 (Weekly)
-    await FirebaseFirestore.instance
-        .collection('Record')
-        .doc(widget.id)
-        .collection('Report')
-        .doc(user.uid)
-        .collection("Weekly")
-        .doc(widget.behaviorName)
-        .set({});
+    // await FirebaseFirestore.instance
+    //     .collection('Record')
+    //     .doc(widget.id)
+    //     .collection('Report')
+    //     .doc(user.uid)
+    //     .collection("Weekly")
+    //     .doc(
+    //         '${MonDay.year}-${MonDay.month}-${MonDay.day}_${FriDay.year}-${FriDay.month}-${FriDay.day}')
+    //     .set({});
 
     await FirebaseFirestore.instance
         .collection('Educator')
-        .doc(user.uid)
+        .doc(user!.uid)
         .collection('Order')
         .doc('OrderList')
         .get()
