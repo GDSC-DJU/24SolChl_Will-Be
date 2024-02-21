@@ -29,7 +29,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   List<List<bool>> isSelectedList = [];
 
   List<List<bool>> isSelectedPeriod = []; // 기본값은 주별로 설정
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -113,15 +112,21 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     ChartService chartService = ChartService();
     LineChart chart;
     String name = studentData['name'];
-    List<String> selectedBehaviors = [];
-    List<Color> lineColors = [];
 
-    for (var element in itemContentListOfList) {
-      lineColors.add(chartService.getRandomColor());
-    }
+    List<Color> colorList = [];
+
+    print("itemCOntentList");
+    print(itemContentList);
+    print("is");
+    print(isSelectedList);
+
     List<String> add = [];
-    if (isSelectedList[index][0] == true) {
-      add.add(itemContentListOfList[0]);
+
+    for (int i = 0; i < isSelectedList[index].length; i++) {
+      if (isSelectedList[index][0] == true) {
+        add.add(itemContentListOfList[0]);
+        colorList.add(chartService.getRandomColor());
+      }
     }
 
     Widget periodToggleButton = ToggleButtons(
@@ -167,11 +172,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
     Future<LineChart> loadChart(List<String> behaviors) async {
       int chartPeriod = isSelectedPeriod[index].indexOf(true);
+      print("행동 기리");
+      print(behaviors.length);
+      print("색 길이");
+      print(colorList.length);
 
       switch (chartPeriod) {
         case 0:
           LineChart weekChart = await chartService.weekChartData(
-              colors: lineColors,
+              colors: colorList,
               context: context,
               lastDateOfWeek: DateTime.now(),
               studentID: studentId.toString(),
@@ -179,7 +188,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           return weekChart;
         case 1:
           LineChart monthlyChart = await chartService.MonthlyChartData(
-              colors: lineColors,
+              colors: colorList,
               context: context,
               lastDateOfWeek: DateTime.now(),
               studentID: studentId.toString(),
@@ -188,7 +197,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
         case 2:
           LineChart yearChart = await chartService.yearChartData(
-              colors: lineColors,
+              colors: colorList,
               context: context,
               lastDateOfMonth: DateTime.now(),
               studentID: studentId.toString(),
@@ -196,7 +205,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           return yearChart;
       }
       LineChart weekChart = await chartService.weekChartData(
-          colors: lineColors,
+          colors: colorList,
           context: context,
           lastDateOfWeek: DateTime.now(),
           studentID: studentId.toString(),
@@ -222,17 +231,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           }
           add.clear();
           add = [];
+          colorList.clear();
+          colorList = [];
           for (int i = 0; i < isSelectedList[index].length; i++) {
-            if (isSelectedList[index][i]) {
-              add.add(itemContentListOfList[i]);
-            }
+            if (isSelectedList[index][i]) {}
           }
         });
         print('아이템 컨텐트 리스트의리스트 $itemContentListOfList');
-
         print('add : $add');
         LineChart newChart = await loadChart(add);
-        print('isSelected List :%');
+
         setState(() {
           chart = newChart;
         });
