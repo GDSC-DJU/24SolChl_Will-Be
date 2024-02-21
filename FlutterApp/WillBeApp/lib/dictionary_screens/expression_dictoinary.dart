@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:solution/dictionary_screens/expression_dictionary_create.dart';
 import 'package:solution/dictionary_screens/expression_dictionary_edit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,9 +11,11 @@ class Expression_Dictionary extends StatefulWidget {
       {Key? key,
       required this.name,
       required this.id,
-      required this.iconColor});
+      required this.iconColor,
+      required this.dictList});
   final String name;
   final String id;
+  dynamic dictList;
   Color iconColor;
   @override
   State<Expression_Dictionary> createState() => _Expression_Dictionary_State();
@@ -26,6 +29,13 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
     "behavior": TextEditingController(),
     "meaning": TextEditingController(),
   };
+  @override
+  void initState() {
+    super.initState();
+    print("intinetet");
+    print(widget.dictList);
+    // getBehaviorList(widget.studentIdList);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +56,6 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
           ),
         ),
         body: Container(
-          // height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
               SizedBox(
@@ -110,8 +119,10 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Expression_Dictionary_Edit(
+                              builder: (context) =>
+                                  Expression_Dictionary_Create(
                                 name: widget.name,
+                                id: widget.id,
                                 iconColor: widget.iconColor,
                               ),
                             ),
@@ -171,6 +182,13 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                               .doc(
                                   '${MonDay.year}-${MonDay.month}-${MonDay.day}_${FriDay.year}-${FriDay.month}-${FriDay.day}')
                               .set({});
+
+                          await FirebaseFirestore.instance
+                              .collection('Student')
+                              .doc(widget.id)
+                              .collection('Dictionary')
+                              .doc('expression')
+                              .set({});
                         },
                         style: ElevatedButton.styleFrom(
                           side: BorderSide(color: Colors.black),
@@ -217,53 +235,117 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
               ),
               SingleChildScrollView(
                 child: Container(
-                  width: MediaQuery.sizeOf(context).width - 32,
+                  width: MediaQuery.sizeOf(context).width - 12,
                   height: MediaQuery.sizeOf(context).height - 213,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                  child:
                       // 의사소통 builder
-                      Theme(
-                        data: ThemeData()
-                            .copyWith(dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          title: new Text(
-                            '교실을 나가는 행동은',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22,
-                                color: Colors.black),
-                          ),
-                          controlAffinity: ListTileControlAffinity.leading,
-                          initiallyExpanded: true,
-                          backgroundColor: Colors.white,
-                          children: <Widget>[
-                            SingleChildScrollView(
-                              child: Container(
-                                // height: 200,
-                                width: MediaQuery.sizeOf(context).width - 32,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width:
-                                            MediaQuery.sizeOf(context).width -
-                                                60,
-                                        //textController 반복 생성
-                                        child: _buildTextField("보이는 행동",
-                                            textControllers["name"], 0),
+                      ListView.builder(
+                    padding: const EdgeInsets.all(0),
+                    itemCount: widget.dictList.keys.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: MediaQuery.sizeOf(context).width - 12,
+                        child: Theme(
+                          data: ThemeData()
+                              .copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            title: Row(
+                              children: [
+                                Text(
+                                  '${widget.dictList.keys.toList()[index]}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22,
+                                      color: Colors.black),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Expression_Dictionary_Edit(
+                                          name: widget.name,
+                                          id: widget.id,
+                                          iconColor: widget.iconColor,
+                                          behavior: widget.dictList.keys
+                                              .toList()[index],
+                                          meaning: widget.dictList[widget
+                                              .dictList.keys
+                                              .toList()[index]]['meaning'],
+                                          direction: widget.dictList[widget
+                                              .dictList.keys
+                                              .toList()[index]]['direction'],
+                                        ),
                                       ),
-                                    ],
+                                    );
+                                  },
+                                  icon: Icon(Icons.edit),
+                                )
+                              ],
+                            ),
+                            controlAffinity: ListTileControlAffinity.leading,
+                            initiallyExpanded: false,
+                            backgroundColor: Colors.white,
+                            children: <Widget>[
+                              SingleChildScrollView(
+                                child: Container(
+                                  // height: 200,
+                                  width: MediaQuery.sizeOf(context).width - 12,
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 12),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.black12,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
+                                          width:
+                                              MediaQuery.sizeOf(context).width *
+                                                  0.02 *
+                                                  45.2,
+                                          //textController 반복 생성
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${widget.dictList[widget.dictList.keys.toList()[index]]['meaning']}',
+                                                  style:
+                                                      TextStyle(fontSize: 20),
+                                                ),
+                                                SizedBox(
+                                                  height: 16,
+                                                ),
+                                                Text(
+                                                  '${widget.dictList[widget.dictList.keys.toList()[index]]['direction']}',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //   ],
+                  // ),
                 ),
               ),
             ],
@@ -274,30 +356,32 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
   }
 }
 
-Widget _buildTextField(
-    String label, TextEditingController? controller, int index) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      TextFormField(
-        controller: controller,
-        maxLines: null,
-        style: TextStyle(fontSize: 15),
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Colors.blue),
-          ),
-          hintText: "입력하세요",
-        ),
-      ),
-      SizedBox(
-        height: 20,
-      ),
-    ],
-  );
-}
+// Widget _buildTextField(
+//     String label, TextEditingController? controller, int index) {
+//   return Column(
+//     crossAxisAlignment: CrossAxisAlignment.start,
+//     children: [
+//       TextFormField(
+//         controller: controller,
+//         maxLines: null,
+//         readOnly: true,
+//         style: TextStyle(fontSize: 15),
+//         decoration: InputDecoration(
+//             border: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(10.0),
+//               borderSide: BorderSide(),
+//             ),
+//             focusedBorder: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(10.0),
+//               borderSide: BorderSide(color: Colors.blue),
+//             ),
+//             hintText:
+//                 '${widget.dictList[widget.dictList.keys.toList()[index]]}',
+//             hintStyle: TextStyle(color: Black)),
+//       ),
+//       SizedBox(
+//         height: 20,
+//       ),
+//     ],
+//   );
+// }

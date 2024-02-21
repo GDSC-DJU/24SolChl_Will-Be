@@ -86,6 +86,14 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
         'educator': user.uid,
       });
 
+      // 의사소통 사전 생성
+      await FirebaseFirestore.instance
+          .collection('Student')
+          .doc(docParty.id)
+          .collection('Dictionary')
+          .doc('expression')
+          .set({});
+
       // Record collection에 학생 doc 생성
       await FirebaseFirestore.instance
           .collection('Record')

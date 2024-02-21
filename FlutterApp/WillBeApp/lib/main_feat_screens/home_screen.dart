@@ -221,16 +221,28 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: MediaQuery.of(context).size.height * 0.01 * 4.5,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Expression_Dictionary(
-                                  name: name,
-                                  id: widget.studentIdList[index],
-                                  iconColor: colorList[index].withOpacity(0.5),
+                            DocumentReference dictRef = FirebaseFirestore
+                                .instance
+                                .collection('Student')
+                                .doc(widget.studentIdList[index])
+                                .collection('Dictionary')
+                                .doc('expression');
+
+                            dictRef.get().then((value) {
+                              dynamic temp = value.data();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Expression_Dictionary(
+                                    name: name,
+                                    id: widget.studentIdList[index],
+                                    iconColor:
+                                        colorList[index].withOpacity(0.5),
+                                    dictList: temp,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            });
                           },
                           style: ElevatedButton.styleFrom(
                             side: BorderSide(color: Colors.black),

@@ -4,15 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:solution/dictionary_screens/expression_dictoinary.dart';
 import 'package:solution/main_feat_screens/main_page.dart';
 
-class Expression_Dictionary_Edit extends StatefulWidget {
-  Expression_Dictionary_Edit({
+class Expression_Dictionary_Create extends StatefulWidget {
+  Expression_Dictionary_Create({
     Key? key,
     required this.name,
     required this.id,
     required this.iconColor,
-    this.behavior = "",
-    this.meaning = "",
-    this.direction = "",
   });
   Color iconColor;
   final String name;
@@ -20,16 +17,15 @@ class Expression_Dictionary_Edit extends StatefulWidget {
   String behavior = "";
   String meaning = "";
   String direction = "";
-  String originBehavior = "";
   @override
-  State<Expression_Dictionary_Edit> createState() =>
-      _Expression_Dictionary_Edit_State();
+  State<Expression_Dictionary_Create> createState() =>
+      _Expression_Dictionary_Create_State();
 }
 
 User? _user = FirebaseAuth.instance.currentUser;
 
-class _Expression_Dictionary_Edit_State
-    extends State<Expression_Dictionary_Edit> {
+class _Expression_Dictionary_Create_State
+    extends State<Expression_Dictionary_Create> {
   Map<String, TextEditingController> textControllers = {
     "behavior": TextEditingController(),
     "meaning": TextEditingController(),
@@ -49,11 +45,6 @@ class _Expression_Dictionary_Edit_State
         .collection('Dictionary')
         .doc('expression');
 
-    final updates = <String, dynamic>{
-      widget.originBehavior: FieldValue.delete(),
-    };
-    dictRef.update(updates);
-
     dictRef.get().then((value) {
       dynamic temp = value.data();
       temp[textControllers['behavior']!.text] = {
@@ -65,16 +56,6 @@ class _Expression_Dictionary_Edit_State
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('저장 완료!')));
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    print("intinetet");
-    textControllers['behavior']!.text = widget.behavior;
-    textControllers['meaning']!.text = widget.meaning;
-    textControllers['direction']!.text = widget.direction;
-    widget.originBehavior = widget.behavior;
   }
 
   @override
@@ -94,7 +75,7 @@ class _Expression_Dictionary_Edit_State
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: Text(
-              "의사소통사전 수정",
+              "의사소통사전 추가하기",
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w500,
@@ -346,41 +327,6 @@ class _Expression_Dictionary_Edit_State
                         SizedBox(
                           height: 50,
                         ),
-                        Center(
-                          child: SizedBox(
-                            width: 150,
-                            height: 40,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                _deleteData();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                side: BorderSide(color: Colors.red),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(100),
-                                  ),
-                                ),
-                                padding: EdgeInsets.zero,
-                                backgroundColor: Colors.white,
-                              ),
-                              child: Container(
-                                width: double.infinity,
-                                color: Colors.white70,
-                                child: Center(
-                                  child: Text(
-                                    '사전에서 삭제하기',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
                         SizedBox(
                           height: MediaQuery.sizeOf(context).height - 390,
                         ),
@@ -397,7 +343,6 @@ class _Expression_Dictionary_Edit_State
   }
 
   Future<bool> _showExitConfirmationDialog(BuildContext context) async {
-    print(widget.originBehavior);
     return await showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -416,13 +361,13 @@ class _Expression_Dictionary_Edit_State
                 child: Column(
                   children: [
                     Text(
-                      '의사소통사전 수정을 완료할까요?',
+                      '의사소통사전 추가를 완료할까요?',
                       textAlign: TextAlign.center,
                     ),
                     Padding(
                       padding: EdgeInsets.all(0),
                       child: Text(
-                        '(저장하지 않으면 적용되지 않습니다!)',
+                        '(저장을 꼭 진행해주세요!)',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 13, color: Colors.red),
                       ),
@@ -497,102 +442,5 @@ class _Expression_Dictionary_Edit_State
           ),
         ) ??
         false;
-  }
-
-  void _deleteData() async {
-    return showDialog<void>(
-      //다이얼로그 위젯 소환
-      context: context,
-      barrierDismissible: false, // 다이얼로그 이외의 바탕 눌러도 안꺼지도록 설정
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.transparent,
-          title: SizedBox(
-            height: 30,
-            child: Image.asset(
-              'assets/icons/willbe.png',
-              fit: BoxFit.contain,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Container(
-                padding: const EdgeInsets.only(top: 20),
-                child: const Text(
-                  '정말로 사전에서 삭제할까요?',
-                  textAlign: TextAlign.center,
-                )),
-          ),
-          actions: [
-            TextButton(
-              child: const Text(
-                '취소',
-                style: TextStyle(fontSize: 15),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Stack(
-                children: <Widget>[
-                  Positioned.fill(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 102, 108, 255),
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.all(4.0),
-                      textStyle: const TextStyle(fontSize: 15),
-                    ),
-                    onPressed: () async {
-                      DocumentReference dictRef = FirebaseFirestore.instance
-                          .collection('Student')
-                          .doc(widget.id)
-                          .collection('Dictionary')
-                          .doc('expression');
-
-                      final updates = <String, dynamic>{
-                        widget.originBehavior: FieldValue.delete(),
-                      };
-                      dictRef.update(updates);
-
-                      dictRef.get().then((value) {
-                        dynamic temp = value.data();
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Main_Page(),
-                          ),
-                          (route) => false,
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Expression_Dictionary(
-                              name: widget.name,
-                              id: widget.id,
-                              iconColor: widget.iconColor,
-                              dictList: temp,
-                            ),
-                          ),
-                        );
-                      });
-                    },
-                    child: const Text('확인'),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
-    // 알림창 띄우기 -> 확인 버튼 누르면 DB에 객체 생성
   }
 }
