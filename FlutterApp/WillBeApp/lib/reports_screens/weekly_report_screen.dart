@@ -19,9 +19,7 @@ class Weekly_Report_Screen extends StatefulWidget {
 
 class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
   Map<String, TextEditingController> textControllers = {
-    "name": TextEditingController(),
-    "behavior": TextEditingController(),
-    "meaning": TextEditingController(),
+    "result": TextEditingController(),
   };
 
   final ScrollController _scrollController = ScrollController();
@@ -147,43 +145,40 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTextField("보이는 행동", textControllers["name"], 0),
-                      _buildTextField(
-                          "행동의 의미(기능분석)", textControllers["behavior"], 1),
-                      _buildTextField("대처법", textControllers["meaning"], 2),
-                      Center(
-                        child: SizedBox(
-                          width: 150,
-                          height: 40,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              side: BorderSide(color: Colors.red),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(100),
-                                ),
-                              ),
-                              padding: EdgeInsets.zero,
-                              backgroundColor: Colors.white,
-                            ),
-                            child: Container(
-                              width: double.infinity,
-                              color: Colors.white70,
-                              child: Center(
-                                child: Text(
-                                  '이 행동 측정 그만하기',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      _buildTextField("결과", textControllers["result"], 0),
+                      // Center(
+                      //   child: SizedBox(
+                      //     width: 150,
+                      //     height: 40,
+                      //     child: ElevatedButton(
+                      //       onPressed: () {},
+                      //       style: ElevatedButton.styleFrom(
+                      //         side: BorderSide(color: Colors.red),
+                      //         shape: RoundedRectangleBorder(
+                      //           borderRadius: BorderRadius.all(
+                      //             Radius.circular(100),
+                      //           ),
+                      //         ),
+                      //         padding: EdgeInsets.zero,
+                      //         backgroundColor: Colors.white,
+                      //       ),
+                      //       child: Container(
+                      //         width: double.infinity,
+                      //         color: Colors.white70,
+                      //         child: Center(
+                      //           child: Text(
+                      //             '이 행동 측정 그만하기',
+                      //             style: TextStyle(
+                      //               fontSize: 15,
+                      //               color: Colors.red,
+                      //               fontWeight: FontWeight.w500,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height - 350,
                       ),
