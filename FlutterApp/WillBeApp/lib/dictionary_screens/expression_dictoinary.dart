@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:solution/dictionary_screens/expression_dictionary_edit.dart';
 
 class Expression_Dictionary extends StatefulWidget {
-  Expression_Dictionary({Key? key, required this.name});
+  Expression_Dictionary(
+      {Key? key, required this.name, required this.iconColor});
   final String name;
+  Color iconColor;
   @override
   State<Expression_Dictionary> createState() => _Expression_Dictionary_State();
 }
@@ -59,11 +61,16 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(100)),
                           ),
-                          child: Image.network(
-                            // 이미지 DB 구축 시 대치
-                            "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                            fit: BoxFit.cover,
+                          child: Icon(
+                            Icons.person,
+                            color: widget.iconColor,
+                            size: 30,
                           ),
+                          // Image.network(
+                          //   // 이미지 DB 구축 시 대치
+                          //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                          //   fit: BoxFit.cover,
+                          // ),
                         ),
                       ),
                       Padding(
@@ -95,6 +102,7 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                             MaterialPageRoute(
                               builder: (context) => Expression_Dictionary_Edit(
                                 name: widget.name,
+                                iconColor : widget.iconColor,
                               ),
                             ),
                           );

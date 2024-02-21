@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 class Behavior_Detail_Screen extends StatefulWidget {
   Behavior_Detail_Screen(
-      {Key? key, required this.name, required this.behaviorName});
+      {Key? key,
+      required this.name,
+      required this.behaviorName,
+      required this.iconColor});
+  Color iconColor;
   final String name;
   final String behaviorName;
   @override
@@ -60,10 +64,15 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(100)),
                           ),
-                          child: Image.network(
-                            "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                            fit: BoxFit.cover,
+                          child: Icon(
+                            Icons.person,
+                            color: widget.iconColor,
+                            size: 30,
                           ),
+                          // Image.network(
+                          //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                          //   fit: BoxFit.cover,
+                          // ),
                         ),
                       ),
                       Padding(

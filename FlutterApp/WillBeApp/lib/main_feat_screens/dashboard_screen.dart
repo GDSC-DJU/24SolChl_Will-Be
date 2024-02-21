@@ -14,7 +14,15 @@ class DashBoardScreen extends StatefulWidget {
   List<dynamic> studentDataList;
   List<dynamic> studentIdList;
   List<dynamic> itemContentList;
-
+  List colorList = [
+    Color.fromRGBO(255, 44, 75, 1),
+    Color.fromRGBO(92, 182, 50, 1),
+    Color.fromRGBO(60, 153, 225, 1),
+    Color.fromRGBO(252, 183, 14, 1),
+    Color.fromRGBO(123, 67, 183, 1),
+    Color.fromRGBO(253, 151, 54, 1),
+    Color.fromRGBO(45, 197, 197, 1),
+  ];
   DashBoardScreen(
       {super.key,
       required this.studentDataList,
@@ -289,11 +297,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(100)),
                         ),
-                        child: Image.network(
-                          // 이미지 DB 구축 시 대치
-                          "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                          fit: BoxFit.cover,
+                        child: Icon(
+                          Icons.person,
+                          color: widget.colorList[index].withOpacity(0.5),
+                          size: 25,
                         ),
+                        // Image.network(
+                        //   // 이미지 DB 구축 시 대치
+                        //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                        //   fit: BoxFit.cover,
+                        // ),
                       ),
                     ),
                     Padding(
@@ -312,6 +325,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           MaterialPageRoute(
                             builder: (context) => Expression_Dictionary(
                               name: name,
+                              iconColor:
+                                  widget.colorList[index].withOpacity(0.5),
                             ),
                           ),
                         );
@@ -399,10 +414,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => Weekly_Report_Screen(
-                                    name: name,
-                                    id: widget.studentIdList[index],
-                                    behaviorList:
-                                        widget.itemContentList[index]),
+                                  name: name,
+                                  id: widget.studentIdList[index],
+                                  behaviorList: widget.itemContentList[index],
+                                  iconColor:
+                                      widget.colorList[index].withOpacity(0.5),
+                                ),
                               ),
                             );
                           },
@@ -510,6 +527,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                         Behavior_Detail_Screen(
                                       name: name,
                                       behaviorName: item,
+                                      iconColor: widget.colorList[index]
+                                          .withOpacity(0.5),
                                     ),
                                   ),
                                 );

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:solution/calender_screens/set_routine_page.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:solution/create_student/add_student_info.dart';
@@ -24,6 +25,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List colorList = [
+    Color.fromRGBO(255, 44, 75, 1),
+    Color.fromRGBO(92, 182, 50, 1),
+    Color.fromRGBO(60, 153, 225, 1),
+    Color.fromRGBO(252, 183, 14, 1),
+    Color.fromRGBO(123, 67, 183, 1),
+    Color.fromRGBO(253, 151, 54, 1),
+    Color.fromRGBO(45, 197, 197, 1),
+  ];
   final CarouselController _controller = CarouselController();
   int _current = 0;
   bool isLoading = true;
@@ -177,19 +187,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: MediaQuery.of(context).size.height * 0.01 * 10,
                     height: MediaQuery.of(context).size.height * 0.01 * 10,
                     child: Card(
-                      clipBehavior: Clip.antiAlias,
-                      elevation: 0,
-                      color: Theme.of(context).colorScheme.surfaceVariant,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(100)),
-                      ),
-                      child: Image.network(
-                        // 이미지 DB 구축 시 대치
-                        "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                        clipBehavior: Clip.antiAlias,
+                        elevation: 0,
+                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(100)),
+                        ),
+                        child: Icon(
+                          Icons.person,
+                          color: colorList[index].withOpacity(0.5),
+                          size: 45,
+                        )
+                        // Image.network(
+                        //   // 이미지 DB 구축 시 대치
+                        //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                        //   fit: BoxFit.cover,
+                        // ),
+                        ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(10),
@@ -209,8 +224,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    Expression_Dictionary(name: name),
+                                builder: (context) => Expression_Dictionary(
+                                  name: name,
+                                  iconColor: colorList[index].withOpacity(0.5),
+                                ),
                               ),
                             );
                           },
