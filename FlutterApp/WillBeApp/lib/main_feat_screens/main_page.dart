@@ -1016,21 +1016,27 @@ class _Main_PageState extends State<Main_Page> {
                                           child: Text(LastNames[0]),
                                         ),
                                       ),
-                                      Text(
-                                        names[0],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            color: Colors.white),
+                                      Flexible(
+                                        child: Text(
+                                          names[0],
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                              color: Colors.white),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  child: Text(
-                                    behaviors[0],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                Flexible(
+                                  child: Container(
+                                    child: Text(
+                                      behaviors[0],
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -1107,21 +1113,27 @@ class _Main_PageState extends State<Main_Page> {
                                           child: Text(LastNames[1]),
                                         ),
                                       ),
-                                      Text(
-                                        names[1],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            color: Colors.white),
+                                      Flexible(
+                                        child: Text(
+                                          names[1],
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                              color: Colors.white),
+                                          overflow: TextOverflow.fade,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  child: Text(
-                                    behaviors[1],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                Flexible(
+                                  child: Container(
+                                    child: Text(
+                                      behaviors[1],
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                      overflow: TextOverflow.clip,
+                                    ),
                                   ),
                                 ),
                               ],

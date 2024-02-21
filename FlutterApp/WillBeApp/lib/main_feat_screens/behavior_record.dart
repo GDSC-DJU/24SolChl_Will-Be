@@ -78,13 +78,14 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
 
           if (time.day == DateTime.now().day &&
               time.month == DateTime.now().month &&
-              time.year == DateTime.now().year)
+              time.year == DateTime.now().year) {
             allRecords.add({
               'name': studentName,
               'behavior': behaviorName,
               'time': time,
               'studentId': studentId,
             });
+          }
         }
 
         allRecords.sort((a, b) => b['time'].compareTo(a['time']));
@@ -93,57 +94,57 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
           String formattedTime =
               "${record['time'].hour.toString().padLeft(2, '0')}:${record['time'].minute.toString().padLeft(2, '0')}:${record['time'].second.toString().padLeft(2, '0')}";
 
-          return ListTile(
-            key: Key(record['time'].toString()),
-            title: Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    record['name'],
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    record['behavior'],
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    formattedTime,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: IconButton(
-                      icon: const Icon(Icons.cancel),
-                      onPressed: () async {
-                        print(
-                            'record["time"] = [${record['time'].toString()}]');
-                        print('record["name"] = ${record['name']}');
-                        print('record["behavior"] = ${record['behavior']}');
-                        //print studentID and behaviorName
-                        print('studentId = $studentId');
-                        print('behaviorName = $behaviorName');
-                        await db
-                            .collection("Record")
-                            .doc(record['studentId'])
-                            .collection('Behavior')
-                            .doc(record['behavior'])
-                            .collection('BehaviorRecord')
-                            .doc(record['time'].toString())
-                            .delete();
-                        setState(() {});
-                      },
+          return Container(
+            height: 33,
+            padding: const EdgeInsets.only(top: 0),
+            margin: const EdgeInsets.only(top: 0, bottom: 0),
+            child: ListTile(
+              minVerticalPadding: 0,
+              contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              key: Key(record['time'].toString()),
+              title: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      record['name'],
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      record['behavior'],
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      formattedTime,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: IconButton(
+                        icon: const Icon(Icons.cancel),
+                        onPressed: () async {
+                          await db
+                              .collection("Record")
+                              .doc(record['studentId'])
+                              .collection('Behavior')
+                              .doc(record['behavior'])
+                              .collection('BehaviorRecord')
+                              .doc(record['time'].toString())
+                              .delete();
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }).toList();
@@ -169,40 +170,54 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     '행동 기록',
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TodaysReportPage(
-                            studentIDs: widget.studentIDs,
-                            behaviors: widget.behaviors,
-                            names: widget.names,
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text("오늘의 기록하기"),
-                  ),
                 ],
               ),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   getCurrentDate(),
                   style: const TextStyle(color: Colors.grey),
                 ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TodaysReportPage(
+                          studentIDs: widget.studentIDs,
+                          behaviors: widget.behaviors,
+                          names: widget.names,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                          width: 2,
+                        ),
+                      ),
+                      child: const Text(
+                        "📄 오늘 자세히 기록하기",
+                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      )),
+                ),
               ],
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -235,33 +250,36 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                 ),
               ]),
             ),
-            StreamBuilder<List<Widget>>(
-              stream: fetchAndSortRecords(
-                  context: context,
-                  studentIdList: widget.studentIDs,
-                  behaviorNameList: widget.behaviors,
-                  studentNameList: widget.names),
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                      child: SizedBox(
-                          height: 120,
-                          child: Center(child: RefreshProgressIndicator())));
-                } else if (snapshot.hasError) {
-                  return const Text('Error occurred');
-                } else if (snapshot.hasData) {
-                  return SizedBox(
-                    height: 120,
-                    child: ListView(
-                      padding: const EdgeInsets.only(top: 0),
-                      children: snapshot.data!, // 수정된 부분
-                    ),
-                  );
-                } else {
-                  return const Text('No data');
-                }
-              },
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
+              child: StreamBuilder<List<Widget>>(
+                stream: fetchAndSortRecords(
+                    context: context,
+                    studentIdList: widget.studentIDs,
+                    behaviorNameList: widget.behaviors,
+                    studentNameList: widget.names),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Widget>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                        child: SizedBox(
+                            height: 120,
+                            child: Center(child: RefreshProgressIndicator())));
+                  } else if (snapshot.hasError) {
+                    return const Text('Error occurred');
+                  } else if (snapshot.hasData) {
+                    return SizedBox(
+                      height: 120,
+                      child: ListView(
+                        padding: const EdgeInsets.only(top: 0),
+                        children: snapshot.data!, // 수정된 부분
+                      ),
+                    );
+                  } else {
+                    return const Text('No data');
+                  }
+                },
+              ),
             ),
             Text(
               "버튼 눌러서 기록하기",
