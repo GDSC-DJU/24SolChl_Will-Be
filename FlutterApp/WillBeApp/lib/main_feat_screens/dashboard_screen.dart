@@ -16,6 +16,8 @@ class DashBoardScreen extends StatefulWidget {
   List<dynamic> studentDataList;
   List<dynamic> studentIdList;
   List<dynamic> itemContentList;
+  List<dynamic> weeklyReports;
+
   List colorList = [
     const Color.fromRGBO(255, 44, 75, 1),
     const Color.fromRGBO(92, 182, 50, 1),
@@ -29,7 +31,8 @@ class DashBoardScreen extends StatefulWidget {
       {super.key,
       required this.studentDataList,
       required this.studentIdList,
-      required this.itemContentList});
+      required this.itemContentList,
+      required this.weeklyReports});
 
   @override
   State<DashBoardScreen> createState() => _DashBoardScreenState();
@@ -310,11 +313,6 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                           color: widget.colorList[index].withOpacity(0.5),
                           size: 25,
                         ),
-                        // Image.network(
-                        //   // 이미지 DB 구축 시 대치
-                        //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                        //   fit: BoxFit.cover,
-                        // ),
                       ),
                     ),
                     Padding(
@@ -412,8 +410,12 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     // DB로 받은 리포트 수
-                    itemCount: 10,
+                    itemCount: widget.weeklyReports[index].length,
                     itemBuilder: (BuildContext ctx, int idx) {
+                      String left =
+                          widget.weeklyReports[index][idx].split('_')[0];
+                      String right =
+                          widget.weeklyReports[index][idx].split('_')[1];
                       return Container(
                         margin: const EdgeInsets.only(right: 12),
                         child: ElevatedButton(
@@ -436,27 +438,28 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
                             padding: EdgeInsets.zero,
-                            backgroundColor: Colors.black12,
+                            backgroundColor: Color.fromARGB(255, 217, 222, 223),
+                            shadowColor: Colors.black,
+                            elevation: 2,
                           ),
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width *
                                 0.025 *
-                                10.5,
+                                11.5,
                             height:
-                                MediaQuery.of(context).size.height * 0.01 * 5,
-                            child: Row(
+                                MediaQuery.of(context).size.height * 0.01 * 10,
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.menu_book_sharp,
-                                  color: Colors.white,
-                                  size: 15,
+                                  color: Colors.black,
                                 ),
                                 Text(
-                                  "  $idx",
+                                  "${left.split('-')[1]}/${left.split('-')[2]} ~ ${right.split('-')[1]}/${right.split('-')[2]}",
                                   style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 13,
+                                      color: Colors.black,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ],
@@ -486,60 +489,31 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                 children: [
                   ...widget.itemContentList[index]
                       .map((item) => Container(
-                            child:
-                                // ElevatedButton(
-                                //   onPressed: () {
-                                //     Navigator.push(
-                                //       context,
-                                //       MaterialPageRoute(
-                                //         builder: (context) =>
-                                //             Behavior_Detail_Screen(
-                                //           name: name,
-                                //           behaviorName: item,
-                                //         ),
-                                //       ),
-                                //     );
-                                //   },
-                                //   style: ElevatedButton.styleFrom(
-                                //     shape: RoundedRectangleBorder(
-                                //         borderRadius:
-                                //             BorderRadius.all(Radius.circular(10))),
-                                //     padding: EdgeInsets.zero,
-                                //     backgroundColor:
-                                //         Color.fromARGB(255, 102, 108, 255),
-                                //   ),
-                                //   child: Container(
-                                //     width: MediaQuery.of(context).size.width *
-                                //         0.025 *
-                                //         8.5,
-                                //     height: MediaQuery.of(context).size.height *
-                                //         0.01 *
-                                //         5,
-                                //     child: Center(
-                                //       child: Text(
-                                //         '$item >',
-                                //         style: const TextStyle(
-                                //             color: Colors.black,
-                                //             fontSize: 22,
-                                //             fontWeight: FontWeight.w500),
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
-                                TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        Behavior_Detail_Screen(
-                                      name: name,
-                                      behaviorName: item,
-                                      iconColor: widget.colorList[index]
-                                          .withOpacity(0.5),
+                            child: TextButton(
+                              onPressed: () async {
+                                await FirebaseFirestore.instance
+                                    .collection('Record')
+                                    .doc(widget.studentIdList[index])
+                                    .collection('Behavior')
+                                    .doc(item)
+                                    .get()
+                                    .then((value) {
+                                  dynamic temp = value.data();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          Behavior_Detail_Screen(
+                                        id: widget.studentIdList[index],
+                                        name: name,
+                                        behaviorName: item,
+                                        iconColor: widget.colorList[index]
+                                            .withOpacity(0.5),
+                                        value: temp,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                });
                               },
                               style: ButtonStyle(
                                   padding: const MaterialStatePropertyAll(

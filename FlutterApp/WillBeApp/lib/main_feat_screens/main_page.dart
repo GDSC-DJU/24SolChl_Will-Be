@@ -1373,6 +1373,7 @@ class _Main_PageState extends State<Main_Page> {
         studentDataList: studentDataList,
         studentIdList: studentList,
         itemContentList: itemContentList,
+        weeklyReports: weeklyReports,
       ),
     ];
 
