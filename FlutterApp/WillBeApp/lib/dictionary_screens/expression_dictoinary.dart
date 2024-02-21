@@ -102,7 +102,7 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                             MaterialPageRoute(
                               builder: (context) => Expression_Dictionary_Edit(
                                 name: widget.name,
-                                iconColor : widget.iconColor,
+                                iconColor: widget.iconColor,
                               ),
                             ),
                           );
@@ -137,7 +137,9 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                       width: 110,
                       height: 35,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          
+                        },
                         style: ElevatedButton.styleFrom(
                           side: BorderSide(color: Colors.black),
                           shape: RoundedRectangleBorder(

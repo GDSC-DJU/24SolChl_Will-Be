@@ -88,6 +88,7 @@ class _Main_PageState extends State<Main_Page> {
   List studentList = [];
   List studentDataList = [];
   List itemContentList = [];
+  List weeklyReports = [];
 
   //Function for sign out
   Future<void> signOut() async {
@@ -130,7 +131,8 @@ class _Main_PageState extends State<Main_Page> {
     await Future.wait([
       getStudentData(studentList),
       getBehaviorList(studentList),
-      getTimetable()
+      getTimetable(),
+      getWeeklyReport(studentList),
     ]);
   }
 
@@ -225,6 +227,29 @@ class _Main_PageState extends State<Main_Page> {
     }
     isLoading = false; // 데이터 로딩이 완료되었음을 표시
     setState(() {}); // 화면을 다시 그리도록 강제 업데이트
+  }
+
+  Future<void> getWeeklyReport(List studentList) async {
+    print(studentList);
+    weeklyReports = [];
+    for (var student in studentList) {
+      await FirebaseFirestore.instance
+          .collection('Record')
+          .doc(student)
+          .collection('Report')
+          .doc(user.uid)
+          .collection("Weekly")
+          .get()
+          .then((reportList) {
+        List temp = [];
+        reportList.docs.toList().forEach((doc) {
+          temp.add(doc.id);
+        });
+        weeklyReports.add(temp);
+      });
+    }
+    print("Hell121221221o");
+    print(weeklyReports);
   }
 
   ///행동카드 순번대로 정렬하는 함수

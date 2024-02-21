@@ -383,21 +383,21 @@ class _DashBoardScreenState extends State<DashBoardScreen>
               ),
               periodToggleButton, // 필요한 정보들을 추가
               toggleButton,
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  "데일리 리포트",
-                  style: TextStyle(color: Colors.black, fontSize: 22),
-                ),
-              ),
+              // const Padding(
+              //   padding: EdgeInsets.symmetric(vertical: 16),
+              //   child: Text(
+              //     "데일리 리포트",
+              //     style: TextStyle(color: Colors.black, fontSize: 22),
+              //   ),
+              // ),
+              // Container(
+              //   height: MediaQuery.of(context).size.height * 0.01 * 10,
+              //   decoration: BoxDecoration(
+              //       border: Border.all(color: Colors.black),
+              //       borderRadius: const BorderRadius.all(Radius.circular(10))),
+              //   child: const Center(child: Text("리포트 슬라이드")),
+              // ),
 
-              Container(
-                height: MediaQuery.of(context).size.height * 0.01 * 10,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: const BorderRadius.all(Radius.circular(10))),
-                child: const Center(child: Text("리포트 슬라이드")),
-              ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(
