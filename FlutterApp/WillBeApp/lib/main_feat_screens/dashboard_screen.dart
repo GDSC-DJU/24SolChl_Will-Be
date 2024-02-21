@@ -99,14 +99,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           List.generate(widget.itemContentList[i].length, (index) => true));
       isSelectedPeriod.add([true, false, false]);
     }
-
-    for (int i = 0; i < isSelectedList.length; i++) {
-      for (int l = 0; l < isSelectedList[i].length; l++) {
-        print("i =$i");
-        print("l = $l");
-        print("${isSelectedList[l][i]}");
-      }
-    }
   }
 
   Future<Widget> buildSummaryCard(
@@ -242,7 +234,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           colorList.clear();
           colorList = [];
           for (int i = 0; i < isSelectedList[index].length; i++) {
-            if (isSelectedList[index][i]) {}
+            if (isSelectedList[index][i]) {
+              add.add(itemContentListOfList[i]);
+            }
           }
         });
         print('아이템 컨텐트 리스트의리스트 $itemContentListOfList');
