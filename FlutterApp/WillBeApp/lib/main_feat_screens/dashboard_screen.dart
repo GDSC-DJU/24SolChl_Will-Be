@@ -15,13 +15,13 @@ class DashBoardScreen extends StatefulWidget {
   List<dynamic> studentIdList;
   List<dynamic> itemContentList;
   List colorList = [
-    Color.fromRGBO(255, 44, 75, 1),
-    Color.fromRGBO(92, 182, 50, 1),
-    Color.fromRGBO(60, 153, 225, 1),
-    Color.fromRGBO(252, 183, 14, 1),
-    Color.fromRGBO(123, 67, 183, 1),
-    Color.fromRGBO(253, 151, 54, 1),
-    Color.fromRGBO(45, 197, 197, 1),
+    const Color.fromRGBO(255, 44, 75, 1),
+    const Color.fromRGBO(92, 182, 50, 1),
+    const Color.fromRGBO(60, 153, 225, 1),
+    const Color.fromRGBO(252, 183, 14, 1),
+    const Color.fromRGBO(123, 67, 183, 1),
+    const Color.fromRGBO(253, 151, 54, 1),
+    const Color.fromRGBO(45, 197, 197, 1),
   ];
   DashBoardScreen(
       {super.key,
@@ -101,10 +101,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     }
 
     for (int i = 0; i < isSelectedList.length; i++) {
-      for (int l = 0; l < isSelectedList[l].length; l++) {
+      for (int l = 0; l < isSelectedList[i].length; l++) {
         print("i =$i");
         print("l = $l");
-        print("${isSelectedList[i][l]}");
+        print("${isSelectedList[l][i]}");
       }
     }
   }
