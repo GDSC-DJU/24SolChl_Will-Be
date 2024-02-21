@@ -4,8 +4,8 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class TimeTableCalendar extends StatefulWidget {
-  const TimeTableCalendar({Key? key}) : super(key: key);
-
+  TimeTableCalendar({Key? key, required this.cellMap}) : super(key: key);
+  Map<String, dynamic> cellMap;
   @override
   CalendarAppointment createState() => CalendarAppointment();
 }
@@ -24,6 +24,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
 
   @override
   void initState() {
+    print(widget.cellMap);
     _dataSource = _getDataSource();
     // 현재 시간 및 날짜 설정
     _startDate = DateTime.now();
@@ -45,13 +46,13 @@ class CalendarAppointment extends State<TimeTableCalendar> {
             allowedViews: const [
               CalendarView.day,
               CalendarView.week,
-              CalendarView.workWeek,
+              // CalendarView.workWeek,
               CalendarView.month,
-              CalendarView.timelineDay,
-              CalendarView.timelineWeek,
-              CalendarView.timelineWorkWeek,
-              CalendarView.timelineMonth,
-              CalendarView.schedule
+              // CalendarView.timelineDay,
+              // CalendarView.timelineWeek,
+              // CalendarView.timelineWorkWeek,
+              // CalendarView.timelineMonth,
+              // CalendarView.schedule
             ],
             monthViewSettings: const MonthViewSettings(showAgenda: true),
           ),
@@ -64,8 +65,13 @@ class CalendarAppointment extends State<TimeTableCalendar> {
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
       // 클릭한 요소가 일정인 경우
       Appointment tappedAppointment = calendarTapDetails.appointments![0];
-      // 일정 수정 모달 표시
-      await _showEditAppointmentModal(tappedAppointment, calendarTapDetails);
+      // 시간표 객체인 경우
+      if (tappedAppointment.recurrenceRule != null) {
+        await _showEditAppointmentModal(null, calendarTapDetails);
+      } else {
+        // 일정 수정 모달 표시
+        await _showEditAppointmentModal(tappedAppointment, calendarTapDetails);
+      }
     } else {
       // 클릭한 요소가 일정이 아닌 경우
       await _showEditAppointmentModal(null, calendarTapDetails);
@@ -83,7 +89,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       Colors.orange,
       Colors.yellow,
       Colors.green,
-      Colors.blue,
+      Color.fromARGB(255, 102, 108, 255),
       Colors.indigo,
       Colors.purple,
     ];
@@ -118,9 +124,35 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(
-            '일정 편집',
-            style: TextStyle(fontWeight: FontWeight.w500),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '일정 편집',
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 102, 108, 255)),
+                ),
+                onPressed: () {
+                  // 일정 업데이트 또는 추가
+                  if (isNewAppointment) {
+                    _addAppointment(selectedColor);
+                  } else {
+                    _updateAppointment(appointment!, selectedColor);
+                  }
+                  Navigator.of(context).pop(); // 모달 닫기
+                  setState(
+                      () {}); // _startDate, _startTime, _endDate, _endTime 업데이트
+                },
+                child: const Text(
+                  'Save',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
           ),
           content: SingleChildScrollView(
             child: SizedBox(
@@ -402,33 +434,6 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       )
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              Color.fromARGB(255, 102, 108, 255)),
-                        ),
-                        onPressed: () {
-                          // 일정 업데이트 또는 추가
-                          if (isNewAppointment) {
-                            _addAppointment(selectedColor);
-                          } else {
-                            _updateAppointment(appointment!, selectedColor);
-                          }
-                          Navigator.of(context).pop(); // 모달 닫기
-                          setState(
-                              () {}); // _startDate, _startTime, _endDate, _endTime 업데이트
-                        },
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -490,14 +495,111 @@ class CalendarAppointment extends State<TimeTableCalendar> {
 
   _DataSource _getDataSource() {
     List<Appointment> appointments = <Appointment>[];
-    appointments.add(Appointment(
-      startTime: DateTime.now(),
-      endTime: DateTime.now().add(const Duration(hours: 1)),
-      subject: 'Meeting',
-      color: Color.fromARGB(255, 102, 108, 255),
-    ));
+    List colorList = [
+      Color.fromRGBO(255, 44, 75, 1),
+      Color.fromRGBO(92, 182, 50, 1),
+      Color.fromRGBO(60, 153, 225, 1),
+      Color.fromRGBO(252, 183, 14, 1),
+      Color.fromRGBO(123, 67, 183, 1),
+      Color.fromRGBO(253, 151, 54, 1),
+      Color.fromRGBO(45, 197, 197, 1),
+    ];
+    for (String day in widget.cellMap.keys) {
+      if (widget.cellMap[day]!.isNotEmpty) {
+        for (int i = 1; i <= 9; i++) {
+          if (widget.cellMap[day]!.containsKey(i.toString())) {
+            if (widget.cellMap[day][i.toString()] != null) {
+              // 예시의 패턴에 따라 날짜 및 시간 설정
+              DateTime selectedDateTime = DateTime.now()
+                  .subtract(Duration(days: 7))
+                  .add(Duration(days: _getDayOffset(day)));
+              selectedDateTime =
+                  selectedDateTime.add(Duration(hours: i + 6)); // 9시부터 시작
+              // 분과 초를 0으로 설정하여 정각으로 만듦
+              selectedDateTime = DateTime(
+                selectedDateTime.year,
+                selectedDateTime.month,
+                selectedDateTime.day,
+                selectedDateTime.hour,
+                0,
+                0,
+                0,
+                0,
+              );
+              Appointment newAppointment = Appointment(
+                startTime: selectedDateTime,
+                endTime: selectedDateTime.add(const Duration(hours: 1)),
+                subject: widget.cellMap[day]![i.toString()]["subject"],
+                color: colorList[widget.cellMap[day]![i.toString()]["color"]],
+                recurrenceRule: 'FREQ=WEEKLY;BYDAY=${_getBYDAY(day)};COUNT=100',
+              );
+
+              appointments.add(newAppointment);
+            }
+          }
+        }
+      }
+    }
+
     return _DataSource(appointments);
   }
+
+  int _getDayOffset(String day) {
+    switch (day) {
+      case 'Mon':
+        return 0;
+      case 'Tue':
+        return 1;
+      case 'Wed':
+        return 2;
+      case 'Thu':
+        return 3;
+      case 'Fri':
+        return 4;
+      default:
+        return 0;
+    }
+  }
+
+  String _getBYDAY(String day) {
+    switch (day) {
+      case 'Mon':
+        return "MO";
+      case 'Tue':
+        return "TU";
+      case 'Wed':
+        return "WE";
+      case 'Thu':
+        return "TH";
+      case 'Fri':
+        return "FR";
+      default:
+        return "SU";
+    }
+  }
+  // _DataSource _getDataSource() {
+  //   List<Appointment> appointments = <Appointment>[];
+
+  //   // widget.cellMap에서 정보를 가져와 일정을 생성
+  //   widget.cellMap.forEach(
+  //     (key, value) {
+  //       'Mon'
+  //     },
+  //   );
+
+  //   return _DataSource(appointments);
+  // }
+
+  // _DataSource _getDataSource() {
+  //   List<Appointment> appointments = <Appointment>[];
+  //   appointments.add(Appointment(
+  //     startTime: DateTime.now(),
+  //     endTime: DateTime.now().add(const Duration(hours: 1)),
+  //     subject: 'Meeting',
+  //     color: Color.fromARGB(255, 102, 108, 255),
+  //   ));
+  //   return _DataSource(appointments);
+  // }
 }
 
 class _DataSource extends CalendarDataSource {

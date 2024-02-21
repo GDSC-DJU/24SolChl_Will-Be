@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:solution/main_feat_screens/main_page.dart';
 
 class SetRoutinePage extends StatefulWidget {
   SetRoutinePage({super.key, required this.cellMap});
@@ -181,8 +182,13 @@ class _SetRoutinePageState extends State<SetRoutinePage> {
                           });
 
                           await timetableRef.set(cellMapCopy);
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Main_Page(),
+                            ),
+                            (route) => false,
+                          );
                         }
                       },
                       child: const Text('확인'),
