@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:solution/assets/pallet.dart';
 import 'package:solution/dictionary_screens/expression_dictoinary.dart';
 import 'package:solution/behavior_detail_screens/behavior_detail_screen.dart';
+import 'package:solution/main.dart';
 import 'package:solution/main_feat_screens/chart_builder.dart';
 import 'package:solution/reports_screens/test.dart';
 import 'package:solution/reports_screens/weekly_report_screen.dart';
@@ -128,24 +129,19 @@ class _DashBoardScreenState extends State<DashBoardScreen>
 
     List<Color> colorList = [];
 
-    print("itemCOntentList");
-    print(itemContentList);
-    print("is");
-    print(isSelectedList);
-
     List<String> add = [];
 
     for (int i = 0; i < isSelectedList[index].length; i++) {
       if (isSelectedList[index][i] == true) {
         add.add(itemContentListOfList[i]);
-        colorList.add(chartService.getRandomColor());
+        colorList.add(BtnColors().btnColorList[i]);
       }
     }
 
     Widget periodToggleButton = ToggleButtons(
-      borderRadius: const BorderRadius.all(Radius.circular(40)),
-      selectedColor: Colors.white,
-      fillColor: Colors.redAccent,
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      selectedColor: const Color.fromARGB(255, 0, 0, 0),
+      fillColor: const Color.fromARGB(255, 207, 207, 207),
       color: Colors.black,
       onPressed: (int selectedIndex) {
         setState(() {
@@ -159,24 +155,27 @@ class _DashBoardScreenState extends State<DashBoardScreen>
         });
       },
       isSelected: isSelectedPeriod[index],
-      children: const <Widget>[
+      children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          child: Text(
+          padding: EdgeInsets.symmetric(
+              vertical: 8, horizontal: MediaQuery.of(context).size.width * 0.1),
+          child: const Text(
             '주별',
             style: TextStyle(fontSize: 14.0),
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          child: Text(
+          padding: EdgeInsets.symmetric(
+              vertical: 8, horizontal: MediaQuery.of(context).size.width * 0.1),
+          child: const Text(
             '월별',
             style: TextStyle(fontSize: 14.0),
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          child: Text(
+          padding: EdgeInsets.symmetric(
+              vertical: 8, horizontal: MediaQuery.of(context).size.width * 0.1),
+          child: const Text(
             '년별',
             style: TextStyle(fontSize: 14.0),
           ),
@@ -185,10 +184,6 @@ class _DashBoardScreenState extends State<DashBoardScreen>
     );
     Future<LineChart> loadChart(List<String> behaviors) async {
       int chartPeriod = isSelectedPeriod[index].indexOf(true);
-      print("행동 기리");
-      print(behaviors.length);
-      print("색 길이");
-      print(colorList.length);
 
       switch (chartPeriod) {
         case 0:
@@ -226,14 +221,14 @@ class _DashBoardScreenState extends State<DashBoardScreen>
       return weekChart;
     }
 
-    print('object');
-    print(add);
     chart = await loadChart(add);
 
     Widget toggleButton = ToggleButtons(
-      borderRadius: const BorderRadius.all(Radius.circular(40)),
       selectedColor: Colors.white,
-      fillColor: Colors.redAccent,
+      fillColor: Colors.white,
+      textStyle: const TextStyle(fontSize: 12),
+      borderWidth: 0,
+      borderColor: Colors.white,
       color: Colors.black,
       onPressed: (int selectedIndex) async {
         setState(() {
@@ -242,7 +237,6 @@ class _DashBoardScreenState extends State<DashBoardScreen>
               isSelectedList[index][i] = !isSelectedList[index][i];
             }
           }
-          print("isSelectedList: $isSelectedList");
           add.clear();
           add = [];
           colorList.clear();
@@ -250,20 +244,23 @@ class _DashBoardScreenState extends State<DashBoardScreen>
           for (int i = 0; i < isSelectedList[index].length; i++) {
             if (isSelectedList[index][i]) {
               add.add(itemContentListOfList[i]);
+              colorList.add(BtnColors().btnColorList[i]);
             }
           }
         });
-        print('아이템 컨텐트 리스트의리스트 $itemContentListOfList');
-        print('add : $add');
       },
       isSelected: isSelectedList[index],
       children: <Widget>[
         for (int i = 0; i < itemContentList.length; i++)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: isSelectedList[index][i]
+                    ? BtnColors().btnColorList[i].withOpacity(0.8)
+                    : const Color.fromARGB(255, 231, 231, 231)),
             child: Text(
               itemContentList[i],
-              style: const TextStyle(fontSize: 14.0),
+              style: const TextStyle(fontSize: 20.0),
             ),
           ),
       ],
@@ -380,23 +377,28 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                     borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: chart,
               ),
-              periodToggleButton, // 필요한 정보들을 추가
-              toggleButton,
-              // const Padding(
-              //   padding: EdgeInsets.symmetric(vertical: 16),
-              //   child: Text(
-              //     "데일리 리포트",
-              //     style: TextStyle(color: Colors.black, fontSize: 22),
-              //   ),
-              // ),
-              // Container(
-              //   height: MediaQuery.of(context).size.height * 0.01 * 10,
-              //   decoration: BoxDecoration(
-              //       border: Border.all(color: Colors.black),
-              //       borderRadius: const BorderRadius.all(Radius.circular(10))),
-              //   child: const Center(child: Text("리포트 슬라이드")),
-              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  periodToggleButton,
+                ],
+              ), // 필요한 정보들을 추가
+              SingleChildScrollView(child: toggleButton),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  "데일리 리포트",
+                  style: TextStyle(color: Colors.black, fontSize: 22),
+                ),
+              ),
 
+              Container(
+                height: MediaQuery.of(context).size.height * 0.01 * 10,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
+                child: const Center(child: Text("리포트 슬라이드")),
+              ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(

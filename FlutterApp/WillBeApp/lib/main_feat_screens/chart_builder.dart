@@ -1,4 +1,5 @@
 // chart_service.dart
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +22,7 @@ class ChartService {
     DateTime today = DateTime(date.year, date.month, date.day);
 
     DateTime tomorrow = today.add(const Duration(days: 1));
-
+    double maxY = 0;
     print('today : $today');
     print('tomorrow : $tomorrow');
 
@@ -80,6 +81,9 @@ class ChartService {
 
     for (int i = 8; i < 19; i++) {
       dataPoints.add(FlSpot(i.toDouble(), dayTimes[i].toDouble()));
+      if (maxY < dayTimes[i]) {
+        maxY = dayTimes[i].toDouble();
+      }
     }
 
     LineChartBarData lineChartBarData = LineChartBarData(
@@ -127,9 +131,7 @@ class ChartService {
         ),
       ),
 
-      maxY: (dayTimes.reduce(max).toDouble() +
-              dayTimes.reduce(max).toDouble() / 10)
-          .ceilToDouble(),
+      maxY: maxY + (maxY / 10),
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -211,7 +213,7 @@ class ChartService {
               const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
-                interval: 1,
+                interval: numsOfList.reduce(max).toDouble() / 10,
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
                   return Text(
@@ -368,7 +370,7 @@ class ChartService {
               },
             ),
           )),
-      maxY: maxY,
+      maxY: maxY + 1,
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -396,8 +398,7 @@ class ChartService {
       lastDateOfWeek.subtract(const Duration(days: 7 * 7)), // 7주 전
     ).toDate();
 
-    print('today : $today');
-
+    double maxY = 0;
     List<DateTime> datesOfWeek = getDatesOfWeek(sevenWeeksAgo, today);
 
     List<String> weekPeriods = List.filled(7, ''); // 주간 기간을 저장할 리스트
@@ -440,6 +441,7 @@ class ChartService {
         dataPoints.add(FlSpot(i.toDouble(), numsOfWeek[i].toDouble()));
       }
 
+      maxY = numsOfWeek.reduce(max).ceilToDouble();
       LineChartBarData lineChartBarData = LineChartBarData(
         spots: dataPoints,
         isCurved: false,
@@ -462,7 +464,7 @@ class ChartService {
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-              interval: 1,
+              interval: maxY / 5,
               showTitles: true,
               getTitlesWidget: (value, meta) {
                 return Text(
@@ -489,7 +491,7 @@ class ChartService {
           ),
         ),
       ),
-
+      maxY: maxY + (maxY / 5),
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -518,6 +520,8 @@ class ChartService {
     ).toDate();
 
     print('today : $today');
+
+    double maxY = 0;
 
     List<String> monthLabels = List.filled(12, ''); // 월별 레이블을 저장할 리스트
 
@@ -557,6 +561,8 @@ class ChartService {
       }
       print('numsOfMonth : $numsOfMonth');
 
+      maxY = numsOfMonth.reduce(max).ceilToDouble();
+
       List<FlSpot> dataPoints = [];
       for (int i = 0; i < 12; i++) {
         dataPoints.add(FlSpot(i.toDouble(), numsOfMonth[i].toDouble()));
@@ -584,7 +590,7 @@ class ChartService {
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-              interval: 1,
+              interval: maxY / 5,
               showTitles: true,
               getTitlesWidget: (value, meta) {
                 return Text(
@@ -618,6 +624,7 @@ class ChartService {
         verticalInterval: 1,
         horizontalInterval: 1,
       ),
+      maxY: maxY + (maxY / 10),
     );
 
     return LineChart(lineChartData);
