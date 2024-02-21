@@ -75,7 +75,7 @@ class _Expression_Dictionary_Create_State
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: Text(
-              "의사소통사전 추가하기",
+              "의사소통사전 추가",
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w500,
