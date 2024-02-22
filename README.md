@@ -1,5 +1,78 @@
-# 24 Solution Challenge - "Will Be"
-> **"Will Be" - Adding Hope into Education for Developmental Disabilities** 
+# "Will Be"
+> **Adding Hope into Education for Developmental Disabilities** 
+
+> [!TIP]
+> 
+> <table style="width:100%">
+>   <tr>
+>     <th colspan="6">Table of Contents</th>
+>   </tr>
+>   <tr>
+>     <th>
+>       <a href="#core-info"><b>Core Info</b></a>
+>     </th>
+>     <th>
+>       <a href="#details"><b>Details</b></a>
+>     </th>
+>     <th>
+>       <a href="#story"><b>Story</b></a>
+>     </th>
+>     <th>
+>       <a href="#roadmap"><b>Roadmap</b></a>
+>     </th>
+>     <th>
+>       <a href="#who-we-are"><b>Who We Are</b></a>
+>     </th>
+>     <th>
+>       <a href="#credits"><b>Credits</b></a>
+>     </th>
+>   </tr>
+>   <tr>
+>     <td>
+>       <ol type="i">
+>         <li>
+>           <a href="#what-will-be-is">Title</a>
+>         </li>
+>         <li>
+>           <a href="#how-to-build">How to Build</a>
+>         </li>
+>         <li>
+>           <a href="#related-sdgs">Related SGDs</a>
+>         </li>
+>       </ol>
+>     </td>
+>     <td>
+>       <ol type="i">
+>         <li>
+>           <a href="#how-we-designed">How We Designed</a>
+>         </li>
+>         <li>
+>           <a href="#demo-video">Demo Video</a>
+>         </li>
+>       </ol>
+>     </td>
+>     <td>
+>       <ol type="i">
+>         <li>
+>           <a href="#what-we-want-to-solve">What we want to SOLVE</a>
+>         </li>
+>       </ol>
+>     </td>
+>     <td>
+>       -
+>     </td>
+>     <td>
+>       -
+>     </td>
+>     <td>
+>       <ol type="i">
+>         <li>
+>           <a href="#used-open-sources">Used Open-Sources</a>
+>         </li>
+>       </ol>
+>     </td>
+>   </tr>
+> </table>
 
 </br>
 
@@ -39,7 +112,6 @@ flutter run --release
 [SDG Indicators — UNSD](https://unstats.un.org/sdgs/indicators/indicators-list/)
 
 
-
 ## Details
 ### How We Designed
 #### Architecture
@@ -52,22 +124,13 @@ flutter run --release
 | LLM Orchestration | LangChain<br>(Dart) | ∙ Leverage LLM to get closer to the expected output                      |
 | LLM               | Gemini-Pro          | ∙ Main component for understanding and generating natural languages      |
 #### Database Structure
-
+*// 내용 추가 필요*
 
 #### Repo Directory Structure
-
+*// 내용 추가 필요*
 
 ### Demo Video
-
-
-## Who We Are
 *// 내용 추가 필요*
-> Members of GDSC Daejeon University
-
-- **양기택** (KeeTaek Yang)
-- **한수빈** (SuBeen Han)
-- **이남경** (NamKyung Lee)
-- **조기홍** (GiHong Jo)
 
 
 ## Story
@@ -87,8 +150,17 @@ To tackle this issue, the need for innovative solutions is apparent. This is whe
 
 
 ## Roadmap
+*// 내용 추가 필요*
 
 
+## Who We Are
+*// 내용 추가 필요*
+> Members of GDSC Daejeon University
+
+- **양기택** (KeeTaek Yang)
+- **한수빈** (SuBeen Han)
+- **이남경** (NamKyung Lee)
+- **조기홍** (GiHong Jo)
 
 ## Credits
 ### Used Open-Sources
