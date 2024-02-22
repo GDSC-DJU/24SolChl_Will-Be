@@ -293,7 +293,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
               Container(
                 alignment: Alignment.center,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
