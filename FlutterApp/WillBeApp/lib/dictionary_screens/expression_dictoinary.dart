@@ -236,7 +236,7 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
               SingleChildScrollView(
                 child: Container(
                   width: MediaQuery.sizeOf(context).width - 12,
-                  height: MediaQuery.sizeOf(context).height - 213,
+                  height: MediaQuery.sizeOf(context).height / 1.365,
                   child:
                       // 의사소통 builder
                       ListView.builder(
