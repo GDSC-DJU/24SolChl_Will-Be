@@ -214,7 +214,7 @@ class ChartService {
               const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
-                interval: maxY / 6.ceilToDouble(),
+                interval: maxY == 0 ? 1 : maxY / 6.ceilToDouble(),
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
                   if (value == (maxY + maxY / 10).ceilToDouble()) {
@@ -476,7 +476,7 @@ class ChartService {
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-              interval: maxY.toDouble() / 6.ceilToDouble(),
+              interval: maxY == 0 ? 1 : maxY.toDouble() / 6.ceilToDouble(),
               showTitles: true,
               getTitlesWidget: (value, meta) {
                 if (value > maxY) {

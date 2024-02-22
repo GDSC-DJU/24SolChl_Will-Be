@@ -159,9 +159,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .then((querySnapshot) {
         Map<String, dynamic>? updates = {};
         updates = querySnapshot.data();
-        if (updates == null) {
-          updates = {"OrderList": []};
-        }
+        updates ??= {"OrderList": []};
         updates["OrderList"].add('${docParty.id}_${widget.behaviorName}');
 
         FirebaseFirestore.instance
@@ -256,9 +254,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
         .then((querySnapshot) {
       Map<String, dynamic>? updates = {};
       updates = querySnapshot.data();
-      if (updates == null) {
-        updates = {"OrderList": []};
-      }
+      updates ??= {"OrderList": []};
       updates["OrderList"].add('${widget.id}_${widget.behaviorName}');
 
       FirebaseFirestore.instance
@@ -285,9 +281,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
       widget.behaviorValue,
       widget.behaviorName,
     ]);
-    if (widget.name == "" ||
-        widget.behaviorValue == null ||
-        widget.behaviorName == "") {
+    if (widget.name == "" || widget.behaviorName == "") {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('측정할 도전행동의 세부사항을 작성해주세요!')));
       return;
@@ -344,13 +338,13 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                       ),
                       onPressed: () async {
                         //firestore에 관련된 인스턴스들
-                        User? _user = FirebaseAuth.instance.currentUser;
+                        User? user = FirebaseAuth.instance.currentUser;
 
                         // currentUser가 있는지 확인
-                        if (_user != null) {
+                        if (user != null) {
                           final docSnapshot = await FirebaseFirestore.instance
                               .collection('Educator')
-                              .doc(_user!.uid)
+                              .doc(user.uid)
                               .get();
                           //파이어베이스에 등록이 되어있는지 확인
                           if (!(docSnapshot.exists)) {
@@ -447,7 +441,6 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                 ),
               ),
               SizedBox(
-                height: 40,
                 width: MediaQuery.of(context).size.width - 32,
                 child: const Text(
                   "정확히 어떤 행동을 말하는지 작성해주세요.\n ∙ 예시) 천장을 보고 욕설을 내뱉는 행동",
