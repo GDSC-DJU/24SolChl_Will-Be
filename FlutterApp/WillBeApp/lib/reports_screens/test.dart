@@ -10,8 +10,7 @@ import 'package:firebase_core/firebase_core.dart'; // `Firebase.initializeApp()`
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-const id = 'candlebox@edu.dju.ac.kr';
-final pw = Platform.environment['WiilBe-personal-PW'];
+import '../reporting/api_communication.dart' show ApiCommunication;
 
 
 /** 
@@ -107,7 +106,7 @@ Future<List<dynamic>> helpFunc(
     });
   });
   print(result);
-  return getReports(studentId, behaviorList, start, end);
+  return await getReports(studentId, behaviorList, start, end);
 }
 
 Future<List<dynamic>> getReports(
@@ -152,7 +151,7 @@ Future<List<dynamic>> getReports(
     // print(data); // 필드값 출력
     // print(result);
   });
-  return getStamp(studentId, behaviorList, start, end);
+  return await getStamp(studentId, behaviorList, start, end);
 }
 
 Future<List<dynamic>> getStamp(
