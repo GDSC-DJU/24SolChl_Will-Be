@@ -5,7 +5,7 @@ import 'package:solution/reporting/api_communication.dart'
 
 class Weekly_Report_Screen extends StatefulWidget {
   Weekly_Report_Screen(
-      {Key? key,
+      {super.key,
       required this.name,
       required this.id,
       required this.behaviorList,
