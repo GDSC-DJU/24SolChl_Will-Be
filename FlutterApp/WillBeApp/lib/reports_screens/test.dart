@@ -91,7 +91,7 @@ final CollectionReference dailyReportCollectionRef = FirebaseFirestore.instance
 User? user = FirebaseAuth.instance.currentUser;
 // List result = [];
 
-Future<List<dynamic>> helpFunc(
+Future<Map<String, dynamic>> helpFunc(
   String studentId,
   List behaviorList,
   String start,
@@ -105,8 +105,8 @@ Future<List<dynamic>> helpFunc(
     });
   });
   dynamic temp = await getReports(studentId, behaviorList, start, end, result);
-  print(temp);
-  return temp;
+  print(temp[0]);
+  return temp[0]; // Map<String, dynamic>
 }
 
 Future<List<dynamic>> getReports(

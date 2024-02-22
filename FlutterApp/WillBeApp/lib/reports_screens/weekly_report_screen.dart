@@ -93,12 +93,12 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                               url:
                                   'https://willbe-nlp-t5feuxbhta-du.a.run.app/v1/summary/report',
                               inputBody: helpFunc(
-                                  widget.id,
-                                  widget.behaviorList,
-                                  '2024-02-19',
-                                  '2024-02-23'));
+                                      widget.id,
+                                      widget.behaviorList,
+                                      '2024-02-19',
+                                      '2024-02-23')
+                                  .then((value) => value));
                           apiCommunication.getRespond();
-                          
                         },
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(
