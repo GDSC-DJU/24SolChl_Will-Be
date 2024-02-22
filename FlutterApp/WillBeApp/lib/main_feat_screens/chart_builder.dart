@@ -157,7 +157,7 @@ class ChartService {
     ).toDate();
 
     var weekDays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
-
+    double maxY = 0;
     List<String> weekDaysInKoreanUsage = [];
     List<int> daysInWeek = [];
     List<int> monthsInWeek = [];
@@ -192,6 +192,7 @@ class ChartService {
       for (int i = 0; i < 7; i++) {
         dataPoints.add(FlSpot(i.toDouble(), numsOfList[i].toDouble()));
       }
+      maxY = numsOfList.reduce(max).toDouble();
 
       lines.add(LineChartBarData(
         spots: dataPoints,
@@ -213,13 +214,13 @@ class ChartService {
               const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
-                interval: numsOfList.reduce(max).toDouble() == 0
-                    ? 1
-                    : (numsOfList.reduce(max).toDouble() +
-                            numsOfList.reduce(max).toDouble() / 10)
-                        .ceilToDouble(),
+                interval: maxY / 6.ceilToDouble(),
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
+                  if (value == (maxY + maxY / 10).ceilToDouble()) {
+                    return const Text('');
+                  }
+
                   return Text(
                     value.toInt().toString(),
                     style: const TextStyle(fontSize: 12),
@@ -242,14 +243,20 @@ class ChartService {
               },
             ),
           )),
-      maxY: (numsOfList.reduce(max).toDouble() +
-              numsOfList.reduce(max).toDouble() / 10)
-          .ceilToDouble(),
+      maxY: (maxY + maxY / 10).ceilToDouble(),
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
         verticalInterval: 1,
         horizontalInterval: 1,
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: const Border(
+          bottom: BorderSide(color: Colors.black, width: 1),
+          left: BorderSide(color: Colors.black, width: 1),
+          right: BorderSide(color: Colors.transparent),
+        ),
       ),
     );
 
@@ -257,6 +264,7 @@ class ChartService {
   }
 
   ///입력받은 날을 기준으로 한달전부터 받아오기
+  ///현재는 사용하지 않음
   Future<LineChart> monthChartData(
       {required String studentID,
       required List<String> behaviors,
@@ -422,7 +430,7 @@ class ChartService {
             : DateTime.now()
                 .add(const Duration(days: 1)); // 마지막 주의 경우 '내일'을 endOfWeek로 설정
         weekPeriods[i] =
-            '${startOfWeek.month}/${startOfWeek.day}~${endOfWeek.month - 1}/${endOfWeek.day - 1}'; // 주간 기간 설정
+            '${startOfWeek.month}/${startOfWeek.day}\n~${endOfWeek.month}/${endOfWeek.day - 1}'; // 주간 기간 설정
 
         QuerySnapshot snapshot = await _firestore
             .collection('Record')
@@ -468,11 +476,13 @@ class ChartService {
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-              interval: maxY.toDouble() == 0
-                  ? 1
-                  : (maxY.toDouble() + maxY.toDouble() / 10).ceilToDouble(),
+              interval: maxY.toDouble() / 6.ceilToDouble(),
               showTitles: true,
               getTitlesWidget: (value, meta) {
+                if (value > maxY) {
+                  return const Text('');
+                }
+
                 return Text(
                   value.toInt().toString(),
                   style: const TextStyle(fontSize: 12),
@@ -497,7 +507,16 @@ class ChartService {
           ),
         ),
       ),
-      maxY: maxY + (maxY / 5),
+      maxY: maxY + (maxY / 10),
+      borderData: FlBorderData(
+        show: true,
+        border: const Border(
+          bottom: BorderSide(color: Colors.black, width: 1),
+          left: BorderSide(color: Colors.black, width: 1),
+          right: BorderSide(color: Colors.transparent),
+        ),
+      ),
+
       gridData: const FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -596,11 +615,11 @@ class ChartService {
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-              interval: maxY.toDouble() == 0
-                  ? 1
-                  : (maxY.toDouble() + maxY.toDouble() / 10).ceilToDouble(),
+              interval:
+                  maxY.toDouble() == 0 ? 1 : maxY.toDouble() / 6.ceilToDouble(),
               showTitles: true,
               getTitlesWidget: (value, meta) {
+                if (value > maxY) return const Text('');
                 return Text(
                   value.toInt().toString(),
                   style: const TextStyle(fontSize: 12),
@@ -633,6 +652,14 @@ class ChartService {
         horizontalInterval: 1,
       ),
       maxY: maxY + (maxY / 10),
+      borderData: FlBorderData(
+        show: true,
+        border: const Border(
+          bottom: BorderSide(color: Colors.black, width: 1),
+          left: BorderSide(color: Colors.black, width: 1),
+          right: BorderSide(color: Colors.transparent),
+        ),
+      ),
     );
 
     return LineChart(lineChartData);

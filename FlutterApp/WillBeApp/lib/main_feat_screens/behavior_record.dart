@@ -116,6 +116,7 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                     child: Text(
                       record['behavior'],
                       style: Theme.of(context).textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Expanded(

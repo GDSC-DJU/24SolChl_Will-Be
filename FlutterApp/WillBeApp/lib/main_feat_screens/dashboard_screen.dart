@@ -293,7 +293,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
               Container(
                 alignment: Alignment.center,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
@@ -383,9 +383,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
 
               Container(
                 height: MediaQuery.of(context).size.height * 0.01 * 30,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: const BorderRadius.all(Radius.circular(10))),
+                decoration: const BoxDecoration(),
                 child: chart,
               ),
               Row(
