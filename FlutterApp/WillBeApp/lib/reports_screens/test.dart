@@ -10,55 +10,8 @@ import 'package:firebase_core/firebase_core.dart'; // `Firebase.initializeApp()`
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-const id = 'candlebox@edu.dju.ac.kr';
-final pw = Platform.environment['WiilBe-personal-PW'];
+import '../reporting/api_communication.dart' show ApiCommunication;
 
-Future<User?> signInUser() async {
-  try {
-    UserCredential userCredential = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: id, password: pw!);
-    print(userCredential.user!.uid);
-    print(userCredential.user!.email);
-    return userCredential.user;
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      print('No user found for that email.');
-    } else if (e.code == 'wrong-password') {
-      print('Wrong password provided for that user.');
-    }
-  } catch (e) {
-    print(e);
-  }
-  return null;
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  User? user = await signInUser();
-  if (user != null) {
-    print('User signed in with email: ${user.email}');
-  } else {
-    print('Sign in failed.');
-  }
-}
-
-// class Student {
-
-// }
-
-// class StudentReport {
-
-//   static void getReport(String uid) {
-
-//   }
-// }
-
-//User user = FirebaseAuth.instance.currentUser!;
-//   final CollectionReference reportCollectionRef = FirebaseFirestore.instance
-//   .collection('Record')
-//   .doc(user.uid)
-//   .collection('Report');
 
 /** 
  * 학생 ID
@@ -153,7 +106,7 @@ Future<List<dynamic>> helpFunc(
     });
   });
   print(result);
-  return getReports(studentId, behaviorList, start, end);
+  return await getReports(studentId, behaviorList, start, end);
 }
 
 Future<List<dynamic>> getReports(
@@ -198,7 +151,7 @@ Future<List<dynamic>> getReports(
     // print(data); // 필드값 출력
     // print(result);
   });
-  return getStamp(studentId, behaviorList, start, end);
+  return await getStamp(studentId, behaviorList, start, end);
 }
 
 Future<List<dynamic>> getStamp(
@@ -246,74 +199,4 @@ Future<List<dynamic>> getStamp(
   print(result);
   return result;
 }
-/**
- *     QuerySnapshot snapshot = await _firestore
-        .collection('Record')
-        .doc(studentID)
-        .collection('Behavior')
-        .doc(behavior)
-        .collection('BehaviorRecord')
-        .where('time', isGreaterThanOrEqualTo: ago7days)
-        .where('time', isLessThan: today)
-        .get();
- */
-
-// // reportCollectionRef.doc('daily_reports');   // -- 이하 주요 코드
-// final dailyReports = reportCollectionRef.get().where('date', isGreaterThanOrEqualTo: DateTime.now().subtract(const Duration(days: 5)))
-//   .get().then(
-//     (QuerySnapshot querySnapshot) {
-//       for (DocumentSnapshot documentSnapshot in querySnapshot.docs) {
-//         // final json = documentSnapshot.data();
-//         // print(documentSnapshot.data());
-//         Map<String, dynamic> originalData = documentSnapshot.data() as Map<String, dynamic>;
-      
-//       var keys = originalData.keys;
-//       // 원하는 정보만을 선택하여 새로운 Map 생성
-//       Map<String, dynamic> selectedData = {
-//         'contexts': [
-//           originalData['contexts'],
-//           for (var key in keys) {
-//             if (key != 'contexts') {
-//               originalData[key]
-//             }
-//           }
-//         ]
-//       };
-//       String jsonData = jsonEncode(selectedData);
-//       return jsonData;
-//     }
-//   },
-//   onError: (e) => print("Error getting documents: $e"),
-// );
-
-// reportCollectionRef.where('type', isEqualTo: 'daily').get().then(
-//   (QuerySnapshot querySnapshot) {
-//     querySnapshot.docs.forEach((DocumentSnapshot documentSnapshot) {
-//       print(documentSnapshot.data());
-//     });
-//   },
-//   onError: (e) => print("Error getting documents: $e"),
-// );
-
-
-// // -------------------------------------------------------------------
-
-
-
-// // final docRef = db.collection("cities").doc("SF");
-// // docRef.get().then(
-// //   (DocumentSnapshot doc) {
-// //     final data = doc.data() as Map<String, dynamic>;
-// //     // ...
-// //   },
-// //   onError: (e) => print("Error getting document: $e"),
-// // );
-
-
-
-
-
-
-
-
     

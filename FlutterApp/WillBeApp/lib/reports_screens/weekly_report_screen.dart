@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:solution/reports_screens/test.dart';
-import 'package:solution/reporting/api_communication.dart';
+import 'package:solution/reporting/api_communication.dart'
+    show ApiCommunication;
 
 class Weekly_Report_Screen extends StatefulWidget {
   Weekly_Report_Screen(
@@ -88,14 +89,14 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                       const Spacer(),
                       ElevatedButton(
                         onPressed: () {
-                          // SendRequest temp = SendRequest(
-                          //     inputBody: helpFunc(
-                          //         widget.id,
-                          //         widget.behaviorList,
-                          //         '2024-02-19',
-                          //         '2024-02-23'));
-                          // helpFunc(widget.id, widget.behaviorList, '2024-02-19',
-                          //     '2024-02-23');
+                          ApiCommunication temp = ApiCommunication(
+                              url:
+                                  'https://willbe-nlp-t5feuxbhta-du.a.run.app/v1/summary/report',
+                              inputBody: helpFunc(
+                                  widget.id,
+                                  widget.behaviorList,
+                                  '2024-02-19',
+                                  '2024-02-23') as List<dynamic>);
                         },
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(
