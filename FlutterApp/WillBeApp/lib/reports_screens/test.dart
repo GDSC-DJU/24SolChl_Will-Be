@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 
 import '../reporting/api_communication.dart' show ApiCommunication;
 
-
 /** 
  * 학생 ID
  * 행동명 list
@@ -90,7 +89,7 @@ final CollectionReference dailyReportCollectionRef = FirebaseFirestore.instance
 // Record / 학생ID / Behavior / 행동명 / {참고사항}
 // Record / 학생ID / Behavior / 행동명 / 행동기록 / 시간 / {특이사항 / 변인}
 User? user = FirebaseAuth.instance.currentUser;
-List result = [];
+// List result = [];
 
 Future<List<dynamic>> helpFunc(
   String studentId,
@@ -98,15 +97,16 @@ Future<List<dynamic>> helpFunc(
   String start,
   String end,
 ) async {
-  result = [];
+  List result = [];
   behaviorList.forEach((element) {
     result.add({
       "behavior": element,
       "records": [{}, {}, {}, {}, {}] //5일 초기화
     });
   });
-  print(result);
-  return getReports(studentId, behaviorList, start, end);
+  dynamic temp = await getReports(studentId, behaviorList, start, end, result);
+  print(temp);
+  return temp;
 }
 
 Future<List<dynamic>> getReports(
@@ -114,13 +114,14 @@ Future<List<dynamic>> getReports(
   List behaviorList,
   String start,
   String end,
+  List result,
 ) async {
   DateTime startDate = DateTime.parse(start);
   DateTime endDate = DateTime.parse(end);
   List data = [];
-  print(studentId);
-  print(startDate);
-  print(endDate);
+  // print(studentId);
+  // print(startDate);
+  // print(endDate);
   CollectionReference dailyRef = FirebaseFirestore.instance
       .collection('Record')
       .doc(studentId)
@@ -128,8 +129,8 @@ Future<List<dynamic>> getReports(
       .doc(user!.uid)
       .collection("Daily");
 
-  dailyRef.get().then((dateList) {
-    List<QueryDocumentSnapshot<Object?>> temp = dateList.docs
+  await dailyRef.get().then((dateList) async {
+    List<QueryDocumentSnapshot<Object?>> temp = await dateList.docs
         .where((date) =>
             startDate.microsecondsSinceEpoch <=
                 DateTime.parse(date.id).microsecondsSinceEpoch &&
@@ -137,7 +138,7 @@ Future<List<dynamic>> getReports(
                 DateTime.parse(date.id).microsecondsSinceEpoch)
         .toList();
 
-    temp.forEach((element) {
+    temp.forEach((element) async {
       dynamic tMap = element.data();
       for (var i = 0; i < behaviorList.length; i++) {
         if (tMap[behaviorList[i]] != null) {
@@ -151,27 +152,25 @@ Future<List<dynamic>> getReports(
     // print(data); // 필드값 출력
     // print(result);
   });
-  return getStamp(studentId, behaviorList, start, end);
+  dynamic temp = await getStamp(studentId, behaviorList, start, end, result);
+  print(temp);
+  return temp;
 }
 
-Future<List<dynamic>> getStamp(
-  String studentId,
-  List behaviorList,
-  String start,
-  String end,
-) async {
+Future<List<dynamic>> getStamp(String studentId, List behaviorList,
+    String start, String end, List result) async {
   DateTime startDate = DateTime.parse(start);
   DateTime endDate = DateTime.parse(end);
   var idx = 0;
-  behaviorList.forEach((behavior) {
+  behaviorList.forEach((behavior) async {
     Map data = {};
-    CollectionReference behaviorRef = FirebaseFirestore.instance
+    CollectionReference behaviorRef = await FirebaseFirestore.instance
         .collection('Record')
         .doc(studentId)
         .collection('Behavior')
         .doc(behavior)
         .collection("BehaviorRecord");
-    behaviorRef.get().then((stampList) {
+    await behaviorRef.get().then((stampList) {
       List<QueryDocumentSnapshot<Object?>> temp = stampList.docs
           .where((date) =>
               startDate.microsecondsSinceEpoch <=
@@ -179,7 +178,7 @@ Future<List<dynamic>> getStamp(
               endDate.microsecondsSinceEpoch >=
                   DateTime.parse(date.id).microsecondsSinceEpoch)
           .toList();
-      temp.forEach((element) {
+      temp.forEach((element) async {
         String targetDay = '${DateTime.parse(element.id).day}';
         String targetTime =
             '${DateTime.parse(element.id).hour}:${DateTime.parse(element.id).minute}';
@@ -189,13 +188,12 @@ Future<List<dynamic>> getStamp(
           data[targetDay] = [targetTime];
         }
       });
-      data.keys.toList().forEach((day) {
+      data.keys.toList().forEach((day) async {
         result[idx]['records'][int.parse(day) - startDate.day.toInt()]
-            ['stamps'] = data[day];
+            ['stamps'] = await data[day];
       });
       idx += 1;
     });
   });
-  print(result);
   return result;
 }

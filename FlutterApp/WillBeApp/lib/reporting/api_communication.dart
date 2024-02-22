@@ -7,13 +7,13 @@ class ApiCommunication {
     required this.url,
     required this.inputBody,
   }) {
-    _inputJson = jsonEncode(inputBody);
+    _inputJson = jsonEncode(inputBody.toString());
     _sendPostRequest();
   }
 
   final String url;
   final Future<List<dynamic>> inputBody;
-  late final String _inputJson;  // JSON format body
+  late final String _inputJson; // JSON format body
   String? _responseJson;
 
   Future<void> _sendPostRequest() async {
@@ -25,13 +25,15 @@ class ApiCommunication {
         headers: {"Content-Type": "application/json"}, // 헤더 설정
         body: _inputJson, // 요청 본문 설정
       );
+      print("HO");
       _responseJson = response.body; // 응답 본문 저장
+      print(_responseJson);
     } catch (e) {
       log(e.toString());
     }
   }
 
-  Future<String> getRespond () async {
+  Future<String> getRespond() async {
     await _sendPostRequest();
     return _responseJson!;
   }
