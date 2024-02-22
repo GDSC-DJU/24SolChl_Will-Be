@@ -54,90 +54,93 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02, //20
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width - 16,
-            child: Text(
-              '아이들',
-              style: Theme.of(context).textTheme.headlineMedium,
-              textAlign: TextAlign.left,
+      child: Container(
+        color: Color.fromARGB(255, 85, 81, 94),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02, //20
             ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width - 32,
-            height: MediaQuery.of(context).size.height / 1.46,
-            child: CarouselSlider(
-              items: List.generate(
-                widget.studentDataList.length,
-                (index) => buildCard(widget.studentDataList[index], index),
-              ),
-              carouselController: _controller,
-              options: CarouselOptions(
-                // autoPlay: true,
-                enlargeCenterPage: true,
-                enableInfiniteScroll: false,
-                aspectRatio: 2 / 3, // 카드 비율
-                viewportFraction: 0.8, // 카드가 보이는 정도
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _current = index;
-                  });
-                },
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 16,
+              child: Text(
+                '아이들',
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.left,
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (int i = 0; i < widget.studentDataList.length; i++)
-                buildDot(i, _current),
-            ],
-          ),
-          Spacer(),
-          Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.01 * 5,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Add_Student_Info(),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  padding: EdgeInsets.zero,
-                  backgroundColor: Color.fromARGB(255, 102, 108, 255),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 32,
+              height: MediaQuery.of(context).size.height / 1.46,
+              child: CarouselSlider(
+                items: List.generate(
+                  widget.studentDataList.length,
+                  (index) => buildCard(widget.studentDataList[index], index),
                 ),
-                child: Container(
-                  width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  child: Center(
-                    child: Text(
-                      '아이 추가하기',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
+                carouselController: _controller,
+                options: CarouselOptions(
+                  // autoPlay: true,
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: false,
+                  aspectRatio: 2 / 3, // 카드 비율
+                  viewportFraction: 0.8, // 카드가 보이는 정도
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _current = index;
+                    });
+                  },
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 0; i < widget.studentDataList.length; i++)
+                  buildDot(i, _current),
+              ],
+            ),
+            Spacer(),
+            Padding(
+              padding: EdgeInsets.only(top: 20),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.01 * 5,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Add_Student_Info(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    padding: EdgeInsets.zero,
+                    backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    child: Center(
+                      child: Text(
+                        '아이 추가하기',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -151,44 +154,38 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.all(7),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              stops: [0.2, 0.6, 0.95, 0.5],
-              colors: [
-                Color.fromARGB(255, 227, 242, 253),
-                Color.fromARGB(255, 227, 242, 253),
-                Color(0xFF809BFB),
-                Color.fromARGB(255, 102, 108, 255),
-              ],
-              tileMode: TileMode.mirror,
-            ),
-            borderRadius: BorderRadius.circular(8.0),
+            color: Color.fromARGB(255, 252, 252, 255),
+            borderRadius: BorderRadius.circular(10.0),
             boxShadow: [
+              // BoxShadow(
+              //   color: const Color.fromARGB(255, 74, 74, 74).withOpacity(0.5),
+              //   spreadRadius: 2,
+              //   blurRadius: 5,
+              //   offset: const Offset(0, 1),
+              // ),
+              // BoxShadow(
+              //   color: Color.fromARGB(255, 111, 113, 255).withOpacity(0.3),
+              //   spreadRadius: 1,
+              //   blurRadius: 10,
+              //   offset: const Offset(0, 0),
+              // ),
+              // BoxShadow(
+              //   color: Color.fromARGB(255, 111, 113, 255).withOpacity(0.3),
+              //   spreadRadius: 1,
+              //   blurRadius: 10,
+              //   offset: const Offset(0, 0),
+              // ),
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
+                color: Color.fromARGB(255, 0, 0, 0).withOpacity(0.3),
                 spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 1),
-              ),
-              BoxShadow(
-                color: Color.fromARGB(255, 177, 178, 197).withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 10,
-                offset: const Offset(2, 0),
-              ),
-              BoxShadow(
-                color: Color.fromARGB(255, 102, 108, 255).withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 10,
-                offset: const Offset(-1, 0),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
+            padding: const EdgeInsets.all(0),
+            child: Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,49 +199,78 @@ class _HomeScreenState extends State<HomeScreen> {
                   //       mainAxisAlignment: MainAxisAlignment.start,
                   //       crossAxisAlignment: CrossAxisAlignment.center,
                   //       children: [
-
                   //       ],
                   //     ),
                   //   ),
                   // ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 102, 108, 255),
+                        gradient: LinearGradient(
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                          stops: [0.4, 0.9, 1],
+                          colors: [
+                            // Color.fromARGB(255, 227, 242, 253),
+                            Color(0xFF809BFB),
+                            Color.fromARGB(255, 62, 66, 181),
+                            Color.fromARGB(255, 102, 108, 255),
+                          ],
+                          tileMode: TileMode.mirror,
+                        ),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10))),
+                    height: 30,
+                  ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.height * 0.01 * 10,
-                    height: MediaQuery.of(context).size.height * 0.01 * 10,
-                    child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 0,
-                        color: Theme.of(context).colorScheme.surfaceVariant,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100)),
-                        ),
-                        child: Icon(
-                          Icons.person,
-                          color: colorList[index].withOpacity(0.5),
-                          size: 45,
-                        )
-                        // Image.network(
-                        //   // 이미지 DB 구축 시 대치
-                        //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                        //   fit: BoxFit.cover,
-                        // ),
-                        ),
+                    height: 20,
+                  ),
+                  Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.height * 0.01 * 10,
+                      height: MediaQuery.of(context).size.height * 0.01 * 10,
+                      child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          elevation: 0,
+                          color: colorList[index].withOpacity(0.1),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: colorList[index].withOpacity(0.5),
+                                width: 4),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(100)),
+                          ),
+                          child: Icon(
+                            Icons.person,
+                            color: colorList[index].withOpacity(0.5),
+                            size: 45,
+                          )
+                          // Image.network(
+                          //   // 이미지 DB 구축 시 대치
+                          //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                          //   fit: BoxFit.cover,
+                          // ),
+                          ),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text(
-                      name,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(1.0, 0),
-                            blurRadius: 10.0,
-                            color: Color.fromARGB(255, 172, 197, 203),
-                          ),
-                        ],
+                    child: Center(
+                      child: Text(
+                        name,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          shadows: <Shadow>[
+                            Shadow(
+                              offset: Offset(1.0, 0),
+                              blurRadius: 10.0,
+                              color: Color.fromARGB(255, 172, 197, 203),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -284,10 +310,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(100))),
-                            padding: EdgeInsets.zero,
+                            padding: EdgeInsets.all(4),
                             backgroundColor: Colors.white,
                           ),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Icon(
@@ -322,7 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(100))),
-                            padding: EdgeInsets.zero,
+                            padding: EdgeInsets.all(4),
                             backgroundColor: Colors.white,
                           ),
                           child: Row(
@@ -403,7 +430,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Spacer(),
                       Padding(
-                        padding: EdgeInsets.only(top: 20),
+                        padding: EdgeInsets.all(10),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.025 * 18,
                           height: MediaQuery.of(context).size.height * 0.01 * 4,
@@ -424,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
+                                      BorderRadius.all(Radius.circular(100))),
                               padding: EdgeInsets.zero,
                               backgroundColor:
                                   Color.fromARGB(255, 102, 108, 255),

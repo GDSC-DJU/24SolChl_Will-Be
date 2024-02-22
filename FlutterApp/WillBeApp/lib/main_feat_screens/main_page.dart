@@ -1367,7 +1367,7 @@ class _Main_PageState extends State<Main_Page> {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
