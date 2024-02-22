@@ -33,7 +33,7 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             "주간 리포트",
             style: TextStyle(
               fontSize: 28,
@@ -44,13 +44,13 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
         body: Container(
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Container(
                 alignment: Alignment.center,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -62,9 +62,9 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                           clipBehavior: Clip.antiAlias,
                           elevation: 0,
                           color: Theme.of(context).colorScheme.surfaceVariant,
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                             borderRadius:
-                                const BorderRadius.all(Radius.circular(100)),
+                                BorderRadius.all(Radius.circular(100)),
                           ),
                           child: Icon(
                             Icons.person,
@@ -78,14 +78,14 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 10),
+                        padding: const EdgeInsets.only(left: 10),
                         child: Text(
                           widget.name,
                           style: const TextStyle(
                               color: Colors.black, fontSize: 20),
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       ElevatedButton(
                         onPressed: () {
                           // SendRequest temp = SendRequest(
@@ -98,17 +98,18 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                           //     '2024-02-23');
                         },
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10))),
                           padding: EdgeInsets.zero,
-                          backgroundColor: Color.fromARGB(255, 115, 92, 246),
+                          backgroundColor:
+                              const Color.fromARGB(255, 115, 92, 246),
                         ),
-                        child: Container(
+                        child: SizedBox(
                           width:
                               MediaQuery.of(context).size.width * 0.025 * 12.5,
                           height: MediaQuery.of(context).size.height * 0.01 * 5,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
@@ -118,7 +119,7 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                               ),
                               Text(
                                 " AI에게 추천받기",
-                                style: const TextStyle(
+                                style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold),
@@ -131,14 +132,14 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Container(
                 height: 1,
                 color: Colors.black26,
               ),
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width - 32,
                 height: MediaQuery.of(context).size.height - 172,
                 child: SingleChildScrollView(
@@ -200,27 +201,28 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Text(label),
         ),
         TextFormField(
           controller: controller,
           maxLines: null,
-          style: TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 15),
           onTap: () => _scrollToField(controller, index),
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(),
+              borderSide: const BorderSide(),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Color.fromARGB(255, 102, 108, 255)),
+              borderSide:
+                  const BorderSide(color: Color.fromARGB(255, 102, 108, 255)),
             ),
             hintText: "입력하세요",
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
       ],
@@ -231,7 +233,7 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
     if (controller != null) {
       _scrollController.animateTo(
         index * 150,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     }

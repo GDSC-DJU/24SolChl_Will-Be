@@ -213,7 +213,11 @@ class ChartService {
               const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
-                interval: numsOfList.reduce(max).toDouble() / 10,
+                interval: numsOfList.reduce(max).toDouble() == 0
+                    ? 1
+                    : (numsOfList.reduce(max).toDouble() +
+                            numsOfList.reduce(max).toDouble() / 10)
+                        .ceilToDouble(),
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
                   return Text(
@@ -464,7 +468,9 @@ class ChartService {
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-              interval: maxY / 5,
+              interval: maxY.toDouble() == 0
+                  ? 1
+                  : (maxY.toDouble() + maxY.toDouble() / 10).ceilToDouble(),
               showTitles: true,
               getTitlesWidget: (value, meta) {
                 return Text(
@@ -590,7 +596,9 @@ class ChartService {
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-              interval: maxY / 5,
+              interval: maxY.toDouble() == 0
+                  ? 1
+                  : (maxY.toDouble() + maxY.toDouble() / 10).ceilToDouble(),
               showTitles: true,
               getTitlesWidget: (value, meta) {
                 return Text(

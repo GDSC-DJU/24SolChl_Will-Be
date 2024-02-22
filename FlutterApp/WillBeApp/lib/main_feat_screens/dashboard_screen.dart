@@ -254,13 +254,14 @@ class _DashBoardScreenState extends State<DashBoardScreen>
         for (int i = 0; i < itemContentList.length; i++)
           Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: isSelectedList[index][i]
-                    ? BtnColors().btnColorList[i].withOpacity(0.8)
-                    : const Color.fromARGB(255, 231, 231, 231)),
+                borderRadius: BorderRadius.circular(10), color: Colors.white),
             child: Text(
               itemContentList[i],
-              style: const TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  color: isSelectedList[index][i]
+                      ? BtnColors().btnColorList[i].withOpacity(0.8)
+                      : const Color.fromARGB(255, 189, 189, 189)),
             ),
           ),
       ],
@@ -393,7 +394,8 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                   periodToggleButton,
                 ],
               ), // 필요한 정보들을 추가
-              SingleChildScrollView(child: toggleButton),
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal, child: toggleButton),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(
@@ -451,7 +453,8 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
                             padding: EdgeInsets.zero,
-                            backgroundColor: Color.fromARGB(255, 217, 222, 223),
+                            backgroundColor:
+                                const Color.fromARGB(255, 217, 222, 223),
                             shadowColor: Colors.black,
                             elevation: 2,
                           ),
@@ -464,7 +467,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.menu_book_sharp,
                                   color: Colors.black,
                                 ),
