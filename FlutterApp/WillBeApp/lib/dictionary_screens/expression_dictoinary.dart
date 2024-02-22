@@ -255,7 +255,9 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                                   '${widget.dictList.keys.toList()[index]}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 22,
+                                      fontSize:
+                                          MediaQuery.sizeOf(context).width *
+                                              0.045,
                                       color: Colors.black),
                                 ),
                                 IconButton(
