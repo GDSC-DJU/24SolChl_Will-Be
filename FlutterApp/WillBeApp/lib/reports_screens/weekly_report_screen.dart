@@ -96,7 +96,7 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                                   widget.id,
                                   widget.behaviorList,
                                   '2024-02-19',
-                                  '2024-02-23'));
+                                  '2024-02-23').then((value) => value));
                           apiCommunication.getRespond();
                           
                         },
