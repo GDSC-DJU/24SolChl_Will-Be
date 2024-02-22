@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:solution/assets/pallet.dart';
 import 'package:solution/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:solution/login_screens/loading_screen.dart';
 import 'package:solution/login_screens/primary_login_screen.dart';
 import 'package:solution/main_feat_screens/main_page.dart';
 import 'package:solution/create_student/add_student_info.dart';
@@ -40,34 +39,23 @@ class _MyAppState extends State<MyApp> {
 
   ///자동로그인의 실행 여부를 판별하는 변수. user.currentuser의 유무와 firestore에 user.uid 문서가 존재하는지 판별.
   ///둘 다 존재한다면 자동로그인 완료
-  bool _currentUserExist = false;
+  bool currentUserExist = false;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   ///자동로그인 기능, 파이어스토어의 Educator컬렉션에 사용자의 UID로 네이밍된 문서가 있다면
   ///_currentUserExist = true로
-  Future<void> checkAuthStatus() async {
+  Future<bool> checkAuthStatus() async {
     user = _authentication.currentUser;
-    _currentUserExist = false;
-
     if (user != null) {
-      // 이미 로그인한 사용자가 있으면 메인 화면으로 이동
-
       final docSnapshot =
           await _firestore.collection('Educator').doc(user!.uid).get();
 
       if (docSnapshot.exists) {
-        _currentUserExist = true;
-        log('자동로그인 완료!');
-      } else {
-        log('_currentUserExost = false');
+        return true;
       }
-    } else {
-      log('자동로그인 실패'); // 로그인한 사용자가 없으면 로그인 화면을 보여줌
-
-      _currentUserExist = false;
     }
-    setState(() {});
+    return false;
   }
 
   @override
@@ -113,8 +101,20 @@ class _MyAppState extends State<MyApp> {
                 color: Color.fromARGB(255, 0, 0, 0),
                 fontWeight: FontWeight.w600)),
       ),
-      home:
-          (_currentUserExist ? const Main_Page() : const PrimaryLoginScreen()),
+      home: FutureBuilder<bool>(
+        future: checkAuthStatus(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoadingScreen(); // 로딩 화면 위젯
+          } else {
+            if (snapshot.hasData && snapshot.data!) {
+              return const Main_Page();
+            } else {
+              return const PrimaryLoginScreen();
+            }
+          }
+        },
+      ),
     );
   }
 }
