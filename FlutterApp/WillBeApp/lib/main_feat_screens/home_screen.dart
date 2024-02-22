@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:solution/calender_screens/set_routine_page.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width - 32,
-            height: MediaQuery.of(context).size.height / 1.5,
+            height: MediaQuery.of(context).size.height / 1.46,
             child: CarouselSlider(
               items: List.generate(
                 widget.studentDataList.length,
@@ -148,10 +148,22 @@ class _HomeScreenState extends State<HomeScreen> {
     String name = studentData['name'];
     return GestureDetector(
       child: Padding(
-        padding: EdgeInsets.all(5),
+        padding: EdgeInsets.all(7),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: [0.2, 0.6, 0.95, 0.5],
+              colors: [
+                Color.fromARGB(255, 227, 242, 253),
+                Color.fromARGB(255, 227, 242, 253),
+                Color(0xFF809BFB),
+                Color.fromARGB(255, 102, 108, 255),
+              ],
+              tileMode: TileMode.mirror,
+            ),
             borderRadius: BorderRadius.circular(8.0),
             boxShadow: [
               BoxShadow(
@@ -159,6 +171,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 spreadRadius: 2,
                 blurRadius: 5,
                 offset: const Offset(0, 1),
+              ),
+              BoxShadow(
+                color: Color.fromARGB(255, 177, 178, 197).withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 10,
+                offset: const Offset(2, 0),
+              ),
+              BoxShadow(
+                color: Color.fromARGB(255, 102, 108, 255).withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 10,
+                offset: const Offset(-1, 0),
               ),
             ],
           ),
@@ -210,7 +234,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.all(10),
                     child: Text(
                       name,
-                      style: const TextStyle(color: Colors.black, fontSize: 30),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(1.0, 0),
+                            blurRadius: 10.0,
+                            color: Color.fromARGB(255, 172, 197, 203),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Row(
