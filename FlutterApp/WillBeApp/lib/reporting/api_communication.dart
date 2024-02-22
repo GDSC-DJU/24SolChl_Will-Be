@@ -12,7 +12,7 @@ class ApiCommunication {
   }
 
   final String url;
-  final List<dynamic> inputBody;
+  final Future<List<dynamic>> inputBody;
   late final String _inputJson;  // JSON format body
   String? _responseJson;
 

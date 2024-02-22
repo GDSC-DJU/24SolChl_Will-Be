@@ -106,7 +106,7 @@ Future<List<dynamic>> helpFunc(
     });
   });
   print(result);
-  return await getReports(studentId, behaviorList, start, end);
+  return getReports(studentId, behaviorList, start, end);
 }
 
 Future<List<dynamic>> getReports(
@@ -151,7 +151,7 @@ Future<List<dynamic>> getReports(
     // print(data); // 필드값 출력
     // print(result);
   });
-  return await getStamp(studentId, behaviorList, start, end);
+  return getStamp(studentId, behaviorList, start, end);
 }
 
 Future<List<dynamic>> getStamp(
@@ -199,4 +199,3 @@ Future<List<dynamic>> getStamp(
   print(result);
   return result;
 }
-    
