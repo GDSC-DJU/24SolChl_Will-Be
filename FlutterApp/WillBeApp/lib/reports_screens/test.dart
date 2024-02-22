@@ -157,43 +157,49 @@ Future<List<dynamic>> getReports(
   return temp;
 }
 
-Future<List<dynamic>> getStamp(String studentId, List behaviorList,
-    String start, String end, List result) async {
-  DateTime startDate = DateTime.parse(start);
-  DateTime endDate = DateTime.parse(end);
-  var idx = 0;
-  behaviorList.forEach((behavior) async {
-    Map data = {};
-    CollectionReference behaviorRef = await FirebaseFirestore.instance
-        .collection('Record')
-        .doc(studentId)
-        .collection('Behavior')
-        .doc(behavior)
-        .collection("BehaviorRecord");
-    await behaviorRef.get().then((stampList) {
-      List<QueryDocumentSnapshot<Object?>> temp = stampList.docs
-          .where((date) =>
-              startDate.microsecondsSinceEpoch <=
-                  DateTime.parse(date.id).microsecondsSinceEpoch &&
-              endDate.microsecondsSinceEpoch >=
-                  DateTime.parse(date.id).microsecondsSinceEpoch)
-          .toList();
-      temp.forEach((element) async {
-        String targetDay = '${DateTime.parse(element.id).day}';
-        String targetTime =
-            '${DateTime.parse(element.id).hour}:${DateTime.parse(element.id).minute}';
-        if (data.containsKey(targetDay)) {
-          data[targetDay]!.add(targetTime);
-        } else {
-          data[targetDay] = [targetTime];
-        }
+Future<List<dynamic>> getStamp(
+  String studentId,
+  List behaviorList,
+  String start,
+  String end,
+  List list
+  ) async {
+    var result = list;
+    DateTime startDate = DateTime.parse(start);
+    DateTime endDate = DateTime.parse(end);
+    var idx = 0;
+    behaviorList.forEach((behavior) async {
+      Map data = {};
+      CollectionReference behaviorRef = FirebaseFirestore.instance
+          .collection('Record')
+          .doc(studentId)
+          .collection('Behavior')
+          .doc(behavior)
+          .collection("BehaviorRecord");
+      await behaviorRef.get().then((stampList) {
+        List<QueryDocumentSnapshot<Object?>> temp = stampList.docs
+            .where((date) =>
+                startDate.microsecondsSinceEpoch <=
+                    DateTime.parse(date.id).microsecondsSinceEpoch &&
+                endDate.microsecondsSinceEpoch >=
+                    DateTime.parse(date.id).microsecondsSinceEpoch)
+            .toList();
+        temp.forEach((element) async {
+          String targetDay = '${DateTime.parse(element.id).day}';
+          String targetTime =
+              '${DateTime.parse(element.id).hour}:${DateTime.parse(element.id).minute}';
+          if (data.containsKey(targetDay)) {
+            data[targetDay]!.add(targetTime);
+          } else {
+            data[targetDay] = [targetTime];
+          }
+        });
+        data.keys.toList().forEach((day) async {
+          result[idx]['records'][int.parse(day) - startDate.day.toInt()]
+              ['stamps'] = await data[day];
+        });
+        idx += 1;
       });
-      data.keys.toList().forEach((day) async {
-        result[idx]['records'][int.parse(day) - startDate.day.toInt()]
-            ['stamps'] = await data[day];
-      });
-      idx += 1;
-    });
   });
   return result;
 }
