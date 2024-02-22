@@ -116,6 +116,7 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                     child: Text(
                       record['behavior'],
                       style: Theme.of(context).textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Expanded(
@@ -162,9 +163,13 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
 
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.only(top: 20),
+        padding: const EdgeInsets.only(
+          top: 40,
+          left: 20,
+          right: 20,
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
@@ -281,15 +286,25 @@ class _BehavirRecordScreenState extends State<BehavirRecordScreen> {
                 },
               ),
             ),
-            Text(
-              "버튼 눌러서 기록하기",
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
             Expanded(
-              child: Center(
-                child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.54,
-                    child: widget.cards ?? const SizedBox()),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "버튼 눌러서 기록하기",
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.54,
+                            child: widget.cards ?? const SizedBox()),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             )
           ],

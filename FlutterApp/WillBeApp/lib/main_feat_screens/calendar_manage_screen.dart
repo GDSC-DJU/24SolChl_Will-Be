@@ -13,84 +13,88 @@ class CalendarManageScreen extends StatefulWidget {
 }
 
 class _CalendarManageScreenState extends State<CalendarManageScreen> {
-  User? _user = FirebaseAuth.instance.currentUser;
+  final User? _user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              width: MediaQuery.sizeOf(context).height - 16,
-              child: Text(
-                '일정관리',
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.left,
+    return Container(
+      padding: const EdgeInsets.only(left: 16, right: 16)
+          .copyWith(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Expanded(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: SizedBox(
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    // DocumentReference timetableRef = FirebaseFirestore.instance
-                    //     .collection('Educator')
-                    //     .doc(_user!.uid)
-                    //     .collection('Schedule')
-                    //     .doc('Timetable');
-                    // timetableRef.get().then((value) {
-                    //   dynamic tCellMap = value.data();
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) =>
-                    //           SetRoutinePage(cellMap: tCellMap),
-                    //     ),
-                    //   );
-                    // });
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            SetRoutinePage(cellMap: widget.cellMap),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    padding: EdgeInsets.zero,
-                    backgroundColor: const Color.fromARGB(255, 102, 108, 255),
-                  ),
-                  child: const SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: Center(
-                      child: Text(
-                        '루틴 설정하기',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500),
+              SizedBox(
+                width: MediaQuery.sizeOf(context).height - 16,
+                child: Text(
+                  '일정관리',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // DocumentReference timetableRef = FirebaseFirestore.instance
+                      //     .collection('Educator')
+                      //     .doc(_user!.uid)
+                      //     .collection('Schedule')
+                      //     .doc('Timetable');
+                      // timetableRef.get().then((value) {
+                      //   dynamic tCellMap = value.data();
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) =>
+                      //           SetRoutinePage(cellMap: tCellMap),
+                      //     ),
+                      //   );
+                      // });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SetRoutinePage(cellMap: widget.cellMap),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding: EdgeInsets.zero,
+                      backgroundColor: const Color.fromARGB(255, 102, 108, 255),
+                    ),
+                    child: const SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          '루틴 설정하기',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              width: MediaQuery.sizeOf(context).width - 16,
-              height: MediaQuery.sizeOf(context).height - 220,
-              child: Container(
-                child: TimeTableCalendar(cellMap:widget.cellMap),
-              ),
-            )
-          ],
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width - 16,
+                height: MediaQuery.sizeOf(context).height - 220,
+                child: Container(
+                  child: TimeTableCalendar(cellMap: widget.cellMap),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

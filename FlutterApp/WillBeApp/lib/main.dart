@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -56,12 +58,12 @@ class _MyAppState extends State<MyApp> {
 
       if (docSnapshot.exists) {
         _currentUserExist = true;
-        print('자동로그인 완료!');
+        log('자동로그인 완료!');
       } else {
-        print('_currentUserExost = false');
+        log('_currentUserExost = false');
       }
     } else {
-      print('자동로그인 실패'); // 로그인한 사용자가 없으면 로그인 화면을 보여줌
+      log('자동로그인 실패'); // 로그인한 사용자가 없으면 로그인 화면을 보여줌
 
       _currentUserExist = false;
     }

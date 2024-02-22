@@ -75,8 +75,11 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                         child: Card(
                           clipBehavior: Clip.antiAlias,
                           elevation: 0,
-                          color: Theme.of(context).colorScheme.surfaceVariant,
+                          color: Colors.white,
                           shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: widget.iconColor.withOpacity(0.5),
+                                width: 3),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(100)),
                           ),
