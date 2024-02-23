@@ -41,6 +41,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       home: Scaffold(
         body: SafeArea(
           child: SfCalendar(
+            todayHighlightColor: Color.fromARGB(255, 22, 72, 99),
             dataSource: _dataSource,
             onTap: calendarTapped,
             allowedViews: const [
