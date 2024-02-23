@@ -36,7 +36,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
   String selectedBehaviorIDStudentID = '';
   List<String> splitedIDs = [];
   String nowDay = DateTime.now().toString().substring(0, 10);
-
+  List<bool> toggleButons = [];
   String behaviorName = "";
 
   ChartService chartService = ChartService();
@@ -120,11 +120,26 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
       // _listedBehaviorIDStudentID)")
       // _listedBehaviorIDStudentID
       behaviorBtn.add(
-        Text(
-          key: Key("${stdID}_$behavName"), // 텍스트의 키  = "행동ID/학생ID"
-          '$stdName \n $behavName',
-          style: const TextStyle(
-              fontWeight: FontWeight.w400, color: Color.fromARGB(255, 0, 0, 0)),
+        Container(
+          constraints: const BoxConstraints(),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          height: 80,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  key: Key("${stdID}_$behavName"), // 텍스트의 키  = "행동ID/학생ID"
+                  '$stdName \n$behavName',
+                ),
+              ),
+            ],
+          ),
         ),
       );
 
@@ -179,6 +194,8 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: ToggleButtons(
+                          selectedColor: Colors.white,
+                          fillColor: const Color.fromRGBO(22, 72, 99, 1),
                           isSelected: _isSelected,
                           onPressed: (int index) {
                             setState(() {
@@ -189,13 +206,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                               _loadReportAndChart();
                             });
                           },
-                          selectedColor: Colors.white,
-                          fillColor: const Color.fromARGB(136, 205, 205, 205),
-                          color: Colors.red[400],
-                          constraints: const BoxConstraints(
-                            minHeight: 40.0,
-                            minWidth: 135.0,
-                          ),
+                          borderRadius: BorderRadius.circular(30),
                           children: behaviorBtn,
                         ),
                       ),

@@ -115,6 +115,7 @@ class ChartService {
               interval: 1,
               showTitles: true,
               getTitlesWidget: (value, meta) {
+                if (value > maxY) return const Text('');
                 return Text(value.toInt().toString());
               }),
         ),
