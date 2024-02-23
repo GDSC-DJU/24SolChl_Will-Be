@@ -83,15 +83,15 @@ flutter:
 
 
 icons_launcher:
-  image_path: 'assets/icons/appicon/willbe-icon-op.png'
+  image_path: 'assets/icons/appicon/willbe-icon-darker.png'
   platforms:
     android:
       enable: true
       adaptive_background_color: '#FFFFFF'
-      adaptive_foreground_image: 'assets/icons/appicon/willbe-icon-op.png'
+      adaptive_foreground_image: 'assets/icons/appicon/willbe-icon-darker.png'
       
     ios:
       enable: true
-      image_path: 'assets/icons/appicon/willbe-icon-op.png'
+      image_path: 'assets/icons/appicon/willbe-icon-darker.png'
       adaptive_background_color: '#ffffff'
 

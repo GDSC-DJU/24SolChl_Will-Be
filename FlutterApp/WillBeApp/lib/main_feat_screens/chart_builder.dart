@@ -482,10 +482,14 @@ class ChartService {
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-              interval: maxY == 0 ? 1 : maxY.toDouble() / 6.ceilToDouble(),
+              interval: maxY == 0 ? 1 : (maxY / 6).ceilToDouble(),
               showTitles: true,
               getTitlesWidget: (value, meta) {
-                if (value == maxY + (maxY / 10)) {
+                if (value == (maxY + maxY / 10).ceilToDouble()) {
+                  return const Text('');
+                }
+
+                if (value > maxY) {
                   return const Text('');
                 }
 
@@ -623,11 +627,17 @@ class ChartService {
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-              interval:
-                  maxY.toDouble() == 0 ? 1 : maxY.toDouble() / 6.ceilToDouble(),
+              interval: maxY == 0 ? 1 : (maxY / 6).ceilToDouble(),
               showTitles: true,
               getTitlesWidget: (value, meta) {
-                if (value > maxY) return const Text('');
+                if (value == (maxY + maxY / 10).ceilToDouble()) {
+                  return const Text('');
+                }
+
+                if (value > maxY) {
+                  return const Text('');
+                }
+
                 return Text(
                   value.toInt().toString(),
                   style: const TextStyle(fontSize: 12),
