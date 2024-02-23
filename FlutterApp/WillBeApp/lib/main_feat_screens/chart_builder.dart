@@ -383,6 +383,7 @@ class ChartService {
               },
             ),
           )),
+      minY: 0,
       maxY: maxY + 1,
       gridData: const FlGridData(
         show: true,
@@ -480,7 +481,7 @@ class ChartService {
               interval: maxY == 0 ? 1 : maxY.toDouble() / 6.ceilToDouble(),
               showTitles: true,
               getTitlesWidget: (value, meta) {
-                if (value > maxY) {
+                if (value == maxY + (maxY / 10)) {
                   return const Text('');
                 }
 
@@ -508,6 +509,8 @@ class ChartService {
           ),
         ),
       ),
+      minY: 0,
+
       maxY: maxY + (maxY / 10),
       borderData: FlBorderData(
         show: true,
@@ -652,6 +655,7 @@ class ChartService {
         verticalInterval: 1,
         horizontalInterval: 1,
       ),
+      minY: 0,
       maxY: maxY + (maxY / 10),
       borderData: FlBorderData(
         show: true,
