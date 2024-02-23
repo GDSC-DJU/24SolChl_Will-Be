@@ -317,7 +317,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                         child: Icon(
                           Icons.person,
                           color: widget.colorList[index],
-                          size: 22,
+                          size: 25,
                         ),
                         // Image.network(
                         //   // 이미지 DB 구축 시 대치
@@ -404,6 +404,8 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                   periodToggleButton,
                 ],
               ), // 필요한 정보들을 추가
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal, child: toggleButton),
 
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
