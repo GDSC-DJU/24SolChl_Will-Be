@@ -101,7 +101,7 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
                     floatingLabelStyle: TextStyle(
-                      color: Color.fromARGB(255, 102, 108, 255),
+                      color: Color.fromARGB(255, 22, 72, 99),
                       fontWeight: FontWeight.w500,
                       fontSize: 23,
                     ),
@@ -109,7 +109,7 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
                     labelText: '아이 이름',
                     isDense: true,
                     contentPadding: EdgeInsets.only(top: -20, bottom: 4),
-                    focusColor: Color.fromARGB(255, 102, 108, 255),
+                    focusColor: Color.fromARGB(255, 22, 72, 99),
                     labelStyle: TextStyle(
                       fontSize: 25,
                       color: Colors.black26,
@@ -141,7 +141,7 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
               //       style: TextStyle(
               //         fontSize: 18,
               //         fontWeight: FontWeight.w500,
-              //         color: Color.fromARGB(255, 102, 108, 255),
+              //         color: Color.fromARGB(255, 22, 72, 99),
               //       ),
               //     ),
               //   ),
@@ -209,7 +209,7 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
               //       style: TextStyle(
               //         fontSize: 18,
               //         fontWeight: FontWeight.w500,
-              //         color: Color.fromARGB(255, 102, 108, 255),
+              //         color: Color.fromARGB(255, 22, 72, 99),
               //       ),
               //     ),
               //   ),
@@ -237,7 +237,7 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
               //   padding: EdgeInsets.symmetric(horizontal: 16),
               //   child: SliderTheme(
               //     data: SliderThemeData(
-              //       thumbColor: Color.fromARGB(255, 102, 108, 255),
+              //       thumbColor: Color.fromARGB(255, 22, 72, 99),
               //       thumbShape: AppSliderShape(
               //           thumbRadius: 10, thumbValue: expValue.toString()),
               //     ),
@@ -271,7 +271,7 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
               //       style: TextStyle(
               //         fontSize: 18,
               //         fontWeight: FontWeight.w500,
-              //         color: Color.fromARGB(255, 102, 108, 255),
+              //         color: Color.fromARGB(255, 22, 72, 99),
               //       ),
               //     ),
               //   ),
@@ -299,7 +299,7 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
               //   padding: EdgeInsets.symmetric(horizontal: 16),
               //   child: SliderTheme(
               //     data: SliderThemeData(
-              //       thumbColor: Color.fromARGB(255, 102, 108, 255),
+              //       thumbColor: Color.fromARGB(255, 22, 72, 99),
               //       thumbShape: AppSliderShape(
               //           thumbRadius: 10, thumbValue: selfHelpValue.toString()),
               //     ),
@@ -330,7 +330,7 @@ class _Add_Student_Info_State extends State<Add_Student_Info> {
                 child: Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(vertical: 32),
-                  color: Color.fromARGB(255, 102, 108, 255),
+                  color: Color.fromARGB(255, 22, 72, 99),
                   child: Center(
                     child: Text(
                       '다음',
@@ -369,8 +369,7 @@ class CustomRadioButton extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(40)),
-          color:
-              isSelected ? Color.fromARGB(255, 102, 108, 255) : Colors.black12,
+          color: isSelected ? Color.fromARGB(255, 22, 72, 99) : Colors.black12,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -444,7 +443,7 @@ class AppSliderShape extends SliderComponentShape {
       20,
       Paint()
         ..style = PaintingStyle.fill
-        ..color = Color.fromARGB(255, 102, 108, 255),
+        ..color = Color.fromARGB(255, 22, 72, 99),
     );
     canvas.drawCircle(
       center,

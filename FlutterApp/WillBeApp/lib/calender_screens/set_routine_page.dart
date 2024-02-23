@@ -155,7 +155,7 @@ class _SetRoutinePageState extends State<SetRoutinePage> {
                     Positioned.fill(
                       child: Container(
                         decoration: const BoxDecoration(
-                          color: Color.fromARGB(255, 102, 108, 255),
+                          color: Color.fromARGB(255, 22, 72, 99),
                         ),
                       ),
                     ),

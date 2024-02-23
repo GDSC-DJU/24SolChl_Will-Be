@@ -81,15 +81,14 @@ class CalendarAppointment extends State<TimeTableCalendar> {
   Future<void> _showEditAppointmentModal(
       Appointment? appointment, CalendarTapDetails calendarTapDetails) async {
     bool isNewAppointment = appointment == null;
-    Color selectedColor =
-        appointment?.color ?? Color.fromARGB(255, 102, 108, 255);
+    Color selectedColor = appointment?.color ?? Color.fromARGB(255, 22, 72, 99);
 
     List<Color> colorOptions = [
       Colors.red,
       Colors.orange,
       Colors.yellow,
       Colors.green,
-      Color.fromARGB(255, 102, 108, 255),
+      Color.fromARGB(255, 22, 72, 99),
       Colors.indigo,
       Colors.purple,
     ];
@@ -134,7 +133,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
               ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(255, 102, 108, 255)),
+                      Color.fromARGB(255, 22, 72, 99)),
                 ),
                 onPressed: () {
                   // 일정 업데이트 또는 추가
@@ -173,7 +172,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
                       floatingLabelStyle: TextStyle(
-                        color: Color.fromARGB(255, 102, 108, 255),
+                        color: Color.fromARGB(255, 22, 72, 99),
                         fontWeight: FontWeight.w500,
                         fontSize: 23,
                       ),
@@ -181,7 +180,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       labelText: '일정 명',
                       isDense: true,
                       contentPadding: EdgeInsets.only(top: -20, bottom: 4),
-                      focusColor: Color.fromARGB(255, 102, 108, 255),
+                      focusColor: Color.fromARGB(255, 22, 72, 99),
                       labelStyle: TextStyle(
                         fontSize: 25,
                         color: Colors.black26,
@@ -198,7 +197,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: Color.fromARGB(255, 102, 108, 255),
+                      color: Color.fromARGB(255, 22, 72, 99),
                     ),
                   ),
                   Row(
@@ -241,8 +240,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                                   dialogBackgroundColor: Colors.lightBlueAccent,
                                   textButtonTheme: TextButtonThemeData(
                                     style: TextButton.styleFrom(
-                                      primary:
-                                          Color.fromARGB(255, 102, 108, 255),
+                                      primary: Color.fromARGB(255, 22, 72, 99),
                                       textStyle: TextStyle(
                                         fontSize: 22,
                                       ),
@@ -342,8 +340,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                                   dialogBackgroundColor: Colors.lightBlueAccent,
                                   textButtonTheme: TextButtonThemeData(
                                     style: TextButton.styleFrom(
-                                      primary:
-                                          Color.fromARGB(255, 102, 108, 255),
+                                      primary: Color.fromARGB(255, 22, 72, 99),
                                       textStyle: TextStyle(
                                         fontSize: 22,
                                       ),
@@ -412,7 +409,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: Color.fromARGB(255, 102, 108, 255),
+                      color: Color.fromARGB(255, 22, 72, 99),
                     ),
                   ),
                   Row(
@@ -606,7 +603,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
   //     startTime: DateTime.now(),
   //     endTime: DateTime.now().add(const Duration(hours: 1)),
   //     subject: 'Meeting',
-  //     color: Color.fromARGB(255, 102, 108, 255),
+  //     color: Color.fromARGB(255, 22, 72, 99),
   //   ));
   //   return _DataSource(appointments);
   // }

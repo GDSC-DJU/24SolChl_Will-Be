@@ -83,7 +83,7 @@ class _Create_student_Msg_State extends State<Create_student_Msg> {
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 32),
-                    color: const Color.fromARGB(255, 102, 108, 255),
+                    color: Color.fromARGB(255, 22, 72, 99),
                     child: const Center(
                       child: Text(
                         '시작하기',

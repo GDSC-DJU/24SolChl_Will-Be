@@ -78,7 +78,7 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
-                                color: widget.iconColor.withOpacity(0.5),
+                                color: widget.iconColor,
                                 width: 3),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(100)),

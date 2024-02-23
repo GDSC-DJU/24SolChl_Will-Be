@@ -220,7 +220,7 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
               borderSide:
-                  const BorderSide(color: Color.fromARGB(255, 102, 108, 255)),
+                  const BorderSide(color: Color.fromARGB(255, 22, 72, 99)),
             ),
             hintText: "입력하세요",
           ),

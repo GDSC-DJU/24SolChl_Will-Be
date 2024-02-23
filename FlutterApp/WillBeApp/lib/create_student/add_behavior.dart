@@ -16,7 +16,6 @@ class Add_Behavior extends StatefulWidget {
 }
 
 class _Add_Behavior_State extends State<Add_Behavior> {
-
   // 입력값을 추적하기 위한 controllers
   List<String> schoolOptions = [
     '언어적 공격(욕설, 고함)',
@@ -146,7 +145,7 @@ class _Add_Behavior_State extends State<Add_Behavior> {
                     child: Container(
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(vertical: 32),
-                      color: Color.fromARGB(255, 102, 108, 255),
+                      color: Color.fromARGB(255, 22, 72, 99),
                       child: Center(
                         child: Text(
                           '다음',
@@ -185,8 +184,7 @@ class CustomRadioButton extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(40)),
-          color:
-              isSelected ? Color.fromARGB(255, 102, 108, 255) : Colors.black12,
+          color: isSelected ? Color.fromARGB(255, 22, 72, 99) : Colors.black12,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

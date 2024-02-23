@@ -105,9 +105,8 @@ class _Expression_Dictionary_Create_State
                             elevation: 0,
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: widget.iconColor.withOpacity(0.5),
-                                  width: 3),
+                              side:
+                                  BorderSide(color: widget.iconColor, width: 3),
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(100)),
                             ),
@@ -207,7 +206,7 @@ class _Expression_Dictionary_Create_State
                                 color: Color.fromRGBO(175, 175, 175, 1),
                               ),
                               floatingLabelStyle: TextStyle(
-                                color: Color.fromARGB(255, 102, 108, 255),
+                                color: Color.fromARGB(255, 22, 72, 99),
                                 fontWeight: FontWeight.w500,
                                 fontSize: 23,
                               ),
@@ -216,7 +215,7 @@ class _Expression_Dictionary_Create_State
                               isDense: true,
                               contentPadding:
                                   EdgeInsets.only(top: -20, bottom: 4),
-                              focusColor: Color.fromARGB(255, 102, 108, 255),
+                              focusColor: Color.fromARGB(255, 22, 72, 99),
                               labelStyle: TextStyle(
                                 fontSize: 25,
                                 color: Colors.black26,
@@ -252,7 +251,7 @@ class _Expression_Dictionary_Create_State
                               ),
                               border: UnderlineInputBorder(),
                               floatingLabelStyle: TextStyle(
-                                color: Color.fromARGB(255, 102, 108, 255),
+                                color: Color.fromARGB(255, 22, 72, 99),
                                 fontWeight: FontWeight.w500,
                                 fontSize: 23,
                               ),
@@ -261,7 +260,7 @@ class _Expression_Dictionary_Create_State
                               isDense: true,
                               contentPadding:
                                   EdgeInsets.only(top: -20, bottom: 4),
-                              focusColor: Color.fromARGB(255, 102, 108, 255),
+                              focusColor: Color.fromARGB(255, 22, 72, 99),
                               labelStyle: TextStyle(
                                 fontSize: 25,
                                 color: Colors.black26,
@@ -299,8 +298,7 @@ class _Expression_Dictionary_Create_State
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                     borderSide: BorderSide(
-                                        color:
-                                            Color.fromARGB(255, 102, 108, 255)),
+                                        color: Color.fromARGB(255, 22, 72, 99)),
                                   ),
                                   hintText: "입력하세요",
                                 ),
@@ -398,7 +396,7 @@ class _Expression_Dictionary_Create_State
                     Positioned.fill(
                       child: Container(
                         decoration: const BoxDecoration(
-                          color: Color.fromARGB(255, 102, 108, 255),
+                          color: Color.fromARGB(255, 22, 72, 99),
                         ),
                       ),
                     ),

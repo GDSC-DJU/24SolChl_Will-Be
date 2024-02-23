@@ -20,13 +20,13 @@ class DashBoardScreen extends StatefulWidget {
   List<dynamic> weeklyReports;
 
   List colorList = [
-    const Color.fromRGBO(255, 44, 75, 1),
-    const Color.fromRGBO(92, 182, 50, 1),
-    const Color.fromRGBO(60, 153, 225, 1),
-    const Color.fromRGBO(252, 183, 14, 1),
-    const Color.fromRGBO(123, 67, 183, 1),
-    const Color.fromRGBO(253, 151, 54, 1),
-    const Color.fromRGBO(45, 197, 197, 1),
+    Color.fromRGBO(255, 171, 184, 1),
+    Color.fromRGBO(134, 214, 96, 1),
+    Color.fromRGBO(104, 167, 216, 1),
+    Color.fromRGBO(239, 206, 122, 1),
+    Color.fromRGBO(195, 162, 230, 1),
+    Color.fromRGBO(255, 179, 146, 1),
+    Color.fromRGBO(151, 206, 206, 1),
   ];
   DashBoardScreen(
       {super.key,
@@ -307,15 +307,23 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                       child: Card(
                         clipBehavior: Clip.antiAlias,
                         elevation: 0,
-                        color: Theme.of(context).colorScheme.surfaceVariant,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: widget.colorList[index], width: 3),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(100)),
                         ),
                         child: Icon(
                           Icons.person,
-                          color: widget.colorList[index].withOpacity(0.5),
-                          size: 25,
+                          color: widget.colorList[index],
+                          size: 22,
                         ),
+                        // Image.network(
+                        //   // 이미지 DB 구축 시 대치
+                        //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                        //   fit: BoxFit.cover,
+                        // ),
                       ),
                     ),
                     Padding(
@@ -343,8 +351,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                               builder: (context) => Expression_Dictionary(
                                 name: name,
                                 id: widget.studentIdList[index],
-                                iconColor:
-                                    widget.colorList[index].withOpacity(0.5),
+                                iconColor: widget.colorList[index],
                                 dictList: temp,
                               ),
                             ),
@@ -397,23 +404,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                   periodToggleButton,
                 ],
               ), // 필요한 정보들을 추가
-              SingleChildScrollView(
-                  scrollDirection: Axis.horizontal, child: toggleButton),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  "데일리 리포트",
-                  style: TextStyle(color: Colors.black, fontSize: 22),
-                ),
-              ),
 
-              Container(
-                height: MediaQuery.of(context).size.height * 0.01 * 10,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: const BorderRadius.all(Radius.circular(10))),
-                child: const Center(child: Text("리포트 슬라이드")),
-              ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(
@@ -445,8 +436,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                   name: name,
                                   id: widget.studentIdList[index],
                                   behaviorList: widget.itemContentList[index],
-                                  iconColor:
-                                      widget.colorList[index].withOpacity(0.5),
+                                  iconColor: widget.colorList[index],
                                 ),
                               ),
                             );
@@ -526,8 +516,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                         id: widget.studentIdList[index],
                                         name: name,
                                         behaviorName: item,
-                                        iconColor: widget.colorList[index]
-                                            .withOpacity(0.5),
+                                        iconColor: widget.colorList[index],
                                         value: temp,
                                       ),
                                     ),
@@ -539,8 +528,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                       EdgeInsets.symmetric(
                                           vertical: 4, horizontal: 16)),
                                   backgroundColor: MaterialStateProperty.all(
-                                      const Color.fromARGB(
-                                          255, 102, 108, 255))),
+                                      Color.fromARGB(255, 22, 72, 99))),
                               child: Text(
                                 '$item >',
                                 style: const TextStyle(

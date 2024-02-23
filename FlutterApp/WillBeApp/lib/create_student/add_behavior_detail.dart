@@ -326,7 +326,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                     Positioned.fill(
                       child: Container(
                         decoration: const BoxDecoration(
-                          color: Color.fromARGB(255, 102, 108, 255),
+                          color: Color.fromARGB(255, 22, 72, 99),
                         ),
                       ),
                     ),
@@ -417,7 +417,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
                     floatingLabelStyle: TextStyle(
-                      color: Color.fromARGB(255, 102, 108, 255),
+                      color: Color.fromARGB(255, 22, 72, 99),
                       fontWeight: FontWeight.w500,
                       fontSize: 23,
                     ),
@@ -425,7 +425,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                     labelText: '행동 이름',
                     isDense: true,
                     contentPadding: EdgeInsets.only(top: -20, bottom: 4),
-                    focusColor: Color.fromARGB(255, 102, 108, 255),
+                    focusColor: Color.fromARGB(255, 22, 72, 99),
                     labelStyle: TextStyle(
                       fontSize: 25,
                       color: Colors.black26,
@@ -462,7 +462,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: Color.fromARGB(255, 102, 108, 255),
+                      color: Color.fromARGB(255, 22, 72, 99),
                     ),
                   ),
                 ),
@@ -533,7 +533,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
               //       style: TextStyle(
               //         fontSize: 18,
               //         fontWeight: FontWeight.w500,
-              //         color: Color.fromARGB(255, 102, 108, 255),
+              //         color: Color.fromARGB(255, 22, 72, 99),
               //       ),
               //     ),
               //   ),
@@ -598,7 +598,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 32),
-                  color: const Color.fromARGB(255, 102, 108, 255),
+                  color: const Color.fromARGB(255, 22, 72, 99),
                   child: const Center(
                     child: Text(
                       '등록하고 측정하러 가기',

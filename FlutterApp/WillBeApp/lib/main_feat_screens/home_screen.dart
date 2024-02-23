@@ -26,13 +26,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List colorList = [
-    Color.fromRGBO(255, 44, 75, 1),
-    Color.fromRGBO(92, 182, 50, 1),
-    Color.fromRGBO(60, 153, 225, 1),
-    Color.fromRGBO(252, 183, 14, 1),
-    Color.fromRGBO(123, 67, 183, 1),
-    Color.fromRGBO(253, 151, 54, 1),
-    Color.fromRGBO(45, 197, 197, 1),
+    Color.fromRGBO(255, 171, 184, 1),
+    Color.fromRGBO(134, 214, 96, 1),
+    Color.fromRGBO(104, 167, 216, 1),
+    Color.fromRGBO(239, 206, 122, 1),
+    Color.fromRGBO(195, 162, 230, 1),
+    Color.fromRGBO(255, 179, 146, 1),
+    Color.fromRGBO(151, 206, 206, 1),
   ];
   final CarouselController _controller = CarouselController();
   int _current = 0;
@@ -55,19 +55,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Expanded(
       child: Container(
-        color: Color.fromARGB(255, 85, 81, 94),
+        color: Color.fromARGB(255, 255, 255, 255),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02, //20
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 16,
-              child: Text(
-                '아이들',
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.left,
+            Transform.translate(
+              offset: const Offset(10.0, 20.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width - 16,
+                child: Text(
+                  '아이들',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.left,
+                ),
               ),
             ),
             SizedBox(
@@ -75,24 +78,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width - 32,
-              height: MediaQuery.of(context).size.height / 1.46,
-              child: CarouselSlider(
-                items: List.generate(
-                  widget.studentDataList.length,
-                  (index) => buildCard(widget.studentDataList[index], index),
-                ),
-                carouselController: _controller,
-                options: CarouselOptions(
-                  // autoPlay: true,
-                  enlargeCenterPage: true,
-                  enableInfiniteScroll: false,
-                  aspectRatio: 2 / 3, // 카드 비율
-                  viewportFraction: 0.8, // 카드가 보이는 정도
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _current = index;
-                    });
-                  },
+              // height: MediaQuery.of(context).size.height / 1.46,
+              height: MediaQuery.of(context).size.height / 1.39,
+              child: Padding(
+                padding: EdgeInsets.only(top: 50),
+                child: CarouselSlider(
+                  items: List.generate(
+                    widget.studentDataList.length,
+                    (index) => buildCard(widget.studentDataList[index], index),
+                  ),
+                  carouselController: _controller,
+                  options: CarouselOptions(
+                    // autoPlay: true,
+                    height: MediaQuery.of(context).size.height / 1.6,
+                    enlargeCenterPage: true,
+                    enableInfiniteScroll: false,
+                    enlargeFactor: 0.25,
+                    aspectRatio: 2 / 3, // 카드 비율
+                    viewportFraction: 0.8, // 카드가 보이는 정도
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _current = index;
+                      });
+                    },
+                  ),
                 ),
               ),
             ),
@@ -119,21 +128,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
                     padding: EdgeInsets.zero,
-                    backgroundColor: Color.fromARGB(255, 102, 108, 255),
+                    backgroundColor: Color.fromARGB(255, 22, 72, 99),
                   ),
                   child: Container(
                     width: double.infinity,
                     height: MediaQuery.of(context).size.height * 0.05,
-                    child: Center(
-                      child: Text(
-                        '아이 추가하기',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500),
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '아이 추가하기 ',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Icon(
+                          Icons.person_add_alt_1,
+                          color: Colors.white,
+                        )
+                      ],
                     ),
                   ),
                 ),
@@ -203,185 +219,86 @@ class _HomeScreenState extends State<HomeScreen> {
                   //     ),
                   //   ),
                   // ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 102, 108, 255),
-                        gradient: LinearGradient(
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                          stops: [0.4, 0.9, 1],
-                          colors: [
-                            // Color.fromARGB(255, 227, 242, 253),
-                            Color(0xFF809BFB),
-                            Color.fromARGB(255, 62, 66, 181),
-                            Color.fromARGB(255, 102, 108, 255),
-                          ],
-                          tileMode: TileMode.mirror,
-                        ),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10))),
-                    height: 30,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.height * 0.01 * 10,
-                      height: MediaQuery.of(context).size.height * 0.01 * 10,
-                      child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          elevation: 0,
-                          color: colorList[index].withOpacity(0.1),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                color: colorList[index].withOpacity(0.5),
-                                width: 4),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100)),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //       color: Color.fromARGB(255, 22, 72, 99),
+                  //       gradient: LinearGradient(
+                  //         begin: Alignment.topRight,
+                  //         end: Alignment.bottomLeft,
+                  //         stops: [0.4, 0.9, 1],
+                  //         colors: [
+                  //           // Color.fromARGB(255, 227, 242, 253),
+                  //           Color.fromARGB(255, 42, 133, 183),
+                  //           Color.fromARGB(255, 24, 105, 148),
+                  //           Color.fromARGB(255, 22, 72, 99),
+                  //         ],
+                  //         tileMode: TileMode.mirror,
+                  //       ),
+                  //       borderRadius: BorderRadius.only(
+                  //           topLeft: Radius.circular(10),
+                  //           topRight: Radius.circular(10))),
+                  //   height: 30,
+                  // ),
+                  // SizedBox(
+                  //   height: 20,
+                  // ),
+                  Transform.translate(
+                    offset: const Offset(0.0, -20.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.height * 0.01 * 25,
+                      height: MediaQuery.of(context).size.height * 0.01 * 10.3,
+                      decoration: BoxDecoration(
+                          color: colorList[index],
+                          borderRadius: BorderRadius.all(Radius.circular(100))),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width:
+                                MediaQuery.of(context).size.height * 0.01 * 10,
+                            height:
+                                MediaQuery.of(context).size.height * 0.01 * 10,
+                            child: Card(
+                                clipBehavior: Clip.antiAlias,
+                                elevation: 0,
+                                // color: colorList[index].withOpacity(0.1),
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  // side: BorderSide(
+                                  //     color:
+                                  //         colorList[index].withOpacity(0.5),
+                                  // width: 4),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(100)),
+                                ),
+                                child: Icon(
+                                  Icons.person,
+                                  color: colorList[index],
+                                  size: 45,
+                                )
+                                // Image.network(
+                                //   // 이미지 DB 구축 시 대치
+                                //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                                //   fit: BoxFit.cover,
+                                // ),
+                                ),
                           ),
-                          child: Icon(
-                            Icons.person,
-                            color: colorList[index].withOpacity(0.5),
-                            size: 45,
-                          )
-                          // Image.network(
-                          //   // 이미지 DB 구축 시 대치
-                          //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                          //   fit: BoxFit.cover,
-                          // ),
-                          ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Center(
-                      child: Text(
-                        name,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          shadows: <Shadow>[
-                            Shadow(
-                              offset: Offset(1.0, 0),
-                              blurRadius: 10.0,
-                              color: Color.fromARGB(255, 172, 197, 203),
+                          Center(
+                            child: Text(
+                              ' ' + name,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.025 * 11.5,
-                        height: MediaQuery.of(context).size.height * 0.01 * 4.5,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            DocumentReference dictRef = FirebaseFirestore
-                                .instance
-                                .collection('Student')
-                                .doc(widget.studentIdList[index])
-                                .collection('Dictionary')
-                                .doc('expression');
-
-                            dictRef.get().then((value) {
-                              dynamic temp = value.data();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Expression_Dictionary(
-                                    name: name,
-                                    id: widget.studentIdList[index],
-                                    iconColor:
-                                        colorList[index].withOpacity(0.5),
-                                    dictList: temp,
-                                  ),
-                                ),
-                              );
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            side: BorderSide(color: Colors.black),
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(100))),
-                            padding: EdgeInsets.all(4),
-                            backgroundColor: Colors.white,
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Icon(
-                                Icons.book,
-                                color: Colors.black,
-                                size: 15,
-                              ),
-                              Container(
-                                // width: 80,
-                                height: 30,
-                                child: Center(
-                                  child: Text(
-                                    '의사소통사전',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.025 * 11.5,
-                        height: MediaQuery.of(context).size.height * 0.01 * 4.5,
-                        child: ElevatedButton(
-                          onPressed: () async {},
-                          style: ElevatedButton.styleFrom(
-                            side: BorderSide(color: Colors.black),
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(100))),
-                            padding: EdgeInsets.all(4),
-                            backgroundColor: Colors.white,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Icon(
-                                Icons.settings_backup_restore_rounded,
-                                color: Colors.black,
-                                size: 15,
-                              ),
-                              Container(
-                                // width: 80,
-                                height: 30,
-                                child: Center(
-                                  child: Text(
-                                    '과거기록보기',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.01 * 2,
-                  ),
+                  // SizedBox(
+                  //   height: MediaQuery.of(context).size.height * 0.01 * 2,
+                  // ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 32,
                     height: MediaQuery.of(context).size.height / 4.4,
@@ -425,6 +342,162 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical:
+                            MediaQuery.of(context).size.height * 0.01 * 2),
+                    child: Container(
+                      height: 1,
+                      color: Colors.black12,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.025 * 11.5,
+                        height:
+                            MediaQuery.of(context).size.height * 0.01 * 10.5,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.height *
+                                  0.01 *
+                                  6.5,
+                              height: MediaQuery.of(context).size.height *
+                                  0.01 *
+                                  6.5,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  DocumentReference dictRef = FirebaseFirestore
+                                      .instance
+                                      .collection('Student')
+                                      .doc(widget.studentIdList[index])
+                                      .collection('Dictionary')
+                                      .doc('expression');
+
+                                  dictRef.get().then((value) {
+                                    dynamic temp = value.data();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Expression_Dictionary(
+                                          name: name,
+                                          id: widget.studentIdList[index],
+                                          iconColor: colorList[index],
+                                          dictList: temp,
+                                        ),
+                                      ),
+                                    );
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  surfaceTintColor: Colors.white,
+                                  onPrimary: colorList[index],
+                                  side: BorderSide(color: colorList[index]),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100))),
+                                  padding: EdgeInsets.all(4),
+                                  backgroundColor: Colors.white,
+                                ),
+                                child: Icon(
+                                  Icons.book,
+                                  color: colorList[index],
+                                  size: 25,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              // width: 80,
+                              height: 30,
+                              child: Center(
+                                child: Text(
+                                  '의사소통사전',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.025 * 11.5,
+                        height:
+                            MediaQuery.of(context).size.height * 0.01 * 10.5,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.height *
+                                  0.01 *
+                                  6.5,
+                              height: MediaQuery.of(context).size.height *
+                                  0.01 *
+                                  6.5,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  DocumentReference dictRef = FirebaseFirestore
+                                      .instance
+                                      .collection('Student')
+                                      .doc(widget.studentIdList[index])
+                                      .collection('Dictionary')
+                                      .doc('expression');
+
+                                  dictRef.get().then((value) {
+                                    dynamic temp = value.data();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Expression_Dictionary(
+                                          name: name,
+                                          id: widget.studentIdList[index],
+                                          iconColor: colorList[index],
+                                          dictList: temp,
+                                        ),
+                                      ),
+                                    );
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  surfaceTintColor: Colors.white,
+                                  onPrimary: colorList[index],
+                                  side: BorderSide(color: colorList[index]),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100))),
+                                  padding: EdgeInsets.all(4),
+                                  backgroundColor: Colors.white,
+                                ),
+                                child: Icon(
+                                  Icons.settings_backup_restore_rounded,
+                                  color: colorList[index],
+                                  size: 25,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              // width: 80,
+                              height: 30,
+                              child: Center(
+                                child: Text(
+                                  '과거기록보기',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                   Spacer(),
                   Row(
                     children: [
@@ -449,12 +522,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
+                              surfaceTintColor: Colors.white,
+                              onPrimary: colorList[index],
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(100))),
                               padding: EdgeInsets.zero,
-                              backgroundColor:
-                                  Color.fromARGB(255, 102, 108, 255),
+                              backgroundColor: colorList[index],
                             ),
                             child: Container(
                               width: double.infinity,
@@ -493,7 +567,7 @@ class _HomeScreenState extends State<HomeScreen> {
           shape: BoxShape.circle,
           color: (Theme.of(context).brightness == Brightness.dark
                   ? Colors.white
-                  : Color.fromARGB(255, 102, 108, 255))
+                  : Color.fromARGB(255, 22, 72, 99))
               .withOpacity(currentIndex == index ? 0.9 : 0.4),
         ),
       ),

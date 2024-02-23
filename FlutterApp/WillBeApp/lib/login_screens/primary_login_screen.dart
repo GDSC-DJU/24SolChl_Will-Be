@@ -119,7 +119,7 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
                       Radius.circular(7),
                     ),
                   ),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  backgroundColor: Color.fromARGB(255, 22, 72, 99),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,

@@ -88,7 +88,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 255, 255, 255),
           background: const Color.fromARGB(255, 255, 255, 255),
-          primary: const Color.fromARGB(255, 102, 108, 255),
+          primary: const Color.fromARGB(255, 22, 72, 99),
         ),
         useMaterial3: true,
         textTheme: const TextTheme(
