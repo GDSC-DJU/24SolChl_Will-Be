@@ -180,20 +180,22 @@ Future<List<dynamic>> getStamp(String studentId, List behaviorList,
               endDate.microsecondsSinceEpoch >=
                   DateTime.parse(date.id).microsecondsSinceEpoch)
           .toList();
-      
+
       temp.forEach((element) async {
         String targetDay = '${DateTime.parse(element.id).day}';
         String targetTime =
             '${DateTime.parse(element.id).hour}:${DateTime.parse(element.id).minute}';
         if (data.containsKey(targetDay)) {
+          print('targetDay : $targetDay');
           data[targetDay]!.add(targetTime);
         } else {
           data[targetDay] = [targetTime];
         }
       });
-      data.keys.toList().forEach((day) async {
+      data.keys.toList().forEach((day) {
         result[idx]['records'][int.parse(day) - startDate.day.toInt()]
-            ['stamps'] = await data[day];
+            ['stamps'] = data[day];
+        print('result : ${data[day]}');
       });
       idx += 1;
     });
