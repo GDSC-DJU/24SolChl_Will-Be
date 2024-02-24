@@ -231,7 +231,9 @@ class _DashBoardScreenState extends State<DashBoardScreen>
     Widget toggleButton = ToggleButtons(
       selectedColor: Colors.white,
       textStyle: const TextStyle(fontSize: 12),
+      fillColor: Colors.white,
       borderWidth: 0,
+      selectedBorderColor: Colors.white,
       borderColor: Colors.white,
       color: Colors.black,
       onPressed: (int selectedIndex) async {
@@ -257,15 +259,23 @@ class _DashBoardScreenState extends State<DashBoardScreen>
       children: <Widget>[
         for (int i = 0; i < itemContentList.length; i++)
           Container(
+            height: 40,
+            margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.white),
-            child: Text(
-              itemContentList[i],
-              style: TextStyle(
-                  fontSize: 20.0,
+                borderRadius: BorderRadius.circular(10),
+                color: isSelectedList[index][i]
+                    ? BtnColors().btnColorList[i].withOpacity(0.8)
+                    : const Color.fromARGB(255, 255, 255, 255)),
+            child: Center(
+              child: Text(
+                (" ${itemContentList[i]} "),
+                style: TextStyle(
+                  fontSize: 17.0,
                   color: isSelectedList[index][i]
-                      ? BtnColors().btnColorList[i].withOpacity(0.8)
-                      : const Color.fromARGB(255, 189, 189, 189)),
+                      ? Colors.white
+                      : const Color.fromARGB(255, 103, 103, 103),
+                ),
+              ),
             ),
           ),
       ],

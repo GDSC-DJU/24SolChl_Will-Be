@@ -80,26 +80,27 @@ class _MyAppState extends State<MyApp> {
         ),
         useMaterial3: true,
         textTheme: const TextTheme(
-            bodyLarge: TextStyle(
-                fontSize: 30,
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontWeight: FontWeight.w600),
-            bodyMedium: TextStyle(
-                fontSize: 18,
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontWeight: FontWeight.w600),
-            bodySmall: TextStyle(
-              fontSize: 15,
+          bodyLarge: TextStyle(
+              fontSize: 30,
               color: Color.fromARGB(255, 0, 0, 0),
-            ),
-            headlineLarge: TextStyle(
-                fontSize: 60,
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontWeight: FontWeight.bold),
-            headlineMedium: TextStyle(
-                fontSize: 30,
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontWeight: FontWeight.w600)),
+              fontWeight: FontWeight.w600),
+          bodyMedium: TextStyle(
+              fontSize: 18,
+              color: Color.fromARGB(255, 0, 0, 0),
+              fontWeight: FontWeight.w600),
+          bodySmall: TextStyle(
+            fontSize: 15,
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+          headlineLarge: TextStyle(
+              fontSize: 60,
+              color: Color.fromARGB(255, 0, 0, 0),
+              fontWeight: FontWeight.bold),
+          headlineMedium: TextStyle(
+              fontSize: 30,
+              color: Color.fromARGB(255, 0, 0, 0),
+              fontWeight: FontWeight.w600),
+        ),
       ),
       home: FutureBuilder<bool>(
         future: checkAuthStatus(),

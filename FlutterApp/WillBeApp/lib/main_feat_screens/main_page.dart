@@ -394,7 +394,7 @@ class _Main_PageState extends State<Main_Page> {
                                   });
                                 });
                                 Future.delayed(
-                                    const Duration(milliseconds: 500), () {
+                                    const Duration(milliseconds: 300), () {
                                   isButtonEnabled = true;
                                 });
                               }
