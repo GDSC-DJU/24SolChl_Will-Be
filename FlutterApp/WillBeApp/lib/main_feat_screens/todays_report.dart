@@ -53,7 +53,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
 
     try {
       dynamic data =
-          documentSnapshot.get(DateTime.now().toString().substring(0, 10));
+          documentSnapshot.get(widget.behaviors[_isSelected.indexOf(true)]);
 
       if (data != null) {
         print("도큐몬트 가져오기 ${data.toString()}");
@@ -83,7 +83,10 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
   Future<void> _saveReport() async {
     if (_formKey.currentState!.validate()) {
       // 입력한 값들을 Firestore에 저장
-      String nowDay = DateTime.now().toString().substring(0, 10);
+      String nowDay = DateTime.now()
+          .add(const Duration(days: -1))
+          .toString()
+          .substring(0, 10);
 
       // _listedBehaviorIDStudentID)
 
@@ -109,7 +112,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
             .get();
 
         doc.reference.update({
-          nowDay: {
+          widget.behaviors[_isSelected.indexOf(true)]: {
             'situation': _situationController.text,
             'action': _actionController.text,
             'etc': _etcController.text,
@@ -124,7 +127,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
             .collection("Daily")
             .doc(nowDay)
             .set({
-          nowDay: {
+          widget.behaviors[_isSelected.indexOf(true)]: {
             'situation': _situationController.text,
             'action': _actionController.text,
             'etc': _etcController.text,
