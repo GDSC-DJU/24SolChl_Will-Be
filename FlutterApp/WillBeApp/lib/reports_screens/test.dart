@@ -180,7 +180,7 @@ Future<List<dynamic>> getStamp(String studentId, List behaviorList,
               endDate.microsecondsSinceEpoch >=
                   DateTime.parse(date.id).microsecondsSinceEpoch)
           .toList();
-
+      
       temp.forEach((element) async {
         String targetDay = '${DateTime.parse(element.id).day}';
         String targetTime =

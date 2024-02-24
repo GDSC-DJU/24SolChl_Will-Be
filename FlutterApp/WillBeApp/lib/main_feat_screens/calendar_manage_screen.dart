@@ -41,21 +41,6 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () async {
-                      // DocumentReference timetableRef = FirebaseFirestore.instance
-                      //     .collection('Educator')
-                      //     .doc(_user!.uid)
-                      //     .collection('Schedule')
-                      //     .doc('Timetable');
-                      // timetableRef.get().then((value) {
-                      //   dynamic tCellMap = value.data();
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) =>
-                      //           SetRoutinePage(cellMap: tCellMap),
-                      //     ),
-                      //   );
-                      // });
                       Navigator.push(
                         context,
                         MaterialPageRoute(

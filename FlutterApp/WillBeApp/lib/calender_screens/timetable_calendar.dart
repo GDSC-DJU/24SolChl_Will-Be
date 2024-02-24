@@ -1,3 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -11,6 +14,7 @@ class TimeTableCalendar extends StatefulWidget {
 }
 
 class CalendarAppointment extends State<TimeTableCalendar> {
+  late CalendarController _calendarController;
   late _DataSource _dataSource;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
@@ -21,6 +25,31 @@ class CalendarAppointment extends State<TimeTableCalendar> {
   late TimeOfDay _startTime;
   late DateTime _endDate;
   late TimeOfDay _endTime;
+  List timeList = [];
+  User? _user = FirebaseAuth.instance.currentUser;
+
+  Future<void> getSchedule() async {
+    DocumentReference scheduleRef = FirebaseFirestore.instance
+        .collection('Educator')
+        .doc(_user!.uid)
+        .collection('Schedule')
+        .doc('Schedule');
+
+    await scheduleRef.get().then((scheduleList) {
+      dynamic temp = scheduleList.data();
+      print(temp['schedule']);
+      timeList = temp['schedule'];
+    });
+    for (var schedule in timeList) {
+      Appointment newAppointment = Appointment(
+        startTime: DateTime.parse(schedule['startTime']),
+        endTime: DateTime.parse(schedule['endTime']),
+        subject: schedule['subject'],
+        color: schedule['color'],
+      );
+      _dataSource.addAppointment(newAppointment);
+    }
+  }
 
   @override
   void initState() {
@@ -31,6 +60,10 @@ class CalendarAppointment extends State<TimeTableCalendar> {
     _startTime = TimeOfDay.now();
     _endDate = DateTime.now().add(const Duration(hours: 1));
     _endTime = TimeOfDay.fromDateTime(_endDate);
+    _calendarController = CalendarController();
+    setState(() {
+      getSchedule();
+    });
     super.initState();
   }
 
@@ -41,6 +74,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       home: Scaffold(
         body: SafeArea(
           child: SfCalendar(
+            controller: _calendarController,
             todayHighlightColor: Color.fromARGB(255, 22, 72, 99),
             dataSource: _dataSource,
             onTap: calendarTapped,
@@ -74,6 +108,10 @@ class CalendarAppointment extends State<TimeTableCalendar> {
         await _showEditAppointmentModal(tappedAppointment, calendarTapDetails);
       }
     } else {
+      // month 뷰 예외처리
+      if (_calendarController.view == CalendarView.month) {
+        return;
+      }
       // 클릭한 요소가 일정이 아닌 경우
       await _showEditAppointmentModal(null, calendarTapDetails);
     }
@@ -85,13 +123,13 @@ class CalendarAppointment extends State<TimeTableCalendar> {
     Color selectedColor = appointment?.color ?? Color.fromARGB(255, 22, 72, 99);
 
     List<Color> colorOptions = [
-      Colors.red,
-      Colors.orange,
-      Colors.yellow,
-      Colors.green,
-      Color.fromARGB(255, 22, 72, 99),
-      Colors.indigo,
-      Colors.purple,
+      Color(0xFFF44336),
+      Color(0xFFFF9800),
+      Color(0xFFFFEB3B),
+      Color(0xFF4CAF50),
+      Color(0xFF164863),
+      Color(0xFF3F51B5),
+      Color(0xFF9C27B0),
     ];
     if (!isNewAppointment) {
       _nameController.text = appointment!.subject;
@@ -137,6 +175,8 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       Color.fromARGB(255, 22, 72, 99)),
                 ),
                 onPressed: () {
+                  // print(
+                  //     '${appointment!.subject} - ${appointment.startTime} - ${appointment.endTime} - ${appointment.color}');
                   // 일정 업데이트 또는 추가
                   if (isNewAppointment) {
                     _addAppointment(selectedColor);
@@ -502,6 +542,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       Color.fromRGBO(253, 151, 54, 1),
       Color.fromRGBO(45, 197, 197, 1),
     ];
+
     for (String day in widget.cellMap.keys) {
       if (widget.cellMap[day]!.isNotEmpty) {
         for (int i = 1; i <= 9; i++) {
