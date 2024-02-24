@@ -4,6 +4,7 @@
 //     .collection('Student');
 import 'dart:io';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart'; // `Firebase.initializeApp()` 사용 위해 필요
@@ -98,12 +99,12 @@ Future<Map<String, dynamic>> helpFunc(
   String end,
 ) async {
   List result = [];
-  behaviorList.forEach((element) {
+  for (var element in behaviorList) {
     result.add({
       "behavior": element,
       "records": [{}, {}, {}, {}, {}] //5일 초기화
     });
-  });
+  }
   dynamic temp = await getReports(studentId, behaviorList, start, end, result);
   print(temp[0]);
   return temp[0]; // Map<String, dynamic>
@@ -129,8 +130,12 @@ Future<List<dynamic>> getReports(
       .doc(user!.uid)
       .collection("Daily");
 
+  if (dailyRef.id.isNotEmpty) {
+    print('daily is empty');
+  }
+
   await dailyRef.get().then((dateList) async {
-    List<QueryDocumentSnapshot<Object?>> temp = await dateList.docs
+    List<QueryDocumentSnapshot<Object?>> temp = dateList.docs
         .where((date) =>
             startDate.microsecondsSinceEpoch <=
                 DateTime.parse(date.id).microsecondsSinceEpoch &&
