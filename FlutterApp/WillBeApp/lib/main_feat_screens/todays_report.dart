@@ -83,14 +83,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
   Future<void> _saveReport() async {
     if (_formKey.currentState!.validate()) {
       // 입력한 값들을 Firestore에 저장
-      String nowDay = DateTime.now()
-          .add(const Duration(days: -1))
-          .toString()
-          .substring(0, 10);
-
-      // _listedBehaviorIDStudentID)
-
-      // _listedBehaviorIDStudentID),
+      String nowDay = DateTime.now().toString().substring(0, 10);
 
       DocumentSnapshot doc = await db
           .collection("Record")
