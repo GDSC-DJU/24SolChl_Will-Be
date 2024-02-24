@@ -7,15 +7,17 @@ class ApiCommunication {
     required this.url,
     required this.inputBody,
   }) {
-    inputBody.then((value) {
-      _inputJson = jsonEncode(value);
-      print(_inputJson);
-      _sendPostRequest();
-    });
+    _inputJson = jsonEncode(inputBody);
+    _sendPostRequest();
+    // inputBody.then((value) {
+    //   _inputJson = jsonEncode(value);
+    //   print(_inputJson);
+    //   _sendPostRequest();
+    // });
   }
 
   final String url;
-  final Future<Map<String, dynamic>> inputBody;
+  final Map<String, dynamic> inputBody;
   late final String _inputJson; // JSON format body
   String? _responseJson;
 
