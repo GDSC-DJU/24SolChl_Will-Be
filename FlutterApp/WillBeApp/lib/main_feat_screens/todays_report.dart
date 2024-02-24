@@ -132,8 +132,6 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
         });
       }
 
-      ///원래 코드
-
       // 사용자에게 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('데일리 노트 작성 완료!')),

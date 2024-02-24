@@ -504,9 +504,13 @@ class ChartService {
                   return const Text('');
                 }
 
+                if (value > maxY) {
+                  return const Text('');
+                }
+
                 return Text(
                   value.toInt().toString(),
-                  style: const TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 10),
                 );
               }),
         ),
