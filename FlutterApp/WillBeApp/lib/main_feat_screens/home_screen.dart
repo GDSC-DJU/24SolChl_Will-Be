@@ -41,12 +41,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    print("intinetet");
     print(widget.studentDataList);
     print(widget.studentIdList);
     // getBehaviorList(widget.studentIdList);
   }
-
+  @override
+  void setState(VoidCallback fn) {
+    
+    super.setState(fn);
+  }
   @override
   Widget build(BuildContext context) {
     if (widget.studentDataList.isEmpty || widget.itemContentList.isEmpty) {
