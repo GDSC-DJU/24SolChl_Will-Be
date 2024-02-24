@@ -9,11 +9,6 @@ class ApiCommunication {
   }) {
     _inputJson = jsonEncode(inputBody);
     _sendPostRequest();
-    // inputBody.then((value) {
-    //   _inputJson = jsonEncode(value);
-    //   print(_inputJson);
-    //   _sendPostRequest();
-    // });
   }
 
   final String url;
@@ -30,9 +25,7 @@ class ApiCommunication {
         headers: {"Content-Type": "application/json"}, // 헤더 설정
         body: _inputJson, // 요청 본문 설정
       );
-      print("HO");
       _responseJson = response.body; // 응답 본문 저장
-      print(_responseJson);
     } catch (e) {
       log(e.toString());
     }
