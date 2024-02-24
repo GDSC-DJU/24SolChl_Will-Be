@@ -98,7 +98,14 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                                       '2024-02-19',
                                       '2024-02-23')
                                   .then((value) => value));
-                          apiCommunication.getRespond();
+                          await apiCommunication.getRespond().then(
+                            (value) {
+                              setState(() {
+                                print(value);
+                                textControllers["result"]!.text = value;
+                              });
+                            },
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(
