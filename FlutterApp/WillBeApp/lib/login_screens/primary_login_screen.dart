@@ -88,16 +88,16 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
       child: Column(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height / 10,
+            height: MediaQuery.of(context).size.height / 6,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/icons/willbe.png',
-                  fit: BoxFit.contain,
+                  'assets/icons/appicon/willbe-icon-darker.png',
+                  fit: BoxFit.fill,
                 ),
                 const SizedBox(
-                  width: 20,
+                  width: 0,
                 ),
                 Text("Will Be",
                     style: Theme.of(context).textTheme.headlineLarge)
@@ -119,7 +119,7 @@ class _PrimaryLoginScreenState extends State<PrimaryLoginScreen> {
                       Radius.circular(7),
                     ),
                   ),
-                  backgroundColor: Color.fromARGB(255, 22, 72, 99),
+                  backgroundColor: const Color.fromARGB(255, 22, 72, 99),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,

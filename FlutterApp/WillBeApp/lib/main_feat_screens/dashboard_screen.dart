@@ -20,13 +20,13 @@ class DashBoardScreen extends StatefulWidget {
   List<dynamic> weeklyReports;
 
   List colorList = [
-    Color.fromRGBO(255, 171, 184, 1),
-    Color.fromRGBO(134, 214, 96, 1),
-    Color.fromRGBO(104, 167, 216, 1),
-    Color.fromRGBO(239, 206, 122, 1),
-    Color.fromRGBO(195, 162, 230, 1),
-    Color.fromRGBO(255, 179, 146, 1),
-    Color.fromRGBO(151, 206, 206, 1),
+    const Color.fromRGBO(255, 171, 184, 1),
+    const Color.fromRGBO(134, 214, 96, 1),
+    const Color.fromRGBO(104, 167, 216, 1),
+    const Color.fromRGBO(239, 206, 122, 1),
+    const Color.fromRGBO(195, 162, 230, 1),
+    const Color.fromRGBO(255, 179, 146, 1),
+    const Color.fromRGBO(151, 206, 206, 1),
   ];
   DashBoardScreen(
       {super.key,
@@ -230,7 +230,6 @@ class _DashBoardScreenState extends State<DashBoardScreen>
 
     Widget toggleButton = ToggleButtons(
       selectedColor: Colors.white,
-      fillColor: Colors.white,
       textStyle: const TextStyle(fontSize: 12),
       borderWidth: 0,
       borderColor: Colors.white,
@@ -530,7 +529,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                                       EdgeInsets.symmetric(
                                           vertical: 4, horizontal: 16)),
                                   backgroundColor: MaterialStateProperty.all(
-                                      Color.fromARGB(255, 22, 72, 99))),
+                                      const Color.fromARGB(255, 22, 72, 99))),
                               child: Text(
                                 '$item >',
                                 style: const TextStyle(

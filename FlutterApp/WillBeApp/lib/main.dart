@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
               color: Color.fromARGB(255, 0, 0, 0),
             ),
             headlineLarge: TextStyle(
-                fontSize: 70,
+                fontSize: 60,
                 color: Color.fromARGB(255, 0, 0, 0),
                 fontWeight: FontWeight.bold),
             headlineMedium: TextStyle(
