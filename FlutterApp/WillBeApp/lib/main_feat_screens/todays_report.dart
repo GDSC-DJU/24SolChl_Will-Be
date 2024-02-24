@@ -48,7 +48,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
         .collection("Report")
         .doc(user.uid)
         .collection("Daily")
-        .doc(widget.behaviors[_isSelected.indexOf(true)])
+        .doc(nowDay)
         .get();
 
     try {
@@ -95,7 +95,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
           .collection("Report")
           .doc(user.uid)
           .collection("Daily")
-          .doc(widget.behaviors[_isSelected.indexOf(true)])
+          .doc(nowDay)
           .get();
 
       if (doc.exists) {
@@ -105,7 +105,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
             .collection("Report")
             .doc(user.uid)
             .collection("Daily")
-            .doc(widget.behaviors[_isSelected.indexOf(true)])
+            .doc(nowDay)
             .get();
 
         doc.reference.update({
@@ -122,7 +122,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
             .collection("Report")
             .doc(user.uid)
             .collection("Daily")
-            .doc(widget.behaviors[_isSelected.indexOf(true)])
+            .doc(nowDay)
             .set({
           nowDay: {
             'situation': _situationController.text,
