@@ -197,6 +197,7 @@ Future<List<dynamic>> getStamp(String studentId, List behaviorList,
             ['stamps'] = data[day];
         print('result : ${data[day]}');
       });
+
       idx += 1;
     });
   }
