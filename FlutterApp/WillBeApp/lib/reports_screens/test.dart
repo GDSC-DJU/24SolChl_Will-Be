@@ -130,10 +130,6 @@ Future<List<dynamic>> getReports(
       .doc(user!.uid)
       .collection("Daily");
 
-  if (dailyRef.id.isNotEmpty) {
-    print('daily is empty');
-  }
-
   await dailyRef.get().then((dateList) async {
     List<QueryDocumentSnapshot<Object?>> temp = dateList.docs
         .where((date) =>
@@ -185,6 +181,11 @@ Future<List<dynamic>> getStamp(String studentId, List behaviorList,
               endDate.microsecondsSinceEpoch >=
                   DateTime.parse(date.id).microsecondsSinceEpoch)
           .toList();
+
+      for (var element in temp) {
+        print(element.id);
+        print(DateTime.parse(element.id).day);
+      }
 
       temp.forEach((element) async {
         String targetDay = '${DateTime.parse(element.id).day}';
