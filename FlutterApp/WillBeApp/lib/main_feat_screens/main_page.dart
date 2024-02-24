@@ -1426,7 +1426,7 @@ class _Main_PageState extends State<Main_Page> {
     required String? studentID,
   }) async {
     // 현재 시간을 가져오기
-    DateTime now = DateTime.now().add(const Duration(days: -5));
+    DateTime now = DateTime.now();
     // 도큐먼트 ID로 사용할 문자열을 생성
     Timestamp timestamp = Timestamp.fromDate(now);
     print('timestamp');
