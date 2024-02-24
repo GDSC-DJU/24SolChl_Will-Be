@@ -248,6 +248,8 @@ class ChartService {
               },
             ),
           )),
+      minY: 0, // y축의 최소값을 0으로 설정
+
       maxY: (maxY + maxY / 10).ceilToDouble(),
       gridData: const FlGridData(
         show: true,
@@ -262,138 +264,6 @@ class ChartService {
           left: BorderSide(color: Colors.black, width: 1),
           right: BorderSide(color: Colors.transparent),
         ),
-      ),
-    );
-
-    return LineChart(lineChartData);
-  }
-
-  ///입력받은 날을 기준으로 한달전부터 받아오기
-  ///현재는 사용하지 않음
-  Future<LineChart> monthChartData(
-      {required String studentID,
-      required List<String> behaviors,
-      required List<Color> colors,
-      required BuildContext context,
-      required DateTime lastDateOfMonth}) async {
-    DateTime today = Timestamp.fromDate(lastDateOfMonth).toDate();
-    DateTime monthAgo = Timestamp.fromDate(
-      lastDateOfMonth.subtract(const Duration(days: 29)),
-    ).toDate();
-
-    print('today : $today');
-
-    List<DateTime> datesOfMonth = getDatesOfWeek(monthAgo, today);
-    var weekDays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
-
-    List<String> weekDaysInKoreanUsage = List.filled(30, '');
-    List<int> daysInMonth = List.filled(30, 0);
-    List<int> monthsInMonth = List.filled(30, 0);
-
-    for (var i = 0; i < 30; i++) {
-      DateTime element = datesOfMonth[i];
-      weekDaysInKoreanUsage[i] = weekDays[element.weekday - 1];
-      daysInMonth[i] = element.day;
-      monthsInMonth[i] = element.month;
-    }
-
-    List<LineChartBarData> lines = [];
-    List<List<int>> allNumsOfList = []; // 모든 행동에 대한 numsOfList를 저장하는 리스트
-
-    for (int i = 0; i < behaviors.length; i++) {
-      String behavior = behaviors[i];
-      Color color = colors[i];
-
-      List<int> numsOfList = List.filled(30, 0);
-      List<FlSpot> dataPoints = [];
-
-      QuerySnapshot snapshot = await _firestore
-          .collection('Record')
-          .doc(studentID)
-          .collection('Behavior')
-          .doc(behavior)
-          .collection('BehaviorRecord')
-          .where('time', isGreaterThanOrEqualTo: monthAgo)
-          .where('time', isLessThan: today)
-          .get();
-
-      for (var element in snapshot.docs) {
-        DateTime datetime = element.get('time').toDate();
-        print('datetime : $datetime');
-
-        numsOfList[daysInMonth.indexOf(datetime.day)]++;
-      }
-
-      allNumsOfList.add(numsOfList); // 각 행동에 대한 numsOfList를 allNumsOfList에 추가
-
-      for (int i = 0; i < 30; i++) {
-        dataPoints.add(FlSpot(i.toDouble(), numsOfList[i].toDouble()));
-      }
-
-      LineChartBarData lineChartBarData = LineChartBarData(
-        spots: dataPoints,
-        isCurved: false,
-        barWidth: 2.5,
-        isStrokeCapRound: true,
-        color: color,
-        belowBarData: BarAreaData(show: false),
-        dotData: const FlDotData(show: true),
-      );
-
-      lines.add(lineChartBarData);
-    }
-
-    // 모든 행동에 대한 numsOfList의 최대값을 찾아서 maxY 계산
-    double maxY = 0.0;
-    for (var numsOfList in allNumsOfList) {
-      double currentMaxY = numsOfList.reduce(max).toDouble();
-      if (currentMaxY > maxY) {
-        maxY = currentMaxY;
-      }
-    }
-    maxY = (maxY + maxY / 10).ceilToDouble();
-
-    LineChartData lineChartData = LineChartData(
-      lineBarsData: lines,
-      titlesData: FlTitlesData(
-          rightTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-                interval: 1,
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  return Text(
-                    value.toInt().toString(),
-                    style: const TextStyle(fontSize: 12),
-                  );
-                }),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              interval: 1,
-              reservedSize: 40,
-              getTitlesWidget: (value, meta) {
-                return SizedBox(
-                  height: 60,
-                  child: Text(
-                    "${monthsInMonth[value.toInt()]}\n${daysInMonth[value.toInt()]}",
-                    style: const TextStyle(fontSize: 8),
-                  ),
-                );
-              },
-            ),
-          )),
-      minY: 0,
-      maxY: maxY + 1,
-      gridData: const FlGridData(
-        show: true,
-        drawVerticalLine: true,
-        verticalInterval: 1,
-        horizontalInterval: 1,
       ),
     );
 
@@ -631,10 +501,6 @@ class ChartService {
               showTitles: true,
               getTitlesWidget: (value, meta) {
                 if (value == (maxY + maxY / 10).ceilToDouble()) {
-                  return const Text('');
-                }
-
-                if (value > maxY) {
                   return const Text('');
                 }
 

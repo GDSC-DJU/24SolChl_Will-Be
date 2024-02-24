@@ -85,6 +85,10 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
       // 입력한 값들을 Firestore에 저장
       String nowDay = DateTime.now().toString().substring(0, 10);
 
+      // _listedBehaviorIDStudentID)
+
+      // _listedBehaviorIDStudentID),
+
       DocumentSnapshot doc = await db
           .collection("Record")
           .doc(widget.studentIDs[_isSelected.indexOf(true)])
@@ -93,13 +97,42 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
           .collection("Daily")
           .doc(widget.behaviors[_isSelected.indexOf(true)])
           .get();
-      doc.reference.update({
-        nowDay: {
-          'situation': _situationController.text,
-          'action': _actionController.text,
-          'etc': _etcController.text,
-        }
-      });
+
+      if (doc.exists) {
+        doc = await db
+            .collection("Record")
+            .doc(widget.studentIDs[_isSelected.indexOf(true)])
+            .collection("Report")
+            .doc(user.uid)
+            .collection("Daily")
+            .doc(widget.behaviors[_isSelected.indexOf(true)])
+            .get();
+
+        doc.reference.update({
+          nowDay: {
+            'situation': _situationController.text,
+            'action': _actionController.text,
+            'etc': _etcController.text,
+          }
+        });
+      } else {
+        db
+            .collection("Record")
+            .doc(widget.studentIDs[_isSelected.indexOf(true)])
+            .collection("Report")
+            .doc(user.uid)
+            .collection("Daily")
+            .doc(widget.behaviors[_isSelected.indexOf(true)])
+            .set({
+          nowDay: {
+            'situation': _situationController.text,
+            'action': _actionController.text,
+            'etc': _etcController.text,
+          }
+        });
+      }
+
+      ///원래 코드
 
       // 사용자에게 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
