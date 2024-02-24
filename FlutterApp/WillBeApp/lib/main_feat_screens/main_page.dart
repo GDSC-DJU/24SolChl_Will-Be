@@ -450,6 +450,7 @@ class _Main_PageState extends State<Main_Page> {
                                         names[0],
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w300,
+                                            overflow: TextOverflow.ellipsis,
                                             color: Colors.white),
                                       ),
                                     ],
@@ -560,6 +561,7 @@ class _Main_PageState extends State<Main_Page> {
                                     names[0],
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w300,
+                                        overflow: TextOverflow.ellipsis,
                                         color: Colors.white),
                                   ),
                                 ],
@@ -754,6 +756,7 @@ class _Main_PageState extends State<Main_Page> {
                                   names[0],
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w300,
+                                      overflow: TextOverflow.ellipsis,
                                       color: Colors.white),
                                 ),
                               ],
@@ -841,6 +844,7 @@ class _Main_PageState extends State<Main_Page> {
                                   names[1],
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w300,
+                                      overflow: TextOverflow.ellipsis,
                                       color: Colors.white),
                                 ),
                               ],
@@ -929,6 +933,7 @@ class _Main_PageState extends State<Main_Page> {
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w300,
                                       color: Colors.white),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),
@@ -1046,8 +1051,8 @@ class _Main_PageState extends State<Main_Page> {
                                           names[0],
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w300,
+                                              overflow: TextOverflow.ellipsis,
                                               color: Colors.white),
-                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                     ],
@@ -1060,7 +1065,6 @@ class _Main_PageState extends State<Main_Page> {
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white),
-                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ),
@@ -1144,7 +1148,7 @@ class _Main_PageState extends State<Main_Page> {
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w300,
                                               color: Colors.white),
-                                          overflow: TextOverflow.fade,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                     ],
@@ -1242,6 +1246,7 @@ class _Main_PageState extends State<Main_Page> {
                                       Text(
                                         names[2],
                                         style: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
                                             fontWeight: FontWeight.w300,
                                             color: Colors.white),
                                       ),
@@ -1334,6 +1339,7 @@ class _Main_PageState extends State<Main_Page> {
                                         names[3],
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w300,
+                                            overflow: TextOverflow.ellipsis,
                                             color: Colors.white),
                                       ),
                                     ],
