@@ -88,17 +88,24 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                       ),
                       const Spacer(),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           ApiCommunication apiCommunication = ApiCommunication(
                               url:
                                   'https://willbe-nlp-t5feuxbhta-du.a.run.app/v1/summary/report',
-                              inputBody: helpFunc(
+                              inputBody: await helpFunc(
                                       widget.id,
                                       widget.behaviorList,
                                       '2024-02-19',
                                       '2024-02-23')
                                   .then((value) => value));
-                          apiCommunication.getRespond();
+                          await apiCommunication.getRespond().then(
+                            (value) {
+                              setState(() {
+                                print(value);
+                                textControllers["result"]!.text = value;
+                              });
+                            },
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(

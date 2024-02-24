@@ -7,15 +7,12 @@ class ApiCommunication {
     required this.url,
     required this.inputBody,
   }) {
-    inputBody.then((value) {
-      _inputJson = jsonEncode(value);
-      print(_inputJson);
-      _sendPostRequest();
-    });
+    _inputJson = jsonEncode(inputBody);
+    _sendPostRequest();
   }
 
   final String url;
-  final Future<Map<String, dynamic>> inputBody;
+  final Map<String, dynamic> inputBody;
   late final String _inputJson; // JSON format body
   String? _responseJson;
 
@@ -28,9 +25,7 @@ class ApiCommunication {
         headers: {"Content-Type": "application/json"}, // 헤더 설정
         body: _inputJson, // 요청 본문 설정
       );
-      print("HO");
       _responseJson = response.body; // 응답 본문 저장
-      print(_responseJson);
     } catch (e) {
       log(e.toString());
     }
