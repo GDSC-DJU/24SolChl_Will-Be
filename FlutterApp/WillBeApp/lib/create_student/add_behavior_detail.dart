@@ -61,6 +61,29 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           .collection('Educator')
           .doc(user.uid)
           .set({});
+
+      // 교사 컬렉션 내 Timetable doc 생성
+      await FirebaseFirestore.instance
+          .collection('Educator')
+          .doc(user.uid)
+          .collection('Schedule')
+          .doc('Timetable')
+          .set({
+        "Mon": {},
+        "Tue": {},
+        "Wed": {},
+        "Thu": {},
+        "Fri": {},
+      });
+      // 교사 컬렉션 내 Schedule doc 생성
+      await FirebaseFirestore.instance
+          .collection('Educator')
+          .doc(user.uid)
+          .collection('Schedule')
+          .doc('Schedule')
+          .set({
+        "schedule": [],
+      });
     }
   }
 
@@ -170,20 +193,6 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
             .set(
               updates,
             );
-      });
-
-      // 교사 컬렉션 내 Timetable doc 생성
-      await FirebaseFirestore.instance
-          .collection('Educator')
-          .doc(user.uid)
-          .collection('Schedule')
-          .doc('Timetable')
-          .set({
-        "Mon": {},
-        "Tue": {},
-        "Wed": {},
-        "Thu": {},
-        "Fri": {},
       });
 
       // 교사 내 학생 id 등록
