@@ -47,7 +47,7 @@ class _Create_student_Msg_State extends State<Create_student_Msg> {
                       SizedBox(
                         width: 150,
                         child: Image.asset(
-                          'assets/icons/willbe.png',
+                          'assets/icons/appicon/willbe-icon-darker.png',
                           fit: BoxFit.contain,
                         ),
                       ),

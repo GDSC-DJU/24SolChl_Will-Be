@@ -5,7 +5,7 @@ import 'package:solution/main_feat_screens/main_page.dart';
 
 class Behavior_Detail_Screen extends StatefulWidget {
   Behavior_Detail_Screen(
-      {Key? key,
+      {super.key,
       required this.id,
       required this.name,
       required this.behaviorName,
@@ -21,11 +21,11 @@ class Behavior_Detail_Screen extends StatefulWidget {
 }
 
 class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
-  User? _user = FirebaseAuth.instance.currentUser;
+  final User? _user = FirebaseAuth.instance.currentUser;
 
   Future<void> doneSetting() async {
     // Record 컬렉션 내 Archive
-    DocumentReference targetRef = await FirebaseFirestore.instance
+    DocumentReference targetRef = FirebaseFirestore.instance
         .collection('Record')
         .doc(widget.id)
         .collection('Behavior')
@@ -134,12 +134,9 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
     super.initState();
 
     // getBehaviorList(widget.studentIdList);
-    textControllers["behavior"]!.text =
-        widget.value['behavior'] != null ? widget.value['behavior'] : '';
-    textControllers["meaning"]!.text =
-        widget.value['meaning'] != null ? widget.value['meaning'] : '';
-    textControllers["solution"]!.text =
-        widget.value['solution'] != null ? widget.value['solution'] : '';
+    textControllers["behavior"]!.text = widget.value['behavior'] ?? '';
+    textControllers["meaning"]!.text = widget.value['meaning'] ?? '';
+    textControllers["solution"]!.text = widget.value['solution'] ?? '';
   }
 
   Map<String, TextEditingController> textControllers = {
@@ -165,7 +162,7 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: Text(
+            title: const Text(
               "행동 별 자세한 기록",
               style: TextStyle(
                 fontSize: 28,
@@ -176,13 +173,13 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
           body: Container(
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Container(
                   alignment: Alignment.center,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -194,9 +191,9 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
                             clipBehavior: Clip.antiAlias,
                             elevation: 0,
                             color: Theme.of(context).colorScheme.surfaceVariant,
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                               borderRadius:
-                                  const BorderRadius.all(Radius.circular(100)),
+                                  BorderRadius.all(Radius.circular(100)),
                             ),
                             child: Icon(
                               Icons.person,
@@ -210,7 +207,7 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 10),
+                          padding: const EdgeInsets.only(left: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -231,16 +228,16 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Container(
                   height: 1,
                   color: Colors.black26,
                 ),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width - 32,
-                  height: MediaQuery.of(context).size.height - 172,
+                  height: MediaQuery.of(context).size.height / 1.3,
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     child: Column(
@@ -260,8 +257,8 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
                                 _stopRecord();
                               },
                               style: ElevatedButton.styleFrom(
-                                side: BorderSide(color: Colors.red),
-                                shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.red),
+                                shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(100),
                                   ),
@@ -272,7 +269,7 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
                               child: Container(
                                 width: double.infinity,
                                 color: Colors.white70,
-                                child: Center(
+                                child: const Center(
                                   child: Text(
                                     '이 행동 측정 그만하기',
                                     style: TextStyle(
@@ -286,9 +283,9 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height - 350,
-                        ),
+                        // SizedBox(
+                        //   height: MediaQuery.of(context).size.height - 350,
+                        // ),
                       ],
                     ),
                   ),
@@ -307,27 +304,28 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Text(label),
         ),
         TextFormField(
           controller: controller,
           maxLines: null,
-          style: TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 15),
           onTap: () => _scrollToField(controller, index),
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(),
+              borderSide: const BorderSide(),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Color.fromARGB(255, 102, 108, 255)),
+              borderSide:
+                  const BorderSide(color: Color.fromARGB(255, 102, 108, 255)),
             ),
             hintText: "입력하세요",
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
       ],
@@ -338,7 +336,7 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
     if (controller != null) {
       _scrollController.animateTo(
         index * 150,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     }
