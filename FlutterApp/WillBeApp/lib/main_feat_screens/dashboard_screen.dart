@@ -162,6 +162,14 @@ class _DashBoardScreenState extends State<DashBoardScreen>
           padding: EdgeInsets.symmetric(
               vertical: 8, horizontal: MediaQuery.of(context).size.width * 0.1),
           child: const Text(
+            '일별',
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: 8, horizontal: MediaQuery.of(context).size.width * 0.1),
+          child: const Text(
             '주별',
             style: TextStyle(fontSize: 14.0),
           ),
@@ -171,14 +179,6 @@ class _DashBoardScreenState extends State<DashBoardScreen>
               vertical: 8, horizontal: MediaQuery.of(context).size.width * 0.1),
           child: const Text(
             '월별',
-            style: TextStyle(fontSize: 14.0),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: 8, horizontal: MediaQuery.of(context).size.width * 0.1),
-          child: const Text(
-            '년별',
             style: TextStyle(fontSize: 14.0),
           ),
         ),
