@@ -130,7 +130,10 @@ flutter run --release
 | LLM Orchestration | LangChain<br>(Dart) | ∙ Leverage LLM to get closer to the expected output                      |
 | LLM               | Gemini-Pro          | ∙ Main component for understanding and generating natural languages      |
 #### Database Structure
-*// 내용 추가 필요*
+
+<p align="center">
+  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/ef9c03f3-7880-4fe0-ba9b-d6765ce315e4">
+</p>
 
 #### Repo Directory Structure
 *// 내용 추가 필요*
