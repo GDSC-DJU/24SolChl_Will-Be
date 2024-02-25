@@ -6,9 +6,9 @@
 </p>
 
 <div style="display: flex; justify-content: space-around;">
-  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/dfb017a6-6de5-4eef-824c-6b39ff4d899c" width="33%">
-  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/cb442980-6b3f-4885-94c7-5dac5759a142" width="33%">
-  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/d17d26ca-9292-42c2-90b1-979925c384e3" width="33%">
+  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/dfb017a6-6de5-4eef-824c-6b39ff4d899c" width="31%">
+  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/cb442980-6b3f-4885-94c7-5dac5759a142" width="31%">
+  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/d17d26ca-9292-42c2-90b1-979925c384e3" width="31%">
 </div>
 
 
