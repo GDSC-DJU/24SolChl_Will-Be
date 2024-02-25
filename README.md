@@ -156,7 +156,9 @@ To tackle this issue, the need for innovative solutions is apparent. This is whe
 
 
 ## Roadmap
-*// 내용 추가 필요*
+<p align="center">
+  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/843c6e59-9547-492c-a6d2-8e5566aa7417">
+</p>
 
 
 ## Who We Are
