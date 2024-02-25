@@ -68,14 +68,15 @@ import '../reporting/api_communication.dart' show ApiCommunication;
 
 final CollectionReference students =
     FirebaseFirestore.instance.collection('Student');
+Future<String> getStudentID(String studentName) async {
+  QuerySnapshot querySnapshot =
+      await students.where('name', isEqualTo: studentName).get();
 
-Future<String> getStudentID(studentName) async {
-  return students
-      .where('name', isEqualTo: studentName)
-      .get()
-      .then((QuerySnapshot querySnapshot) {
-    return querySnapshot.docs.first.id; // 학생 도큐먼트의 ID 문자열 반환
-  });
+  if (querySnapshot.docs.isEmpty) {
+    throw Exception('No student found with name $studentName');
+  }
+
+  return querySnapshot.docs.first.id;
 }
 
 String student = getStudentID('한수빙') as String;
@@ -98,14 +99,16 @@ Future<Map<String, dynamic>> helpFunc(
   String end,
 ) async {
   List result = [];
-  for (var element in behaviorList) {
+  for (int i = 0; i < behaviorList.length; i++) {
+    print('1번');
     result.add({
-      "behavior": element,
+      "behavior": behaviorList[i],
       "records": [{}, {}, {}, {}, {}] //5일 초기화
     });
   }
   dynamic temp = await getReports(studentId, behaviorList, start, end, result);
-  print(temp[0]);
+
+  print(" temp 0 : $temp");
   return temp[0]; // Map<String, dynamic>
 }
 
@@ -116,12 +119,11 @@ Future<List<dynamic>> getReports(
   String end,
   List result,
 ) async {
+  print('2번');
   DateTime startDate = DateTime.parse(start);
   DateTime endDate = DateTime.parse(end);
   List data = [];
-  // print(studentId);
-  // print(startDate);
-  // print(endDate);
+
   CollectionReference dailyRef = FirebaseFirestore.instance
       .collection('Record')
       .doc(studentId)
@@ -129,48 +131,48 @@ Future<List<dynamic>> getReports(
       .doc(user!.uid)
       .collection("Daily");
 
-  await dailyRef.get().then((dateList) async {
-    List<QueryDocumentSnapshot<Object?>> temp = dateList.docs
-        .where((date) =>
-            startDate.microsecondsSinceEpoch <=
-                DateTime.parse(date.id).microsecondsSinceEpoch &&
-            endDate.microsecondsSinceEpoch >=
-                DateTime.parse(date.id).microsecondsSinceEpoch)
-        .toList();
+  // 날짜 범위에 해당하는 문서만 가져오는 쿼리를 사용합니다.
+  QuerySnapshot dateList = await dailyRef
+      .where(FieldPath.documentId, isGreaterThanOrEqualTo: start)
+      .where(FieldPath.documentId, isLessThanOrEqualTo: end)
+      .get();
 
-    temp.forEach((element) async {
-      dynamic tMap = element.data();
-      for (var i = 0; i < behaviorList.length; i++) {
-        if (tMap[behaviorList[i]] != null) {
-          data.add(
-              {"${DateTime.parse(element.id).day}": tMap[behaviorList[i]]});
-          result[i]['records'][DateTime.parse(element.id).day.toInt() -
-              startDate.day.toInt()] = (tMap[behaviorList[i]]);
-        }
+  List<QueryDocumentSnapshot<Object?>> temp = dateList.docs;
+
+  for (int i = 0; i < temp.length; i++) {
+    dynamic tMap = temp[i].data();
+    for (var a = 0; a < behaviorList.length; a++) {
+      if (tMap[behaviorList[a]] != null) {
+        data.add({"${DateTime.parse(temp[i].id).day}": tMap[behaviorList[a]]});
+        result[a]['records'][DateTime.parse(temp[i].id).day.toInt() -
+            startDate.day.toInt()] = (tMap[behaviorList[a]]);
       }
-    });
-    print(data); // 필드값 출력
-    print(result);
-  });
-  dynamic temp = await getStamp(studentId, behaviorList, start, end, result);
-  print(temp);
-  return temp;
+    }
+  }
+
+  print(data);
+  print(result);
+  dynamic temp2 = await getStamp(studentId, behaviorList, start, end, result);
+  print(temp2);
+  return temp2;
 }
 
 Future<List<dynamic>> getStamp(String studentId, List behaviorList,
     String start, String end, List list) async {
+  print('3번');
+
   var result = list;
   DateTime startDate = DateTime.parse(start);
   DateTime endDate = DateTime.parse(end);
   var idx = 0;
 
-  for (var behavior in behaviorList) {
+  for (int i = 0; i < behaviorList.length; i++) {
     Map data = {};
     CollectionReference behaviorRef = FirebaseFirestore.instance
         .collection('Record')
         .doc(studentId)
         .collection('Behavior')
-        .doc(behavior)
+        .doc(behaviorList[i])
         .collection("BehaviorRecord");
     await behaviorRef.get().then((stampList) {
       List<QueryDocumentSnapshot<Object?>> temp = stampList.docs
@@ -181,22 +183,24 @@ Future<List<dynamic>> getStamp(String studentId, List behaviorList,
                   DateTime.parse(date.id).microsecondsSinceEpoch)
           .toList();
 
-      temp.forEach((element) async {
-        String targetDay = '${DateTime.parse(element.id).day}';
+      for (int j = 0; j < temp.length; j++) {
+        String targetDay = '${DateTime.parse(temp[j].id).day}';
         String targetTime =
-            '${DateTime.parse(element.id).hour}:${DateTime.parse(element.id).minute}';
+            '${DateTime.parse(temp[j].id).hour}:${DateTime.parse(temp[j].id).minute}';
         if (data.containsKey(targetDay)) {
           print('targetDay : $targetDay');
           data[targetDay]!.add(targetTime);
         } else {
           data[targetDay] = [targetTime];
         }
-      });
-      data.keys.toList().forEach((day) async {
-        result[idx]['records'][int.parse(day) - startDate.day.toInt()]
-            ['stamps'] = data[day];
-        print('result : ${data[day]}');
-      });
+      }
+
+      for (int a = 0; a < data.keys.toList().length; a++) {
+        result[idx]['records']
+                [int.parse(data.keys.toList()[a]) - startDate.day.toInt()]
+            ['stamps'] = data[data.keys.toList()[a]];
+        print('result : ${data[data.keys.toList()[a]]}');
+      }
 
       idx += 1;
     });

@@ -89,23 +89,26 @@ class _Weekly_Report_Screen extends State<Weekly_Report_Screen> {
                       const Spacer(),
                       ElevatedButton(
                         onPressed: () async {
+                          var result = await helpFunc(widget.id,
+                              widget.behaviorList, '2024-02-19', '2024-02-23');
+
+                          // ApiCommunication 객체를 생성합니다.
                           ApiCommunication apiCommunication = ApiCommunication(
-                              url:
-                                  'https://willbe-nlp-t5feuxbhta-du.a.run.app/v1/summary/report',
-                              inputBody: await helpFunc(
-                                      widget.id,
-                                      widget.behaviorList,
-                                      '2024-02-19',
-                                      '2024-02-23')
-                                  .then((value) => value));
-                          await apiCommunication.getRespond().then(
-                            (value) {
-                              setState(() {
-                                print(value);
-                                textControllers["result"]!.text = value;
-                              });
-                            },
+                            url:
+                                'https://willbe-nlp-t5feuxbhta-du.a.run.app/v1/summary/report',
+                            inputBody: result,
                           );
+
+                          // getRespond 함수를 호출하여 응답을 받습니다.
+                          var response = await apiCommunication.getRespond();
+
+                          // 응답을 출력합니다.
+                          print(response);
+
+                          // setState 함수를 호출하여 UI를 업데이트합니다.
+                          setState(() {
+                            textControllers["result"]!.text = response;
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(
