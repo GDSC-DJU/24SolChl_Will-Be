@@ -259,11 +259,11 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                         height: 20,
                       ),
                       Text(
-                        "선행사건(필수)",
+                        "상황(필수)",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       Text(
-                        "행동이 발생할 때 전반적인 상황 \n예시) 화장실이 급할 때 행동이 나타난다",
+                        "행동이 발생할 때 전반적인 상황",
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       const SizedBox(
@@ -294,11 +294,11 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                         height: 40,
                       ),
                       Text(
-                        "후속결과(필수)",
+                        "결과 및 조치(필수)",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       Text(
-                        "행동이 발생한 후 뒤에 따라온 결과 \n예시) 화장실이 급할 때 행동이 나타난다",
+                        "행동 후 나의 대처 ",
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       const SizedBox(
