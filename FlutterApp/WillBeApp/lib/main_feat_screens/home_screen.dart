@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:solution/calender_screens/set_routine_page.dart';
 import 'package:solution/student_profile_page/student_profile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -26,13 +29,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List colorList = [
-    Color.fromRGBO(255, 171, 184, 1),
-    Color.fromRGBO(134, 214, 96, 1),
-    Color.fromRGBO(104, 167, 216, 1),
-    Color.fromRGBO(239, 206, 122, 1),
-    Color.fromRGBO(195, 162, 230, 1),
-    Color.fromRGBO(255, 179, 146, 1),
-    Color.fromRGBO(151, 206, 206, 1),
+    const Color.fromRGBO(255, 171, 184, 1),
+    const Color.fromRGBO(134, 214, 96, 1),
+    const Color.fromRGBO(104, 167, 216, 1),
+    const Color.fromRGBO(239, 206, 122, 1),
+    const Color.fromRGBO(195, 162, 230, 1),
+    const Color.fromRGBO(255, 179, 146, 1),
+    const Color.fromRGBO(151, 206, 206, 1),
   ];
   final CarouselController _controller = CarouselController();
   int _current = 0;
@@ -45,11 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
     print(widget.studentIdList);
     // getBehaviorList(widget.studentIdList);
   }
+
   @override
   void setState(VoidCallback fn) {
-    
     super.setState(fn);
   }
+
   @override
   Widget build(BuildContext context) {
     if (widget.studentDataList.isEmpty || widget.itemContentList.isEmpty) {
@@ -58,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Expanded(
       child: Container(
-        color: Color.fromARGB(255, 255, 255, 255),
+        color: const Color.fromARGB(255, 255, 255, 255),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -76,6 +80,64 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+            TextButton(
+                onPressed: () async {
+                  User user = FirebaseAuth.instance.currentUser!;
+                  String uid = user.uid;
+
+                  List<String> situations = [
+                    "새로운 놀이 기구를 사용하려 했으나 실패하자 머리를 때림",
+                    "다른 학생의 물건을 가져오려 했으나 거부되자 불만을 표현하였음",
+                    "수업 중에 차례를 기다리지 못하고 불안해하는 모습을 보였음",
+                    "원하는 게임을 하지 못하자 분노를 표현하였음",
+                    "다른 아이와의 갈등 상황에서 울면서 머리를 때림",
+                    "식사를 원치 않는 음식이 나오자 식탁에서 일어났음",
+                    "휴식 시간이 끝나야 해서 울면서 머리를 때림"
+                  ];
+
+                  List<String> actions = [
+                    "교사는 기홍이에게 머리를 때리지 않도록 당부하였으나 계속 머리를 때림",
+                    "교사는 기홍이에게 다른 학생의 물건을 존중하라고 가르치려 시도하였음",
+                    "교사는 기홍이에게 차례를 기다리는 것의 중요성을 가르쳤음",
+                    "교사는 기홍이에게 게임은 모두의 차례가 돌아와야 할 수 있다고 설명하였음",
+                    "교사는 기홍이에게 갈등 상황에서의 적절한 행동을 가르치려고 하였음",
+                    "교사는 기홍이에게 식사 시간 중에는 자리에서 일어나지 않도록 당부하였음",
+                    "교사는 기홍이에게 휴식 시간이 끝난 후에 다음 활동을 기대해보라고 가르쳤음"
+                  ];
+
+                  List<String> etcs = [
+                    "머리를 때린 후에는 조용히 앉아서 책을 읽음",
+                    "머리를 때린 후에는 교사에게 안기고 울음",
+                    "머리를 때린 후에는 차례를 기다리며 조용히 앉아 있었음",
+                    "머리를 때린 후에는 다른 아이와 함께 게임을 하였음",
+                    "머리를 때린 후에는 교사에게 안기고 울음",
+                    "머리를 때린 후에는 식사를 마저 먹었음",
+                    "머리를 때린 후에는 조용히 앉아서 책을 읽음"
+                  ];
+
+// /Record/WHd5Wn63WWIu8BaohhAk/Report/6h1TZxsr0Pe9AyrdVREBo6afyK03/Daily
+                  // 날짜 구간 생성
+                  List<DateTime> dates = List<DateTime>.generate(
+                      7, (i) => DateTime(2024, 1, 1).add(Duration(days: i)));
+
+                  for (int i = 0; i < dates.length; i++) {
+                    await FirebaseFirestore.instance
+                        .collection('Record')
+                        .doc('WHd5Wn63WWIu8BaohhAk')
+                        .collection('Report')
+                        .doc('6h1TZxsr0Pe9AyrdVREBo6afyK03')
+                        .collection('Daily')
+                        .doc(DateFormat('yyyy-MM-dd').format(dates[i]))
+                        .set({
+                      '머리 때리기': {
+                        'situation': situations[i],
+                        'action': actions[i],
+                        'etc': etcs[i],
+                      }
+                    });
+                  }
+                },
+                child: const Text('더미데이터 발사')),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
             ),
@@ -84,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // height: MediaQuery.of(context).size.height / 1.46,
               height: MediaQuery.of(context).size.height / 1.39,
               child: Padding(
-                padding: EdgeInsets.only(top: 50),
+                padding: const EdgeInsets.only(top: 50),
                 child: CarouselSlider(
                   items: List.generate(
                     widget.studentDataList.length,
@@ -115,9 +177,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   buildDot(i, _current),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
-              padding: EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 20),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.01 * 5,
                 child: ElevatedButton(
@@ -130,15 +192,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5))),
                     padding: EdgeInsets.zero,
-                    backgroundColor: Color.fromARGB(255, 22, 72, 99),
+                    backgroundColor: const Color.fromARGB(255, 22, 72, 99),
                   ),
-                  child: Container(
+                  child: SizedBox(
                     width: double.infinity,
                     height: MediaQuery.of(context).size.height * 0.05,
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
@@ -170,10 +232,10 @@ class _HomeScreenState extends State<HomeScreen> {
     String name = studentData['name'];
     return GestureDetector(
       child: Padding(
-        padding: EdgeInsets.all(7),
+        padding: const EdgeInsets.all(7),
         child: Container(
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 252, 252, 255),
+            color: const Color.fromARGB(255, 252, 252, 255),
             borderRadius: BorderRadius.circular(10.0),
             boxShadow: [
               // BoxShadow(
@@ -195,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
               //   offset: const Offset(0, 0),
               // ),
               BoxShadow(
-                color: Color.fromARGB(255, 0, 0, 0).withOpacity(0.3),
+                color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.3),
                 spreadRadius: 2,
                 blurRadius: 8,
                 offset: const Offset(0, 2),
@@ -252,7 +314,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: MediaQuery.of(context).size.height * 0.01 * 10.3,
                       decoration: BoxDecoration(
                           color: colorList[index],
-                          borderRadius: BorderRadius.all(Radius.circular(100))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(100))),
                       child: Row(
                         children: [
                           SizedBox(
@@ -265,13 +328,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 elevation: 0,
                                 // color: colorList[index].withOpacity(0.1),
                                 color: Colors.white,
-                                shape: RoundedRectangleBorder(
+                                shape: const RoundedRectangleBorder(
                                   // side: BorderSide(
                                   //     color:
                                   //         colorList[index].withOpacity(0.5),
                                   // width: 4),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(100)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(100)),
                                 ),
                                 child: Icon(
                                   Icons.person,
@@ -287,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Center(
                             child: Text(
-                              ' ' + name,
+                              ' $name',
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 30,
@@ -308,14 +371,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width / 1.6,
                             // height: MediaQuery.of(context).size.height * 0.01 * 3,
                             // color: Colors.black,
-                            child: Text("측정중인 도전행동"),
+                            child: const Text("측정중인 도전행동"),
                           ),
                           Padding(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -396,13 +459,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
+                                  foregroundColor: colorList[index],
                                   surfaceTintColor: Colors.white,
-                                  onPrimary: colorList[index],
                                   side: BorderSide(color: colorList[index]),
-                                  shape: RoundedRectangleBorder(
+                                  shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(100))),
-                                  padding: EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(4),
                                   backgroundColor: Colors.white,
                                 ),
                                 child: Icon(
@@ -412,7 +475,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
-                            Container(
+                            const SizedBox(
                               // width: 80,
                               height: 30,
                               child: Center(
@@ -467,13 +530,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
+                                  foregroundColor: colorList[index],
                                   surfaceTintColor: Colors.white,
-                                  onPrimary: colorList[index],
                                   side: BorderSide(color: colorList[index]),
-                                  shape: RoundedRectangleBorder(
+                                  shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(100))),
-                                  padding: EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(4),
                                   backgroundColor: Colors.white,
                                 ),
                                 child: Icon(
@@ -483,7 +546,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
-                            Container(
+                            const SizedBox(
                               // width: 80,
                               height: 30,
                               child: Center(
@@ -501,12 +564,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Row(
                     children: [
-                      Spacer(),
+                      const Spacer(),
                       Padding(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.025 * 18,
                           height: MediaQuery.of(context).size.height * 0.01 * 4,
@@ -525,15 +588,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
+                              foregroundColor: colorList[index],
                               surfaceTintColor: Colors.white,
-                              onPrimary: colorList[index],
-                              shape: RoundedRectangleBorder(
+                              shape: const RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(100))),
                               padding: EdgeInsets.zero,
                               backgroundColor: colorList[index],
                             ),
-                            child: Container(
+                            child: const SizedBox(
                               width: double.infinity,
                               child: Center(
                                 child: Text(
@@ -565,12 +628,12 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         width: MediaQuery.of(context).size.height * 0.01 * 1.2,
         height: MediaQuery.of(context).size.height * 0.01 * 1.2,
-        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: (Theme.of(context).brightness == Brightness.dark
                   ? Colors.white
-                  : Color.fromARGB(255, 22, 72, 99))
+                  : const Color.fromARGB(255, 22, 72, 99))
               .withOpacity(currentIndex == index ? 0.9 : 0.4),
         ),
       ),
