@@ -1,4 +1,5 @@
 # "Will Be"
+> **Adding Hope into Education for Developmental Disabilities** 
 
 
 <p align="center">
@@ -10,9 +11,6 @@
   <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/cb442980-6b3f-4885-94c7-5dac5759a142" width="31%">
   <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/d17d26ca-9292-42c2-90b1-979925c384e3" width="31%">
 </div>
-
-
-> **Adding Hope into Education for Developmental Disabilities** 
 
 
 > [!TIP]
