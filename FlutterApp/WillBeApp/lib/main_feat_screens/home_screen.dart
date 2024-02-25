@@ -301,9 +301,37 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: MediaQuery.of(context).size.height * 0.01 * 25,
                       height: MediaQuery.of(context).size.height * 0.01 * 10.3,
                       decoration: BoxDecoration(
-                          color: colorList[index],
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100))),
+                        color: colorList[index],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(100)),
+                        boxShadow: [
+                          // BoxShadow(
+                          //   color: const Color.fromARGB(255, 74, 74, 74).withOpacity(0.5),
+                          //   spreadRadius: 2,
+                          //   blurRadius: 5,
+                          //   offset: const Offset(0, 1),
+                          // ),
+                          // BoxShadow(
+                          //   color: Color.fromARGB(255, 111, 113, 255).withOpacity(0.3),
+                          //   spreadRadius: 1,
+                          //   blurRadius: 10,
+                          //   offset: const Offset(0, 0),
+                          // ),
+                          // BoxShadow(
+                          //   color: Color.fromARGB(255, 111, 113, 255).withOpacity(0.3),
+                          //   spreadRadius: 1,
+                          //   blurRadius: 10,
+                          //   offset: const Offset(0, 0),
+                          // ),
+                          BoxShadow(
+                            color: Color.fromARGB(255, 111, 111, 111)
+                                .withOpacity(0.3),
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: const Offset(0, -2),
+                          ),
+                        ],
+                      ),
                       child: Row(
                         children: [
                           SizedBox(
