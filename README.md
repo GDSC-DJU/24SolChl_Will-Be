@@ -157,7 +157,7 @@ To tackle this issue, the need for innovative solutions is apparent. This is whe
 
 ## Roadmap
 <p align="center">
-  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/843c6e59-9547-492c-a6d2-8e5566aa7417">
+  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/1d35a103-98fe-4553-84da-0bd7141d40fb">
 </p>
 
 
