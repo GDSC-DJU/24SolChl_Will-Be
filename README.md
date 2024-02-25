@@ -12,6 +12,7 @@
   <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/a4872997-cbbe-4545-8b83-7a83e2368eeb" width="31%">
 </div>
 
+Check our [more pages](./AppPreview.md)!
 
 > [!TIP]
 > 
