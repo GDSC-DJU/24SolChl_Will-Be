@@ -23,10 +23,117 @@ class Behavior_Detail_Screen extends StatefulWidget {
 class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
   User? _user = FirebaseAuth.instance.currentUser;
 
+  Future<void> doneSetting() async {
+    // Record 컬렉션 내 Archive
+    DocumentReference targetRef = await FirebaseFirestore.instance
+        .collection('Record')
+        .doc(widget.id)
+        .collection('Behavior')
+        .doc(widget.behaviorName);
+
+    dynamic temp = await targetRef.get().then((value) => value.data());
+    await targetRef.set({
+      "method": temp['method'],
+      "behavior": textControllers['behavior']!.text,
+      "meaning": textControllers['meaning']!.text,
+      "solution": textControllers['solution']!.text,
+      "done": "",
+    });
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Main_Page(),
+      ),
+      (route) => false,
+    );
+  }
+
+  void _stopRecord() async {
+    print([
+      textControllers['behavior']!.text,
+      textControllers['meaning']!.text,
+      textControllers['solution']!.text,
+    ]);
+    if (textControllers['behavior']!.text == "" ||
+        textControllers['meaning']!.text == "" ||
+        textControllers['solution']!.text == "") {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('모두 입력한 후 측정을 종료해주세요!')));
+      return;
+    } else {
+      return showDialog<void>(
+        //다이얼로그 위젯 소환
+        context: context,
+        barrierDismissible: false, // 다이얼로그 이외의 바탕 눌러도 안꺼지도록 설정
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
+            title: SizedBox(
+              height: 30,
+              child: Image.asset(
+                'assets/icons/willbe.png',
+                fit: BoxFit.contain,
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: Container(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: const Text(
+                    '행동 측정을 중단할까요?',
+                    textAlign: TextAlign.center,
+                  )),
+            ),
+            actions: [
+              TextButton(
+                child: const Text(
+                  '취소',
+                  style: TextStyle(fontSize: 15),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Stack(
+                  children: <Widget>[
+                    Positioned.fill(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 22, 72, 99),
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.all(4.0),
+                        textStyle: const TextStyle(fontSize: 15),
+                      ),
+                      onPressed: () async {
+                        //firestore에 관련된 인스턴스들
+                        User? user = FirebaseAuth.instance.currentUser;
+                        doneSetting();
+                      },
+                      child: const Text('확인'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+    // 알림창 띄우기 -> 확인 버튼 누르면 DB에 객체 생성
+  }
+
   @override
   void initState() {
     super.initState();
     print("intinetet");
+    print(widget.id);
     print(widget.value);
     // getBehaviorList(widget.studentIdList);
     textControllers["behavior"]!.text =
@@ -151,7 +258,9 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
                             width: 150,
                             height: 40,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                _stopRecord();
+                              },
                               style: ElevatedButton.styleFrom(
                                 side: BorderSide(color: Colors.red),
                                 shape: RoundedRectangleBorder(

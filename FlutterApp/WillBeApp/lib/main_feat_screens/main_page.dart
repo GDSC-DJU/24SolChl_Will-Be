@@ -88,6 +88,7 @@ class _Main_PageState extends State<Main_Page> {
   List studentList = [];
   List studentDataList = [];
   List itemContentList = [];
+  List historyContentList = [];
   List weeklyReports = [];
 
   //Function for sign out
@@ -219,11 +220,20 @@ class _Main_PageState extends State<Main_Page> {
           .get()
           .then((valueList) {
         dynamic temp = [];
+        dynamic historyTemp = [];
         for (var element in valueList.docs) {
-          temp.add(element.id);
+          if (element.data().containsKey('done')) {
+            print("HELLo");
+            print(element.data());
+            historyTemp.add(element.id);
+          } else
+            temp.add(element.id);
         }
         itemContentList.add(temp);
+        historyContentList.add(historyTemp);
       });
+      print(itemContentList);
+      print(historyContentList);
     }
     isLoading = false; // 데이터 로딩이 완료되었음을 표시
     setState(() {}); // 화면을 다시 그리도록 강제 업데이트
@@ -1377,7 +1387,8 @@ class _Main_PageState extends State<Main_Page> {
       HomeScreen(
           studentDataList: studentDataList,
           studentIdList: studentList,
-          itemContentList: itemContentList),
+          itemContentList: itemContentList,
+          historyContentList: historyContentList),
       CalendarManageScreen(cellMap: cellMap),
       BehavirRecordScreen(
         studentIDs: studentIDs,

@@ -11,17 +11,21 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:solution/create_student/add_student_info.dart';
 import 'package:solution/create_student/add_behavior.dart';
 import 'package:solution/dictionary_screens/expression_dictoinary.dart';
+import 'package:solution/history_screens/history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   List<dynamic> studentDataList;
   List<dynamic> studentIdList;
   List<dynamic> itemContentList;
+  List<dynamic> historyContentList;
 
-  HomeScreen(
-      {super.key,
-      required this.studentDataList,
-      required this.studentIdList,
-      required this.itemContentList});
+  HomeScreen({
+    super.key,
+    required this.studentDataList,
+    required this.studentIdList,
+    required this.itemContentList,
+    required this.historyContentList,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -521,29 +525,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                   0.01 *
                                   6.5,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  DocumentReference dictRef = FirebaseFirestore
-                                      .instance
-                                      .collection('Student')
-                                      .doc(widget.studentIdList[index])
-                                      .collection('Dictionary')
-                                      .doc('expression');
-
-                                  dictRef.get().then((value) {
-                                    dynamic temp = value.data();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            Expression_Dictionary(
-                                          name: name,
-                                          id: widget.studentIdList[index],
-                                          iconColor: colorList[index],
-                                          dictList: temp,
-                                        ),
+                                onPressed: () async {
+                                  dynamic temp = [];
+                                  for (var history
+                                      in widget.historyContentList[index]) {
+                                    print(history);
+                                    DocumentReference historyRef =
+                                        FirebaseFirestore.instance
+                                            .collection('Record')
+                                            .doc(widget.studentIdList[index])
+                                            .collection('Behavior')
+                                            .doc(history);
+                                    temp.add({
+                                      '${history}': await historyRef
+                                          .get()
+                                          .then((value) => value.data())
+                                    });
+                                  }
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => History_Screen(
+                                        name: name,
+                                        id: widget.studentIdList[index],
+                                        iconColor: colorList[index],
+                                        historyList: temp,
                                       ),
-                                    );
-                                  });
+                                    ),
+                                  );
                                 },
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: colorList[index],
