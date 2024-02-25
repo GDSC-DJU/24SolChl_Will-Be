@@ -50,61 +50,58 @@ class _DashBoardScreenState extends State<DashBoardScreen>
   Widget build(BuildContext context) {
     return Center(
       // padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Expanded(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.01 * 2,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.01 * 2,
+            ),
+            SizedBox(
+              width: MediaQuery.sizeOf(context).width - 32,
+              child: Text(
+                '요약',
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.left,
               ),
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width - 32,
-                child: Text(
-                  '요약',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width - 32,
-                height: MediaQuery.sizeOf(context).height - 170,
-                child: ListView.builder(
-                    padding: const EdgeInsets.all(0),
-                    itemCount: widget.studentDataList.length,
-                    itemBuilder: (context, index) {
-                      return FutureBuilder(
-                        future: buildSummaryCard(
-                          itemContentList: widget.itemContentList[index],
-                          data: widget.studentDataList[index],
-                          index: index,
-                          studentId: widget.studentIdList[index],
-                        ),
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return SizedBox(
-                                height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width,
-                                child: const Center(
-                                    child:
-                                        CircularProgressIndicator())); // 데이터를 기다리는 동안 보여줄 위젯
-                          } else if (snapshot.hasError) {
-                            return Text(
-                                'Error: ${snapshot.error}'); // 에러가 발생한 경우 보여줄 위젯
-                          } else {
-                            return snapshot.data; // 데이터가 로드된 경우 보여줄 위젯
-                          }
-                        },
-                      );
-                    }),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              width: MediaQuery.sizeOf(context).width - 32,
+              height: MediaQuery.sizeOf(context).height - 170,
+              child: ListView.builder(
+                  padding: const EdgeInsets.all(0),
+                  itemCount: widget.studentDataList.length,
+                  itemBuilder: (context, index) {
+                    return FutureBuilder(
+                      future: buildSummaryCard(
+                        itemContentList: widget.itemContentList[index],
+                        data: widget.studentDataList[index],
+                        index: index,
+                        studentId: widget.studentIdList[index],
+                      ),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox(
+                              height: MediaQuery.of(context).size.height,
+                              width: MediaQuery.of(context).size.width,
+                              child: const Center(
+                                  child:
+                                      CircularProgressIndicator())); // 데이터를 기다리는 동안 보여줄 위젯
+                        } else if (snapshot.hasError) {
+                          return Text(
+                              'Error: ${snapshot.error}'); // 에러가 발생한 경우 보여줄 위젯
+                        } else {
+                          return snapshot.data; // 데이터가 로드된 경우 보여줄 위젯
+                        }
+                      },
+                    );
+                  }),
+            ),
+          ],
         ),
       ),
     );
