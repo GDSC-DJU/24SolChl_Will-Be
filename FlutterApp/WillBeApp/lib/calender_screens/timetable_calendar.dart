@@ -69,6 +69,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
         endTime: schedule['endTime'].toDate(),
         subject: schedule['subject'],
         color: colorOptions[colorIdx[schedule['color']]],
+        id: schedule['id'],
       );
 
       _dataSource.addAppointment(newAppointment);
