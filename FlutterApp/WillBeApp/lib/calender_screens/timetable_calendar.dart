@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:logger/logger.dart';
 import 'package:solution/calender_screens/set_routine_page.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -27,7 +30,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
   late DateTime _endDate;
   late TimeOfDay _endTime;
   List timeList = [];
-  User? _user = FirebaseAuth.instance.currentUser;
+  final User? _user = FirebaseAuth.instance.currentUser;
   String id = '';
 
   Future<void> getSchedule() async {
@@ -41,13 +44,13 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       "Color(0xff9c27b0)": 6,
     };
     List<Color> colorOptions = [
-      Color(0xFFF44336),
-      Color(0xFFFF9800),
-      Color(0xFFFFEB3B),
-      Color(0xFF4CAF50),
-      Color(0xFF164863),
-      Color(0xFF3F51B5),
-      Color(0xFF9C27B0),
+      const Color(0xFFF44336),
+      const Color(0xFFFF9800),
+      const Color(0xFFFFEB3B),
+      const Color(0xFF4CAF50),
+      const Color(0xFF164863),
+      const Color(0xFF3F51B5),
+      const Color(0xFF9C27B0),
     ];
     DocumentReference scheduleRef = FirebaseFirestore.instance
         .collection('Educator')
@@ -57,7 +60,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
 
     await scheduleRef.get().then((scheduleList) {
       dynamic temp = scheduleList.data();
-      print(temp['schedule']);
+
       timeList = temp['schedule'];
     });
     for (var schedule in timeList) {
@@ -67,7 +70,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
         subject: schedule['subject'],
         color: colorOptions[colorIdx[schedule['color']]],
       );
-      print(newAppointment);
+
       _dataSource.addAppointment(newAppointment);
     }
   }
@@ -82,7 +85,6 @@ class CalendarAppointment extends State<TimeTableCalendar> {
     await scheduleRef.get().then((scheduleList) {
       dynamic temp = scheduleList.data();
       // Map<String, dynamic> target = temp['schedule'];
-      print(temp['schedule']);
 
       temp['schedule']
           .removeWhere((element) => element['id'].toString() == id.toString());
@@ -92,10 +94,6 @@ class CalendarAppointment extends State<TimeTableCalendar> {
   }
 
   Future<void> pushSchedule(Appointment appointment) async {
-    print(appointment);
-    print(appointment.id);
-    print(
-        '${appointment.subject} - ${appointment.startTime} - ${appointment.endTime} - ${appointment.color} - ${appointment.id}');
     DocumentReference scheduleRef = FirebaseFirestore.instance
         .collection('Educator')
         .doc(_user!.uid)
@@ -105,7 +103,6 @@ class CalendarAppointment extends State<TimeTableCalendar> {
     await scheduleRef.get().then((scheduleList) {
       dynamic temp = scheduleList.data();
       // Map<String, dynamic> target = temp['schedule'];
-      print(temp['schedule']);
 
       temp['schedule']
           .removeWhere((element) => element['id'].toString() == id.toString());
@@ -117,15 +114,17 @@ class CalendarAppointment extends State<TimeTableCalendar> {
         "endTime": appointment.endTime,
         "color": appointment.color.toString(),
       });
-      print("추가확인");
-      print(temp['schedule']);
+
       scheduleRef.set({'schedule': temp['schedule']});
     });
   }
 
   @override
   void initState() {
-    print(widget.cellMap);
+    var logger = Logger();
+
+    logger.d(widget.cellMap);
+
     _dataSource = _getDataSource();
     // 현재 시간 및 날짜 설정
     _startDate = DateTime.now();
@@ -147,7 +146,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
         body: SafeArea(
           child: SfCalendar(
             controller: _calendarController,
-            todayHighlightColor: Color.fromARGB(255, 22, 72, 99),
+            todayHighlightColor: const Color.fromARGB(255, 22, 72, 99),
             dataSource: _dataSource,
             onTap: calendarTapped,
             allowedViews: const [
@@ -177,7 +176,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
         await _showEditAppointmentModal(null, calendarTapDetails);
       } else {
         id = tappedAppointment.id.toString();
-        print(id);
+
         // 일정 수정 모달 표시
         await _showEditAppointmentModal(tappedAppointment, calendarTapDetails);
       }
@@ -194,7 +193,8 @@ class CalendarAppointment extends State<TimeTableCalendar> {
   Future<void> _showEditAppointmentModal(
       Appointment? appointment, CalendarTapDetails calendarTapDetails) async {
     bool isNewAppointment = appointment == null;
-    Color selectedColor = appointment?.color ?? Color.fromARGB(255, 22, 72, 99);
+    Color selectedColor =
+        appointment?.color ?? const Color.fromARGB(255, 22, 72, 99);
     Map colorIdx = {
       "Color(0xFFF44336)": 0,
       "Color(0xFFFF9800)": 1,
@@ -205,16 +205,16 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       "Color(0xFF9C27B0)": 6,
     };
     List<Color> colorOptions = [
-      Color(0xFFF44336),
-      Color(0xFFFF9800),
-      Color(0xFFFFEB3B),
-      Color(0xFF4CAF50),
-      Color(0xFF164863),
-      Color(0xFF3F51B5),
-      Color(0xFF9C27B0),
+      const Color(0xFFF44336),
+      const Color(0xFFFF9800),
+      const Color(0xFFFFEB3B),
+      const Color(0xFF4CAF50),
+      const Color(0xFF164863),
+      const Color(0xFF3F51B5),
+      const Color(0xFF9C27B0),
     ];
     if (!isNewAppointment) {
-      _nameController.text = appointment!.subject;
+      _nameController.text = appointment.subject;
       _startDate = appointment.startTime;
       _startTime = TimeOfDay.fromDateTime(appointment.startTime);
       _endDate = appointment.endTime;
@@ -247,14 +247,14 @@ class CalendarAppointment extends State<TimeTableCalendar> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 '일정 편집',
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
               ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(255, 22, 72, 99)),
+                      const Color.fromARGB(255, 22, 72, 99)),
                 ),
                 onPressed: () {
                   // 일정 업데이트 또는 추가
@@ -264,8 +264,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                     _updateAppointment(appointment, selectedColor);
                   }
                   Navigator.of(context).pop(); // 모달 닫기
-                  print("1234");
-                  print("12343");
+
                   setState(() {
                     // pushSchedule(appointment!);
                   }); // _startDate, _startTime, _endDate, _endTime 업데이트
@@ -283,12 +282,12 @@ class CalendarAppointment extends State<TimeTableCalendar> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 40,
                   ),
                   TextFormField(
                     controller: _nameController,
-                    style: TextStyle(
+                    style: const TextStyle(
                       height: 1.5,
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -329,7 +328,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       Expanded(
                         child: TextFormField(
                           controller: _startDateController,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                           ),
                           textAlign: TextAlign.center,
@@ -338,7 +337,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       ),
                       const SizedBox(width: 16),
                       ElevatedButton(
-                        child: Text("시작 날짜 설정"),
+                        child: const Text("시작 날짜 설정"),
                         onPressed: () async {
                           // 시작 날짜 선택
                           DateTime? newStartDate = await showDatePicker(
@@ -350,22 +349,23 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                               return Theme(
                                 data: Theme.of(context).copyWith(
                                   textTheme: const TextTheme(
-                                    headline4: TextStyle(
+                                    headlineMedium: TextStyle(
                                       fontSize: 22.0,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    bodyText1: TextStyle(
+                                    bodyLarge: TextStyle(
                                         fontSize: 25.0), // year selection
-                                    subtitle2: TextStyle(fontSize: 22.0),
-                                    caption: TextStyle(
+                                    titleSmall: TextStyle(fontSize: 22.0),
+                                    bodySmall: TextStyle(
                                         fontSize: 24.0), // day selection
-                                    overline: TextStyle(fontSize: 22.0),
+                                    labelSmall: TextStyle(fontSize: 22.0),
                                   ),
                                   dialogBackgroundColor: Colors.lightBlueAccent,
                                   textButtonTheme: TextButtonThemeData(
                                     style: TextButton.styleFrom(
-                                      primary: Color.fromARGB(255, 22, 72, 99),
-                                      textStyle: TextStyle(
+                                      foregroundColor:
+                                          const Color.fromARGB(255, 22, 72, 99),
+                                      textStyle: const TextStyle(
                                         fontSize: 22,
                                       ),
                                     ),
@@ -392,7 +392,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       Expanded(
                         child: TextFormField(
                           controller: _startTimeController,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                           ),
                           textAlign: TextAlign.center,
@@ -417,7 +417,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                             });
                           }
                         },
-                        child: Text(
+                        child: const Text(
                           '시작 시간 설정',
                         ),
                       ),
@@ -429,7 +429,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       Expanded(
                         child: TextFormField(
                           controller: _endDateController,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                           ),
                           textAlign: TextAlign.center,
@@ -438,7 +438,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       ),
                       const SizedBox(width: 16),
                       ElevatedButton(
-                        child: Text("종료 날짜 설정"),
+                        child: const Text("종료 날짜 설정"),
                         onPressed: () async {
                           // 종료 날짜 선택
                           DateTime? newEndDate = await showDatePicker(
@@ -450,22 +450,23 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                               return Theme(
                                 data: Theme.of(context).copyWith(
                                   textTheme: const TextTheme(
-                                    headline4: TextStyle(
+                                    headlineMedium: TextStyle(
                                       fontSize: 22.0,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    bodyText1: TextStyle(
+                                    bodyLarge: TextStyle(
                                         fontSize: 25.0), // year selection
-                                    subtitle2: TextStyle(fontSize: 22.0),
-                                    caption: TextStyle(
+                                    titleSmall: TextStyle(fontSize: 22.0),
+                                    bodySmall: TextStyle(
                                         fontSize: 24.0), // day selection
-                                    overline: TextStyle(fontSize: 22.0),
+                                    labelSmall: TextStyle(fontSize: 22.0),
                                   ),
                                   dialogBackgroundColor: Colors.lightBlueAccent,
                                   textButtonTheme: TextButtonThemeData(
                                     style: TextButton.styleFrom(
-                                      primary: Color.fromARGB(255, 22, 72, 99),
-                                      textStyle: TextStyle(
+                                      foregroundColor:
+                                          const Color.fromARGB(255, 22, 72, 99),
+                                      textStyle: const TextStyle(
                                         fontSize: 22,
                                       ),
                                     ),
@@ -493,7 +494,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       Expanded(
                         child: TextFormField(
                           controller: _endTimeController,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                           ),
                           textAlign: TextAlign.center,
@@ -518,7 +519,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                             });
                           }
                         },
-                        child: Text(
+                        child: const Text(
                           '종료 시간 설정',
                         ),
                       ),
@@ -557,11 +558,11 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                   ),
                   Row(
                     children: [
-                      Spacer(),
+                      const Spacer(),
                       ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              Color.fromARGB(255, 219, 44, 44)),
+                              const Color.fromARGB(255, 219, 44, 44)),
                         ),
                         onPressed: () {
                           // 일정 업데이트 또는 추가
@@ -651,13 +652,13 @@ class CalendarAppointment extends State<TimeTableCalendar> {
   _DataSource _getDataSource() {
     List<Appointment> appointments = <Appointment>[];
     List colorList = [
-      Color.fromRGBO(255, 44, 75, 1),
-      Color.fromRGBO(92, 182, 50, 1),
-      Color.fromRGBO(60, 153, 225, 1),
-      Color.fromRGBO(252, 183, 14, 1),
-      Color.fromRGBO(123, 67, 183, 1),
-      Color.fromRGBO(253, 151, 54, 1),
-      Color.fromRGBO(45, 197, 197, 1),
+      const Color.fromRGBO(255, 44, 75, 1),
+      const Color.fromRGBO(92, 182, 50, 1),
+      const Color.fromRGBO(60, 153, 225, 1),
+      const Color.fromRGBO(252, 183, 14, 1),
+      const Color.fromRGBO(123, 67, 183, 1),
+      const Color.fromRGBO(253, 151, 54, 1),
+      const Color.fromRGBO(45, 197, 197, 1),
     ];
 
     for (String day in widget.cellMap.keys) {
@@ -667,7 +668,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
             if (widget.cellMap[day][i.toString()] != null) {
               // 예시의 패턴에 따라 날짜 및 시간 설정
               DateTime selectedDateTime = DateTime.now()
-                  .subtract(Duration(days: 7))
+                  .subtract(const Duration(days: 7))
                   .add(Duration(days: _getDayOffset(day)));
               selectedDateTime = DateTime(
                 selectedDateTime.year,

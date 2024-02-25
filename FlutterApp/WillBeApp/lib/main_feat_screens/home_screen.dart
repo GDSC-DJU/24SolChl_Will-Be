@@ -176,6 +176,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).size.height * 0.01 * 5,
                 child: ElevatedButton(
                   onPressed: () {
+                    num numOfbehaviors = 0;
+                    for (var element in widget.itemContentList) {
+                      numOfbehaviors += element.length;
+                    }
+                    if (numOfbehaviors.toInt() >= 4) {
+                      SnackBar snackBar = const SnackBar(
+                          content: Text("행동의 수는 현재 총 4개까지 생성 가능합니다."));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      return;
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -328,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           //   offset: const Offset(0, 0),
                           // ),
                           BoxShadow(
-                            color: Color.fromARGB(255, 111, 111, 111)
+                            color: const Color.fromARGB(255, 111, 111, 111)
                                 .withOpacity(0.3),
                             spreadRadius: 1,
                             blurRadius: 1,
@@ -602,6 +612,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () {
                               // 학생 ID : widget.studentIdList[index]
                               // 학생 이름 : name
+                              num numOfbehaviors = 0;
+                              for (var element in widget.itemContentList) {
+                                numOfbehaviors += element.length;
+                              }
+                              if (numOfbehaviors.toInt() >= 4) {
+                                SnackBar snackBar = const SnackBar(
+                                    content:
+                                        Text("행동의 수는 현재 총 4개까지 생성 가능합니다."));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                                return;
+                              }
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

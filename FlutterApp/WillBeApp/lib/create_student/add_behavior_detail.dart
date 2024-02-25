@@ -160,8 +160,7 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
           DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
       DateTime FriDay =
           DateTime.now().subtract(Duration(days: DateTime.now().weekday - 5));
-      print(
-          '${MonDay.year}-${MonDay.month}-${MonDay.day}_${FriDay.year}-${FriDay.month}-${FriDay.day}');
+
       // Record 컬렉션 내 Report 세팅 (Weekly)
       await FirebaseFirestore.instance
           .collection('Record')
@@ -285,11 +284,6 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
   }
 
   void _submitData() async {
-    print([
-      widget.name,
-      widget.behaviorValue,
-      widget.behaviorName,
-    ]);
     if (widget.name == "" || widget.behaviorName == "") {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('측정할 도전행동의 세부사항을 작성해주세요!')));
@@ -381,7 +375,6 @@ class _Add_Behavior_Detail_State extends State<Add_Behavior_Detail> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.id);
     widget.behaviorName = textControllers["behaviorName"]?.text;
     return GestureDetector(
       onTap: () {

@@ -280,7 +280,7 @@ class _TimetableState extends State<Timetable> {
   void initState() {
     super.initState();
     // 초기 데이터 설정
-    print(widget.cellMap);
+
     if (widget.cellMap != null) {
       dynamic temp = widget.cellMap;
       cellList = temp;
@@ -391,8 +391,7 @@ class _TimetableState extends State<Timetable> {
                             } else {
                               setSubject(day, i);
                             }
-                            print(cellList);
-                            print(cellList[day]['$i']['color']);
+
                             setState(() {
                               cellList = cellList;
                               widget.cellMap = cellList;
