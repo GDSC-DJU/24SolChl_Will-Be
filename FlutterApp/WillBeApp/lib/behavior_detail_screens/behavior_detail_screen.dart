@@ -26,8 +26,7 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
   @override
   void initState() {
     super.initState();
-    print("intinetet");
-    print(widget.value);
+
     // getBehaviorList(widget.studentIdList);
     textControllers["behavior"]!.text =
         widget.value['behavior'] != null ? widget.value['behavior'] : '';

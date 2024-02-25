@@ -101,8 +101,7 @@ class _TimetableState extends State<Timetable> {
                               _showButtonIdSnackBar(
                                   context, '$day$i - ${widget.subjectValue}');
                               setSubject(day, i);
-                              print(widget.cellList);
-                              print(widget.cellList[day][i]['color']);
+
                               setState(() {
                                 widget.cellList = widget.cellList;
                               });
