@@ -20,8 +20,8 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
     return Container(
       padding: const EdgeInsets.only(left: 16, right: 16)
           .copyWith(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Expanded(
-        child: SingleChildScrollView(
+      child: Column(children: [
+        SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(
@@ -53,7 +53,7 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       padding: EdgeInsets.zero,
-                      backgroundColor: Color.fromARGB(255, 22, 72, 99),
+                      backgroundColor: const Color.fromARGB(255, 22, 72, 99),
                     ),
                     child: const SizedBox(
                       width: double.infinity,
@@ -81,7 +81,7 @@ class _CalendarManageScreenState extends State<CalendarManageScreen> {
             ],
           ),
         ),
-      ),
+      ]),
     );
   }
 }

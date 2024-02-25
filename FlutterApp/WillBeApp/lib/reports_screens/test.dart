@@ -104,7 +104,7 @@ Future<Map<String, dynamic>> helpFunc(
       "records": [{}, {}, {}, {}, {}] //5일 초기화
     });
   }
-  dynamic temp = await getStamp(studentId, behaviorList, start, end, result);
+  dynamic temp = await getReports(studentId, behaviorList, start, end, result);
   print(temp[0]);
   return temp[0]; // Map<String, dynamic>
 }
@@ -149,14 +149,12 @@ Future<List<dynamic>> getReports(
         }
       }
     });
-    // print(data); // 필드값 출력
-    // print(result);
+    print(data); // 필드값 출력
+    print(result);
   });
-  print(result);
-  return result;
-  // dynamic temp = await getStamp(studentId, behaviorList, start, end, result);
-  // print(temp);
-  // return temp;
+  dynamic temp = await getStamp(studentId, behaviorList, start, end, result);
+  print(temp);
+  return temp;
 }
 
 Future<List<dynamic>> getStamp(String studentId, List behaviorList,
@@ -188,23 +186,21 @@ Future<List<dynamic>> getStamp(String studentId, List behaviorList,
         String targetTime =
             '${DateTime.parse(element.id).hour}:${DateTime.parse(element.id).minute}';
         if (data.containsKey(targetDay)) {
+          print('targetDay : $targetDay');
           data[targetDay]!.add(targetTime);
         } else {
           data[targetDay] = [targetTime];
         }
       });
-      data.keys.toList().forEach((day) {
-        print('day : $day');
-        print('data[day] : ${data[day]}');
+      data.keys.toList().forEach((day) async {
         result[idx]['records'][int.parse(day) - startDate.day.toInt()]
             ['stamps'] = data[day];
+        print('result : ${data[day]}');
       });
+
       idx += 1;
     });
   }
-  dynamic temp = await getReports(studentId, behaviorList, start, end, result);
-  print(temp);
-  return temp;
-  // print(result);
-  // return result;
+  print(result);
+  return result;
 }
