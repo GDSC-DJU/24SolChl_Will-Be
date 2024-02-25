@@ -1,4 +1,10 @@
 # "Will Be"
+
+
+<p align="center">
+  <img src="https://github.com/GDSC-DJU/24SolChl_Will-Be/assets/55903638/677d851f-79f7-4b76-9f88-5458d529b040">
+</p>
+
 > **Adding Hope into Education for Developmental Disabilities** 
 
 > [!TIP]
