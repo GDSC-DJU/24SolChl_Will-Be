@@ -12,6 +12,7 @@ import 'package:solution/main.dart';
 import 'package:solution/main_feat_screens/chart_builder.dart';
 import 'package:solution/reports_screens/test.dart';
 import 'package:solution/reports_screens/weekly_report_screen.dart';
+import 'package:solution/reports_screens/daily_report_list_screen.dart';
 
 class DashBoardScreen extends StatefulWidget {
   List<dynamic> studentDataList;
@@ -413,11 +414,67 @@ class _DashBoardScreenState extends State<DashBoardScreen>
               SingleChildScrollView(
                   scrollDirection: Axis.horizontal, child: toggleButton),
 
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  "주간 리포트",
-                  style: TextStyle(color: Colors.black, fontSize: 22),
+                child: Row(
+                  children: [
+                    Text(
+                      "주간 리포트",
+                      style: TextStyle(color: Colors.black, fontSize: 22),
+                    ),
+                    Spacer(),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await FirebaseFirestore.instance
+                            .collection('Record')
+                            .doc(widget.studentIdList[index])
+                            .collection('Report')
+                            .doc(user!.uid)
+                            .collection('Daily')
+                            .get()
+                            .then((value) {
+                          dynamic temp = value.docs.map((e) {
+                            return {e.id: e.data()};
+                          }).toList();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Daily_Report_List_Screen(
+                                name: name,
+                                id: widget.studentIdList[index],
+                                iconColor: widget.colorList[index],
+                                reportList: temp,
+                              ),
+                            ),
+                          );
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        padding: EdgeInsets.zero,
+                        backgroundColor:
+                            const Color.fromARGB(221, 241, 253, 255),
+                      ),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.025 * 8.5,
+                        height: MediaQuery.of(context).size.height * 0.01 * 5,
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "일일 리포트",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Container(
