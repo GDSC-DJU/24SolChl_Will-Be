@@ -1010,7 +1010,7 @@ class _Main_PageState extends State<Main_Page> {
                           height:
                               MediaQuery.of(context).size.height * 0.54 / 2 -
                                   20,
-                          width: MediaQuery.of(context).size.width * 0.4,
+                          width: MediaQuery.of(context).size.width * 0.38,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
@@ -1106,7 +1106,7 @@ class _Main_PageState extends State<Main_Page> {
                           height:
                               MediaQuery.of(context).size.height * 0.54 / 2 -
                                   20,
-                          width: MediaQuery.of(context).size.width * 0.4,
+                          width: MediaQuery.of(context).size.width * 0.38,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
@@ -1207,7 +1207,7 @@ class _Main_PageState extends State<Main_Page> {
                           height:
                               MediaQuery.of(context).size.height * 0.54 / 2 -
                                   20,
-                          width: MediaQuery.of(context).size.width * 0.4,
+                          width: MediaQuery.of(context).size.width * 0.38,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
@@ -1299,7 +1299,7 @@ class _Main_PageState extends State<Main_Page> {
                           height:
                               MediaQuery.of(context).size.height * 0.54 / 2 -
                                   20,
-                          width: MediaQuery.of(context).size.width * 0.4,
+                          width: MediaQuery.of(context).size.width * 0.38,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(
