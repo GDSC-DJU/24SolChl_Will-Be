@@ -130,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: MediaQuery.of(context).size.height * 0.02,
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.width - 32,
+              width: MediaQuery.of(context).size.width,
               // height: MediaQuery.of(context).size.height / 1.46,
               height: MediaQuery.of(context).size.height / 1.39,
               child: Padding(
@@ -296,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   //   height: 20,
                   // ),
                   Transform.translate(
-                    offset: const Offset(0.0, -20.0),
+                    offset: const Offset(-2.0, -20.0),
                     child: Container(
                       width: MediaQuery.of(context).size.height * 0.01 * 25,
                       height: MediaQuery.of(context).size.height * 0.01 * 10.3,
