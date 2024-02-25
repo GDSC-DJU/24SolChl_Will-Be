@@ -326,9 +326,11 @@ class ChartService {
       List<FlSpot> dataPoints = [];
       for (int i = 0; i < 7; i++) {
         dataPoints.add(FlSpot(i.toDouble(), numsOfWeek[i].toDouble()));
+        if (numsOfWeek[i] > maxY) {
+          maxY = numsOfWeek[i].toDouble();
+        }
       }
 
-      maxY = numsOfWeek.reduce(max).ceilToDouble();
       LineChartBarData lineChartBarData = LineChartBarData(
         spots: dataPoints,
         isCurved: false,
@@ -388,7 +390,7 @@ class ChartService {
       ),
       minY: 0,
 
-      maxY: maxY + (maxY / 10),
+      maxY: maxY,
       borderData: FlBorderData(
         show: true,
         border: const Border(
@@ -463,11 +465,13 @@ class ChartService {
             .where('time', isLessThan: endOfMonth)
             .get();
 
-        numsOfMonth[i] = snapshot.docs.length; // 해당 월의 데이터 개수를 저장
+        numsOfMonth[i] = snapshot.docs.length;
+        if (maxY < snapshot.docs.length) {
+          maxY = snapshot.docs.length.toDouble();
+        }
+        // 해당 월의 데이터 개수를 저장
       }
       print('numsOfMonth : $numsOfMonth');
-
-      maxY = numsOfMonth.reduce(max).ceilToDouble();
 
       List<FlSpot> dataPoints = [];
       for (int i = 0; i < 12; i++) {
