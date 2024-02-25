@@ -298,7 +298,7 @@ class _TodaysReportPageState extends State<TodaysReportPage> {
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       Text(
-                        "행동 후 나의 대처 ",
+                        "행동 후 나의 대처, 아이가 얻거나 피한 것 ",
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       const SizedBox(
