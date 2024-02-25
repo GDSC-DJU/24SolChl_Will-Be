@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:solution/calender_screens/set_routine_page.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
@@ -27,8 +28,27 @@ class CalendarAppointment extends State<TimeTableCalendar> {
   late TimeOfDay _endTime;
   List timeList = [];
   User? _user = FirebaseAuth.instance.currentUser;
+  String id = '';
 
   Future<void> getSchedule() async {
+    Map colorIdx = {
+      "Color(0xfff44336)": 0,
+      "Color(0xffff9800)": 1,
+      "Color(0xffffeb3b)": 2,
+      "Color(0xff4caf50)": 3,
+      "Color(0xff164863)": 4,
+      "Color(0xff3f51b5)": 5,
+      "Color(0xff9c27b0)": 6,
+    };
+    List<Color> colorOptions = [
+      Color(0xFFF44336),
+      Color(0xFFFF9800),
+      Color(0xFFFFEB3B),
+      Color(0xFF4CAF50),
+      Color(0xFF164863),
+      Color(0xFF3F51B5),
+      Color(0xFF9C27B0),
+    ];
     DocumentReference scheduleRef = FirebaseFirestore.instance
         .collection('Educator')
         .doc(_user!.uid)
@@ -42,13 +62,65 @@ class CalendarAppointment extends State<TimeTableCalendar> {
     });
     for (var schedule in timeList) {
       Appointment newAppointment = Appointment(
-        startTime: DateTime.parse(schedule['startTime']),
-        endTime: DateTime.parse(schedule['endTime']),
+        startTime: schedule['startTime'].toDate(),
+        endTime: schedule['endTime'].toDate(),
         subject: schedule['subject'],
-        color: schedule['color'],
+        color: colorOptions[colorIdx[schedule['color']]],
       );
+      print(newAppointment);
       _dataSource.addAppointment(newAppointment);
     }
+  }
+
+  Future<void> deleteSchedule(Appointment appointment) async {
+    DocumentReference scheduleRef = FirebaseFirestore.instance
+        .collection('Educator')
+        .doc(_user!.uid)
+        .collection('Schedule')
+        .doc('Schedule');
+
+    await scheduleRef.get().then((scheduleList) {
+      dynamic temp = scheduleList.data();
+      // Map<String, dynamic> target = temp['schedule'];
+      print(temp['schedule']);
+
+      temp['schedule']
+          .removeWhere((element) => element['id'].toString() == id.toString());
+      id = "";
+      scheduleRef.set({'schedule': temp['schedule']});
+    });
+  }
+
+  Future<void> pushSchedule(Appointment appointment) async {
+    print(appointment);
+    print(appointment.id);
+    print(
+        '${appointment.subject} - ${appointment.startTime} - ${appointment.endTime} - ${appointment.color} - ${appointment.id}');
+    DocumentReference scheduleRef = FirebaseFirestore.instance
+        .collection('Educator')
+        .doc(_user!.uid)
+        .collection('Schedule')
+        .doc('Schedule');
+
+    await scheduleRef.get().then((scheduleList) {
+      dynamic temp = scheduleList.data();
+      // Map<String, dynamic> target = temp['schedule'];
+      print(temp['schedule']);
+
+      temp['schedule']
+          .removeWhere((element) => element['id'].toString() == id.toString());
+      id = "";
+      temp['schedule'].add({
+        "id": appointment.id.toString(),
+        "subject": appointment.subject,
+        "startTime": appointment.startTime,
+        "endTime": appointment.endTime,
+        "color": appointment.color.toString(),
+      });
+      print("추가확인");
+      print(temp['schedule']);
+      scheduleRef.set({'schedule': temp['schedule']});
+    });
   }
 
   @override
@@ -104,6 +176,8 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       if (tappedAppointment.recurrenceRule != null) {
         await _showEditAppointmentModal(null, calendarTapDetails);
       } else {
+        id = tappedAppointment.id.toString();
+        print(id);
         // 일정 수정 모달 표시
         await _showEditAppointmentModal(tappedAppointment, calendarTapDetails);
       }
@@ -121,7 +195,15 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       Appointment? appointment, CalendarTapDetails calendarTapDetails) async {
     bool isNewAppointment = appointment == null;
     Color selectedColor = appointment?.color ?? Color.fromARGB(255, 22, 72, 99);
-
+    Map colorIdx = {
+      "Color(0xFFF44336)": 0,
+      "Color(0xFFFF9800)": 1,
+      "Color(0xFFFFEB3B)": 2,
+      "Color(0xFF4CAF50)": 3,
+      "Color(0xFF164863)": 4,
+      "Color(0xFF3F51B5)": 5,
+      "Color(0xFF9C27B0)": 6,
+    };
     List<Color> colorOptions = [
       Color(0xFFF44336),
       Color(0xFFFF9800),
@@ -175,17 +257,18 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       Color.fromARGB(255, 22, 72, 99)),
                 ),
                 onPressed: () {
-                  // print(
-                  //     '${appointment!.subject} - ${appointment.startTime} - ${appointment.endTime} - ${appointment.color}');
                   // 일정 업데이트 또는 추가
                   if (isNewAppointment) {
                     _addAppointment(selectedColor);
                   } else {
-                    _updateAppointment(appointment!, selectedColor);
+                    _updateAppointment(appointment, selectedColor);
                   }
                   Navigator.of(context).pop(); // 모달 닫기
-                  setState(
-                      () {}); // _startDate, _startTime, _endDate, _endTime 업데이트
+                  print("1234");
+                  print("12343");
+                  setState(() {
+                    // pushSchedule(appointment!);
+                  }); // _startDate, _startTime, _endDate, _endTime 업데이트
                 },
                 child: const Text(
                   'Save',
@@ -457,7 +540,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 180,
-                        height: 200,
+                        height: 110,
                         child: Center(
                           child: BlockPicker(
                             pickerColor: selectedColor,
@@ -472,6 +555,34 @@ class CalendarAppointment extends State<TimeTableCalendar> {
                       )
                     ],
                   ),
+                  Row(
+                    children: [
+                      Spacer(),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(255, 219, 44, 44)),
+                        ),
+                        onPressed: () {
+                          // 일정 업데이트 또는 추가
+                          if (isNewAppointment) {
+                            Navigator.of(context).pop();
+                          } else {
+                            _deleteAppointment(appointment);
+                          }
+                          deleteSchedule(appointment!);
+                          Navigator.of(context).pop(); // 모달 닫기
+                          setState(() {
+                            // pushSchedule(appointment!);
+                          }); // _startDate, _startTime, _endDate, _endTime 업데이트
+                        },
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -501,7 +612,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       subject: _nameController.text,
       color: selectedColor, // 일정의 색 설정
     );
-
+    pushSchedule(newAppointment);
     // 데이터 소스에 일정 추가
     _dataSource.addAppointment(newAppointment);
   }
@@ -526,9 +637,15 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       subject: _nameController.text,
       color: selectedColor, // 기존 일정의 색을 유지
     );
-
+    pushSchedule(updatedAppointment);
     // 데이터 소스에서 일정 업데이트
     _dataSource.updateAppointment(appointment, updatedAppointment);
+  }
+
+  void _deleteAppointment(
+    Appointment appointment,
+  ) {
+    _dataSource.deleteAppointment(appointment);
   }
 
   _DataSource _getDataSource() {
@@ -662,6 +779,14 @@ class _DataSource extends CalendarDataSource {
     if (index != -1) {
       appointments!.removeAt(index);
       appointments!.add(newAppointment);
+      notifyListeners(CalendarDataSourceAction.reset, appointments!);
+    }
+  }
+
+  void deleteAppointment(Appointment targetAppointment) {
+    final int index = appointments!.indexOf(targetAppointment);
+    if (index != -1) {
+      appointments!.removeAt(index);
       notifyListeners(CalendarDataSourceAction.reset, appointments!);
     }
   }

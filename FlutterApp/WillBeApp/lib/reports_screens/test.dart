@@ -98,13 +98,13 @@ Future<Map<String, dynamic>> helpFunc(
   String end,
 ) async {
   List result = [];
-  behaviorList.forEach((element) {
+  for (var element in behaviorList) {
     result.add({
       "behavior": element,
       "records": [{}, {}, {}, {}, {}] //5일 초기화
     });
-  });
-  dynamic temp = await getReports(studentId, behaviorList, start, end, result);
+  }
+  dynamic temp = await getStamp(studentId, behaviorList, start, end, result);
   print(temp[0]);
   return temp[0]; // Map<String, dynamic>
 }
@@ -130,7 +130,7 @@ Future<List<dynamic>> getReports(
       .collection("Daily");
 
   await dailyRef.get().then((dateList) async {
-    List<QueryDocumentSnapshot<Object?>> temp = await dateList.docs
+    List<QueryDocumentSnapshot<Object?>> temp = dateList.docs
         .where((date) =>
             startDate.microsecondsSinceEpoch <=
                 DateTime.parse(date.id).microsecondsSinceEpoch &&
@@ -152,9 +152,11 @@ Future<List<dynamic>> getReports(
     // print(data); // 필드값 출력
     // print(result);
   });
-  dynamic temp = await getStamp(studentId, behaviorList, start, end, result);
-  print(temp);
-  return temp;
+  print(result);
+  return result;
+  // dynamic temp = await getStamp(studentId, behaviorList, start, end, result);
+  // print(temp);
+  // return temp;
 }
 
 Future<List<dynamic>> getStamp(String studentId, List behaviorList,
@@ -180,7 +182,7 @@ Future<List<dynamic>> getStamp(String studentId, List behaviorList,
               endDate.microsecondsSinceEpoch >=
                   DateTime.parse(date.id).microsecondsSinceEpoch)
           .toList();
-      
+
       temp.forEach((element) async {
         String targetDay = '${DateTime.parse(element.id).day}';
         String targetTime =
@@ -191,13 +193,18 @@ Future<List<dynamic>> getStamp(String studentId, List behaviorList,
           data[targetDay] = [targetTime];
         }
       });
-      data.keys.toList().forEach((day) async {
+      data.keys.toList().forEach((day) {
+        print('day : $day');
+        print('data[day] : ${data[day]}');
         result[idx]['records'][int.parse(day) - startDate.day.toInt()]
-            ['stamps'] = await data[day];
+            ['stamps'] = data[day];
       });
       idx += 1;
     });
   }
-  print(result);
-  return result;
+  dynamic temp = await getReports(studentId, behaviorList, start, end, result);
+  print(temp);
+  return temp;
+  // print(result);
+  // return result;
 }
