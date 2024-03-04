@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:solution/main_feat_screens/main_page.dart';
+import 'package:solution/reports_screens/test.dart';
 
 class Behavior_Detail_Screen extends StatefulWidget {
   Behavior_Detail_Screen(
@@ -39,6 +40,17 @@ class _Behavior_Detail_Screen extends State<Behavior_Detail_Screen> {
       "solution": textControllers['solution']!.text,
       "done": "",
     });
+    DocumentReference orderRef = FirebaseFirestore.instance
+        .collection('Educator')
+        .doc(user!.uid)
+        .collection('Order')
+        .doc('OrderList');
+    dynamic tempOrder = await orderRef.get().then((value) => value.data());
+    tempOrder['OrderList']
+        .removeWhere((e) => e == '${widget.id}_${widget.behaviorName}');
+
+    await orderRef.set(tempOrder);
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
