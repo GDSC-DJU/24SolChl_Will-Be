@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:solution/reports_screens/test.dart';
-import 'package:solution/reporting/api_communication.dart'
+
+import 'package:solution/screens/reporting/api_communication.dart'
     show ApiCommunication;
+import 'package:solution/screens/reports_screens/test.dart';
 
 class Weekly_Report_Screen extends StatefulWidget {
   Weekly_Report_Screen(

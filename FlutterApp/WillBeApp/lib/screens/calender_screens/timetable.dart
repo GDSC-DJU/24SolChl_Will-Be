@@ -3,11 +3,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import 'package:solution/calender_screens/set_routine_page.dart';
-
 class Timetable extends StatefulWidget {
   Timetable(
-      {Key? key, required this.subjectValue, required this.changeSubject});
+      {super.key, required this.subjectValue, required this.changeSubject});
   final int subjectValue;
   final Function(int) changeSubject;
 
@@ -33,13 +31,13 @@ class _TimetableState extends State<Timetable> {
     List<String> daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
     List colorList = [
-      Color.fromRGBO(255, 44, 75, 1),
-      Color.fromRGBO(92, 182, 50, 1),
-      Color.fromRGBO(60, 153, 225, 1),
-      Color.fromRGBO(252, 183, 14, 1),
-      Color.fromRGBO(123, 67, 183, 1),
-      Color.fromRGBO(253, 151, 54, 1),
-      Color.fromRGBO(45, 197, 197, 1),
+      const Color.fromRGBO(255, 44, 75, 1),
+      const Color.fromRGBO(92, 182, 50, 1),
+      const Color.fromRGBO(60, 153, 225, 1),
+      const Color.fromRGBO(252, 183, 14, 1),
+      const Color.fromRGBO(123, 67, 183, 1),
+      const Color.fromRGBO(253, 151, 54, 1),
+      const Color.fromRGBO(45, 197, 197, 1),
     ];
 
     //  {
@@ -123,31 +121,31 @@ class _TimetableState extends State<Timetable> {
     return Container(
       width: width,
       height: height,
-      padding: EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(4.0),
       decoration: BoxDecoration(
         border: hasBorder
             ? text == "Mon"
                 ? Border.all()
-                : Border(
+                : const Border(
                     right: BorderSide(),
                     top: BorderSide(),
                     bottom: BorderSide(),
                   )
             : text == ""
                 ? null
-                : Border(
+                : const Border(
                     right: BorderSide(),
                   ),
         borderRadius: text == "Mon"
-            ? BorderRadius.only(topLeft: Radius.circular(5.0))
+            ? const BorderRadius.only(topLeft: Radius.circular(5.0))
             : text == "Fri"
-                ? BorderRadius.only(topRight: Radius.circular(5.0))
+                ? const BorderRadius.only(topRight: Radius.circular(5.0))
                 : BorderRadius.zero,
       ),
       child: Center(
         child: Text(
           text,
-          style: TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 15),
         ),
       ),
     );
@@ -163,7 +161,7 @@ class _TimetableState extends State<Timetable> {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(
           bottom: BorderSide(),
           right: BorderSide(),
@@ -182,7 +180,7 @@ class _TimetableState extends State<Timetable> {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       ),
@@ -203,7 +201,7 @@ class _TimetableState extends State<Timetable> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('You clicked the button with ID: $id'),
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
       ),
     );
   }

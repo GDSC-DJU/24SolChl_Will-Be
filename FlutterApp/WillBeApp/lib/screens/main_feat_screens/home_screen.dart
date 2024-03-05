@@ -5,13 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:solution/calender_screens/set_routine_page.dart';
-import 'package:solution/student_profile_page/student_profile.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:solution/create_student/add_student_info.dart';
 import 'package:solution/create_student/add_behavior.dart';
-import 'package:solution/dictionary_screens/expression_dictoinary.dart';
-import 'package:solution/history_screens/history_screen.dart';
+import 'package:solution/screens/dictionary_screens/expression_dictoinary.dart';
+import 'package:solution/screens/history_screens/history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   List<dynamic> studentDataList;
@@ -547,7 +546,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             .collection('Behavior')
                                             .doc(history);
                                     temp.add({
-                                      '${history}': await historyRef
+                                      '$history': await historyRef
                                           .get()
                                           .then((value) => value.data())
                                     });

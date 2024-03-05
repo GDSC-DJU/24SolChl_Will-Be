@@ -1,12 +1,8 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:solution/assets/pallet.dart';
-import 'package:solution/main.dart';
-
 import 'package:solution/screens/behavior_detail_screens/behavior_detail_screen.dart';
 import 'package:solution/screens/dictionary_screens/expression_dictoinary.dart';
 import 'package:solution/screens/main_feat_screens/chart_builder.dart';
@@ -415,14 +411,14 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                   scrollDirection: Axis.horizontal, child: toggleButton),
 
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
-                    const Text(
+                    Text(
                       "주간 리포트",
                       style: TextStyle(color: Colors.black, fontSize: 22),
                     ),
-                    const Spacer(),
+                    Spacer(),
                     ElevatedButton(
                       onPressed: () async {
                         await FirebaseFirestore.instance

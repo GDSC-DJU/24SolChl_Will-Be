@@ -3,6 +3,11 @@
 //     .doc(uid)
 //     .collection('Student');
 //this is open source
+
+///TODO
+///다른 파일들에서 Firebase 유저 정보를 test.dart에서 참조하는 코드들 수정 요망.
+///예) 유저정보를 다른 파일에서 가져오거나 필요할 때마다 불러 사용하는 방법.
+
 import 'dart:io';
 import 'dart:convert';
 
@@ -11,7 +16,8 @@ import 'package:firebase_core/firebase_core.dart'; // `Firebase.initializeApp()`
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../reporting/api_communication.dart' show ApiCommunication;
+import 'package:solution/screens/reporting/api_communication.dart'
+    show ApiCommunication;
 
 /** 
  * 학생 ID

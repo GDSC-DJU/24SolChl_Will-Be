@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:solution/main_feat_screens/main_page.dart';
-import 'package:solution/reports_screens/test.dart';
+import 'package:solution/screens/main_page.dart';
+import 'package:solution/screens/reports_screens/test.dart';
 
 class Behavior_Detail_Screen extends StatefulWidget {
   Behavior_Detail_Screen(

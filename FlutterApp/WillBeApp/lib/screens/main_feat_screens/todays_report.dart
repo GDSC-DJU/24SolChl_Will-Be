@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:solution/main_feat_screens/chart_builder.dart';
+import 'package:solution/screens/main_feat_screens/chart_builder.dart';
 
 class TodaysReportPage extends StatefulWidget {
   TodaysReportPage({

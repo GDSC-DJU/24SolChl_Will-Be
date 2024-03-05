@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:solution/calender_screens/timetable_calendar.dart';
-import 'package:solution/calender_screens/set_routine_page.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:solution/screens/calender_screens/set_routine_page.dart';
+import 'package:solution/screens/calender_screens/timetable_calendar.dart';
 
 class CalendarManageScreen extends StatefulWidget {
   CalendarManageScreen({super.key, required this.cellMap});

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:solution/dictionary_screens/expression_dictionary_create.dart';
-import 'package:solution/dictionary_screens/expression_dictionary_edit.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:solution/main_feat_screens/main_page.dart';
+import 'package:solution/screens/dictionary_screens/expression_dictionary_create.dart';
+import 'package:solution/screens/dictionary_screens/expression_dictionary_edit.dart';
+import 'package:solution/screens/main_page.dart';
 
 class Expression_Dictionary extends StatefulWidget {
   Expression_Dictionary(
@@ -77,9 +77,7 @@ class _Expression_Dictionary_State extends State<Expression_Dictionary> {
                           elevation: 0,
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                color: widget.iconColor,
-                                width: 3),
+                            side: BorderSide(color: widget.iconColor, width: 3),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(100)),
                           ),

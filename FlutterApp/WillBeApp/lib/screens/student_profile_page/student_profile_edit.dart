@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:solution/student_profile_page/student_profile_tab_proivder.dart';
+
 import 'package:provider/provider.dart';
+import 'package:solution/screens/student_profile_page/student_profile_tab_proivder.dart';
 
 class StudentProfileEdit extends StatefulWidget {
   const StudentProfileEdit({Key? key, required this.data}) : super(key: key);

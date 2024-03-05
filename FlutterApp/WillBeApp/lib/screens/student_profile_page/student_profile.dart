@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:solution/student_profile_page/student_profile_tab_proivder.dart';
+
 import 'package:provider/provider.dart';
-import 'package:solution/student_profile_page/student_profile_edit.dart';
+
 import 'package:solution/create_student/create_student_msg.dart';
+import 'package:solution/screens/student_profile_page/student_profile_edit.dart';
+import 'package:solution/screens/student_profile_page/student_profile_tab_proivder.dart';
 
 class StudentProfile extends StatelessWidget {
   const StudentProfile({super.key, required this.data});

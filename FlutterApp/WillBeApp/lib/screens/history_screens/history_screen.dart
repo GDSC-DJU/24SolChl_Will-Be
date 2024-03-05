@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:solution/main_feat_screens/main_page.dart';
-
 class History_Screen extends StatefulWidget {
   History_Screen(
       {Key? key,
