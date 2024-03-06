@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:solution/screens/create_student/create_student_msg.dart';
 
-import 'package:solution/create_student/create_student_msg.dart';
 import 'package:solution/screens/main_page.dart';
 
 class PrimaryLoginScreen extends StatefulWidget {

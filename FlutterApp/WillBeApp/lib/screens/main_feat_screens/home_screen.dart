@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:solution/create_student/add_student_info.dart';
-import 'package:solution/create_student/add_behavior.dart';
+import 'package:solution/screens/create_student/add_behavior.dart';
+import 'package:solution/screens/create_student/add_student_info.dart';
 import 'package:solution/screens/dictionary_screens/expression_dictoinary.dart';
 import 'package:solution/screens/history_screens/history_screen.dart';
 

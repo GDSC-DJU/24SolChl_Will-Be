@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:solution/create_student/add_behavior_detail.dart';
+import 'package:solution/screens/create_student/add_behavior_detail.dart';
 
 class Add_Behavior extends StatefulWidget {
   Add_Behavior({Key? key, required this.name, this.id = ""});

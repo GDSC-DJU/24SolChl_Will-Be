@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:solution/create_student/add_behavior.dart';
+import 'package:solution/screens/create_student/add_behavior.dart';
 
 class Add_Student_Info extends StatefulWidget {
   Add_Student_Info({Key? key});

@@ -8,13 +8,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:solution/features/behavior_card.dart';
-import 'package:solution/login_screens/primary_login_screen.dart';
-
-import 'package:solution/main_feat_screens/behavior_record.dart';
-import 'package:solution/main_feat_screens/dashboard_screen.dart';
-
+import 'package:solution/screens/login_screens/primary_login_screen.dart';
 import 'package:solution/screens/main_feat_screens/calendar_manage_screen.dart';
 import 'package:solution/screens/main_feat_screens/home_screen.dart';
+import 'package:solution/screens/main_feat_screens/main_feat_screens/behavior_record.dart';
+import 'package:solution/screens/main_feat_screens/main_feat_screens/dashboard_screen.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});

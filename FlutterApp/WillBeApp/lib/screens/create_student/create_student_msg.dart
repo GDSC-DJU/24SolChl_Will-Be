@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:solution/create_student/add_student_info.dart';
+
+import 'package:solution/screens/create_student/add_student_info.dart';
 
 class Create_student_Msg extends StatefulWidget {
   Create_student_Msg({

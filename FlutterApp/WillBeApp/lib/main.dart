@@ -6,8 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:solution/assets/pallet.dart';
 import 'package:solution/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:solution/login_screens/primary_login_screen.dart';
+
 import 'package:solution/screens/login_screens/loading_screen.dart';
+import 'package:solution/screens/login_screens/primary_login_screen.dart';
 import 'package:solution/screens/main_page.dart';
 
 void main() async {
