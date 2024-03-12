@@ -148,6 +148,7 @@ class CalendarAppointment extends State<TimeTableCalendar> {
       home: Scaffold(
         body: SafeArea(
           child: SfCalendar(
+            view: CalendarView.week,
             controller: _calendarController,
             todayHighlightColor: const Color.fromARGB(255, 22, 72, 99),
             dataSource: _dataSource,

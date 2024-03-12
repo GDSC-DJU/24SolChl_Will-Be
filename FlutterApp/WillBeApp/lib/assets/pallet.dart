@@ -27,3 +27,15 @@ class BtnColors {
   Color btnPressed6 = const Color.fromRGBO(13, 153, 153, 1);
   Color btnPressed7 = const Color.fromRGBO(61, 23, 132, 1);
 }
+
+class SubjectColors {
+  List<Color> subjectColorList = [
+    const Color.fromRGBO(255, 44, 75, 1),
+    const Color.fromRGBO(92, 182, 50, 1),
+    const Color.fromRGBO(60, 153, 225, 1),
+    const Color.fromRGBO(252, 183, 14, 1),
+    const Color.fromRGBO(123, 67, 183, 1),
+    const Color.fromRGBO(253, 151, 54, 1),
+    const Color.fromRGBO(45, 197, 197, 1),
+  ];
+}

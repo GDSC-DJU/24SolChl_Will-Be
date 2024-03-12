@@ -1,58 +1,83 @@
-///This is open source
-
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:solution/assets/pallet.dart';
 
 class Timetable extends StatefulWidget {
-  Timetable(
-      {super.key, required this.subjectValue, required this.changeSubject});
+  Timetable({
+    Key? key,
+    required this.subjectValue,
+    required this.changeSubject,
+    required this.subjectList,
+    this.cellMap,
+  }) : super(key: key);
+  Map? cellMap;
   final int subjectValue;
   final Function(int) changeSubject;
+  final List subjectList;
 
-  // final int subjectValue;
-  Map cellList = {
+  @override
+  State<Timetable> createState() => _TimetableState();
+}
+
+class _TimetableState extends State<Timetable> {
+  Map<String, dynamic> cellList = {
     "Mon": {},
     "Tue": {},
     "Wed": {},
     "Thu": {},
     "Fri": {},
   };
-  @override
-  State<Timetable> createState() => _TimetableState();
-}
 
-class _TimetableState extends State<Timetable> {
+  @override
+  void initState() {
+    super.initState();
+    // 초기 데이터 설정
+
+    if (widget.cellMap != null) {
+      dynamic temp = widget.cellMap;
+      cellList = temp;
+    } else {
+      for (String day in cellList.keys) {
+        for (int i = 1; i <= 9; i++) {
+          if (cellList[day]['$i'] != null) {
+            cellList[day]['$i'] = {
+              "color": widget.subjectValue,
+              "subject": widget.subjectList[widget.subjectValue],
+            };
+          }
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double cellWidth = (MediaQuery.of(context).size.width - 16) / 6.25;
     double cellHeight = MediaQuery.of(context).size.width / 10;
 
-    List subjectList = ['수학', '체육', '말듣쓰 ', '음악', '실과'];
     List<String> daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
-    List colorList = [
-      const Color.fromRGBO(255, 44, 75, 1),
-      const Color.fromRGBO(92, 182, 50, 1),
-      const Color.fromRGBO(60, 153, 225, 1),
-      const Color.fromRGBO(252, 183, 14, 1),
-      const Color.fromRGBO(123, 67, 183, 1),
-      const Color.fromRGBO(253, 151, 54, 1),
-      const Color.fromRGBO(45, 197, 197, 1),
-    ];
+    // 과목 색 class
+    SubjectColors subjectColors = SubjectColors();
 
-    //  {
-    //    교시(int): {color:"", subject:""}
-    //  },
     @override
     void initState() {
       super.initState();
     }
 
     void setSubject(String day, int idx) {
-      widget.cellList[day][idx] = {
+      cellList[day]['$idx'] = {
         "color": widget.subjectValue,
-        "subject": subjectList[widget.subjectValue]
+        "subject": widget.subjectList[widget.subjectValue]
       };
+    }
+
+    void deleteSubject(String day, int idx) {
+      setState(() {
+        if (cellList[day]['$idx'] != null) {
+          cellList[day]['$idx'] = null;
+        }
+        widget.cellMap = cellList;
+      });
     }
 
     return Padding(
@@ -75,7 +100,6 @@ class _TimetableState extends State<Timetable> {
               ],
             ),
           ),
-          // Time slots with buttons
           Positioned(
             top: cellHeight,
             left: 0,
@@ -88,24 +112,32 @@ class _TimetableState extends State<Timetable> {
                           width: cellWidth / 4, height: cellHeight),
                       for (String day in daysOfWeek)
                         _buildEmptyCellWithButton(
-                            text: widget.cellList[day][i] != null
-                                ? widget.cellList[day][i]['subject']
-                                : "",
-                            id: '$day$i',
-                            width: cellWidth,
-                            height: cellHeight,
-                            bgColor: widget.cellList[day][i] != null
-                                ? colorList[widget.cellList[day][i]['color']]
-                                : Colors.white,
-                            onPressed: () {
-                              _showButtonIdSnackBar(
-                                  context, '$day$i - ${widget.subjectValue}');
+                          text: cellList[day]['$i'] != null
+                              ? cellList[day]['$i']['subject']
+                              : "",
+                          id: '$day$i',
+                          width: cellWidth,
+                          height: cellHeight,
+                          bgColor: cellList[day]['$i'] != null
+                              ? subjectColors.subjectColorList[cellList[day]
+                                  ['$i']['color']]
+                              : Colors.white,
+                          onPressed: () {
+                            if (cellList[day]['$i'] != null &&
+                                cellList[day]['$i']['color'] ==
+                                    widget.subjectValue) {
+                              // 값이 같을 때만 삭제 수행
+                              deleteSubject(day, i);
+                            } else {
                               setSubject(day, i);
+                            }
 
-                              setState(() {
-                                widget.cellList = widget.cellList;
-                              });
-                            }),
+                            setState(() {
+                              cellList = cellList;
+                              widget.cellMap = cellList;
+                            });
+                          },
+                        ),
                     ],
                   ),
               ],
@@ -180,28 +212,12 @@ class _TimetableState extends State<Timetable> {
         child: Center(
           child: Text(
             text,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(
+                fontSize: 12.5,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
           ),
         ),
-      ),
-    );
-  }
-
-  // Color _generateRandomColor() {
-  //   final Random random = Random();
-  //   return Color.fromRGBO(
-  //     random.nextInt(255),
-  //     random.nextInt(255),
-  //     random.nextInt(255),
-  //     .5,
-  //   );
-  // }
-
-  void _showButtonIdSnackBar(BuildContext context, String id) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('You clicked the button with ID: $id'),
-        duration: const Duration(seconds: 1),
       ),
     );
   }
