@@ -310,90 +310,108 @@ class _HomeScreenState extends State<HomeScreen> {
                   // ),
                   Transform.translate(
                     offset: const Offset(-2.0, -20.0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.height * 0.01 * 25,
-                      height: MediaQuery.of(context).size.height * 0.01 * 10.3,
-                      decoration: BoxDecoration(
-                        color: colorList[index],
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(100)),
-                        boxShadow: [
-                          // BoxShadow(
-                          //   color: const Color.fromARGB(255, 74, 74, 74).withOpacity(0.5),
-                          //   spreadRadius: 2,
-                          //   blurRadius: 5,
-                          //   offset: const Offset(0, 1),
-                          // ),
-                          // BoxShadow(
-                          //   color: Color.fromARGB(255, 111, 113, 255).withOpacity(0.3),
-                          //   spreadRadius: 1,
-                          //   blurRadius: 10,
-                          //   offset: const Offset(0, 0),
-                          // ),
-                          // BoxShadow(
-                          //   color: Color.fromARGB(255, 111, 113, 255).withOpacity(0.3),
-                          //   spreadRadius: 1,
-                          //   blurRadius: 10,
-                          //   offset: const Offset(0, 0),
-                          // ),
-                          BoxShadow(
-                            color: const Color.fromARGB(255, 111, 111, 111)
-                                .withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 1,
-                            offset: const Offset(0, -2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width:
-                                MediaQuery.of(context).size.height * 0.01 * 10,
-                            height:
-                                MediaQuery.of(context).size.height * 0.01 * 10,
-                            child: Card(
-                                clipBehavior: Clip.antiAlias,
-                                elevation: 0,
-                                // color: colorList[index].withOpacity(0.1),
-                                color: Colors.white,
-                                shape: const RoundedRectangleBorder(
-                                  // side: BorderSide(
-                                  //     color:
-                                  //         colorList[index].withOpacity(0.5),
-                                  // width: 4),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(100)),
-                                ),
-                                child: Icon(
-                                  Icons.person,
-                                  color: colorList[index],
-                                  size: 45,
-                                )
-                                // Image.network(
-                                //   // 이미지 DB 구축 시 대치
-                                //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
-                                //   fit: BoxFit.cover,
-                                // ),
-                                ),
-                          ),
-                          Center(
-                            child: Text(
-                              ' $name',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.height * 0.01 * 25,
+                          height:
+                              MediaQuery.of(context).size.height * 0.01 * 10.3,
+                          decoration: BoxDecoration(
+                            color: colorList[index],
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(100)),
+                            boxShadow: [
+                              // BoxShadow(
+                              //   color: const Color.fromARGB(255, 74, 74, 74).withOpacity(0.5),
+                              //   spreadRadius: 2,
+                              //   blurRadius: 5,
+                              //   offset: const Offset(0, 1),
+                              // ),
+                              // BoxShadow(
+                              //   color: Color.fromARGB(255, 111, 113, 255).withOpacity(0.3),
+                              //   spreadRadius: 1,
+                              //   blurRadius: 10,
+                              //   offset: const Offset(0, 0),
+                              // ),
+                              // BoxShadow(
+                              //   color: Color.fromARGB(255, 111, 113, 255).withOpacity(0.3),
+                              //   spreadRadius: 1,
+                              //   blurRadius: 10,
+                              //   offset: const Offset(0, 0),
+                              // ),
+                              BoxShadow(
+                                color: const Color.fromARGB(255, 111, 111, 111)
+                                    .withOpacity(0.3),
+                                spreadRadius: 1,
+                                blurRadius: 1,
+                                offset: const Offset(0, -2),
                               ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.height *
+                                    0.01 *
+                                    10,
+                                height: MediaQuery.of(context).size.height *
+                                    0.01 *
+                                    10,
+                                child: Card(
+                                    clipBehavior: Clip.antiAlias,
+                                    elevation: 0,
+                                    // color: colorList[index].withOpacity(0.1),
+                                    color: Colors.white,
+                                    shape: const RoundedRectangleBorder(
+                                      // side: BorderSide(
+                                      //     color:
+                                      //         colorList[index].withOpacity(0.5),
+                                      // width: 4),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                    ),
+                                    child: Icon(
+                                      Icons.person,
+                                      color: colorList[index],
+                                      size: 45,
+                                    )
+                                    // Image.network(
+                                    //   // 이미지 DB 구축 시 대치
+                                    //   "https://img.freepik.com/free-photo/cute-puppy-sitting-in-grass-enjoying-nature-playful-beauty-generated-by-artificial-intelligence_188544-84973.jpg",
+                                    //   fit: BoxFit.cover,
+                                    // ),
+                                    ),
+                              ),
+                              Center(
+                                child: Text(
+                                  ' $name',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Transform.translate(
+                          offset: Offset(
+                              MediaQuery.of(context).size.width * 0.025 * 6.5,
+                              -MediaQuery.of(context).size.height * 0.01 * 0),
+                          child: IconButton(
+                            onPressed: () {
+                              print("삭제");
+                            },
+                            icon: Icon(
+                              Icons.highlight_remove_sharp,
+                              color: colorList[index],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  // SizedBox(
-                  //   height: MediaQuery.of(context).size.height * 0.01 * 2,
-                  // ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 32,
                     height: MediaQuery.of(context).size.height / 4.4,
@@ -402,8 +420,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 1.6,
-                            // height: MediaQuery.of(context).size.height * 0.01 * 3,
-                            // color: Colors.black,
                             child: const Text("측정중인 도전행동"),
                           ),
                           Padding(
@@ -438,9 +454,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical:
-                            MediaQuery.of(context).size.height * 0.01 * 2),
+                    padding: EdgeInsets.only(
+                        bottom:
+                            MediaQuery.of(context).size.height * 0.01 * 1.5),
                     child: Container(
                       height: 1,
                       color: Colors.black12,
