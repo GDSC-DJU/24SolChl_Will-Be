@@ -11,6 +11,7 @@ import 'package:solution/screens/create_student/add_behavior.dart';
 import 'package:solution/screens/create_student/add_student_info.dart';
 import 'package:solution/screens/dictionary_screens/expression_dictoinary.dart';
 import 'package:solution/screens/history_screens/history_screen.dart';
+import 'package:solution/screens/main_page.dart';
 
 class HomeScreen extends StatefulWidget {
   List<dynamic> studentDataList;
@@ -401,7 +402,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               -MediaQuery.of(context).size.height * 0.01 * 0),
                           child: IconButton(
                             onPressed: () {
-                              print("삭제");
+                              print("${widget.studentIdList[index]}");
+                              _deleteChild(widget.studentIdList[index]);
                             },
                             icon: Icon(
                               Icons.highlight_remove_sharp,
@@ -701,6 +703,118 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  // 아이삭제 기능
+  void _deleteChild(String targetId) async {
+    return showDialog<void>(
+      //다이얼로그 위젯 소환
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          title: SizedBox(
+            height: 30,
+            child: Image.asset(
+              'assets/icons/willbe.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Container(
+                padding: const EdgeInsets.only(top: 20),
+                child: const Text(
+                  '정말로 아이를 삭제할까요?',
+                  textAlign: TextAlign.center,
+                )),
+          ),
+          actions: [
+            TextButton(
+              child: const Text(
+                '취소',
+                style: TextStyle(fontSize: 15),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Stack(
+                children: <Widget>[
+                  Positioned.fill(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 22, 72, 99),
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.all(4.0),
+                      textStyle: const TextStyle(fontSize: 15),
+                    ),
+                    onPressed: () async {
+                      User user = FirebaseAuth.instance.currentUser!;
+
+                      // 교사에게서 학생 doc 삭제
+                      await FirebaseFirestore.instance
+                          .collection('Educator')
+                          .doc(user.uid)
+                          .collection('Student')
+                          .doc(targetId)
+                          .delete()
+                          .then(
+                            (value) =>
+                                (doc) => print("Doc deleted from Educator"),
+                            onError: (e) => print("Error updating document $e"),
+                          );
+
+                      // 학생에서 doc 삭제
+                      await FirebaseFirestore.instance
+                          .collection('Student')
+                          .doc(targetId)
+                          .delete()
+                          .then(
+                            (value) =>
+                                (doc) => print("Doc deleted from Student"),
+                            onError: (e) => print("Error updating document $e"),
+                          );
+
+                      // Record에서 삭제
+                      await FirebaseFirestore.instance
+                          .collection('Record')
+                          .doc(targetId)
+                          .delete()
+                          .then(
+                            (value) =>
+                                (doc) => print("Doc deleted from Record"),
+                            onError: (e) => print("Error updating document $e"),
+                          );
+
+                      setState(() {
+                        Navigator.of(context).pop();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Main_Page(),
+                          ),
+                          (route) => false,
+                        );
+                      });
+                    },
+                    child: const Text('확인'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    // 알림창 띄우기 -> 확인 버튼 누르면 DB에 객체 생성
   }
 }
 // 10px MediaQuery.of(context).size.height * 0.01
